@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Input } from '@/shared/ui/Input';
 import { Button } from '@/shared/ui/Button';
 import styles from './SajuForm.module.css';
+import KoreanLunarCalendar from 'korean-lunar-calendar';
 
 export const SajuForm = () => {
   const router = useRouter();
@@ -16,8 +17,10 @@ export const SajuForm = () => {
     minute: '',
     gender: 'male',
     unknownTime: false,
+    isLunar: false,
   });
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string>('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -27,23 +30,52 @@ export const SajuForm = () => {
         ...prev, 
         [name]: checked,
         // Clear hour/minute if unknown time is checked
-        hour: checked ? '' : prev.hour,
-        minute: checked ? '' : prev.minute
+        hour: name === 'unknownTime' && checked ? '' : prev.hour,
+        minute: name === 'unknownTime' && checked ? '' : prev.minute
       }));
     } else {
       setFormData(prev => ({ ...prev, [name]: value }));
     }
+    // Clear error when user makes changes
+    if (error) setError('');
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError('');
     
-    // Construct query params
+    let finalYear = formData.year;
+    let finalMonth = formData.month;
+    let finalDay = formData.day;
+
+    // Convert lunar to solar if isLunar is checked
+    if (formData.isLunar) {
+      try {
+        const calendar = new KoreanLunarCalendar();
+        calendar.setLunarDate(
+          parseInt(formData.year),
+          parseInt(formData.month),
+          parseInt(formData.day),
+          false // isLeapMonth - 윤달 여부, 기본 false
+        );
+        
+        const solarDate = calendar.getSolarCalendar();
+        finalYear = String(solarDate.year);
+        finalMonth = String(solarDate.month);
+        finalDay = String(solarDate.day);
+      } catch (err) {
+        setError('유효하지 않은 음력 날짜입니다. 날짜를 확인해주세요.');
+        setLoading(false);
+        return;
+      }
+    }
+    
+    // Construct query params with converted solar date
     const params = new URLSearchParams({
-      year: formData.year,
-      month: formData.month,
-      day: formData.day,
+      year: finalYear,
+      month: finalMonth,
+      day: finalDay,
       hour: formData.unknownTime ? '0' : formData.hour,
       minute: formData.unknownTime ? '0' : formData.minute,
       gender: formData.gender,
@@ -89,6 +121,18 @@ export const SajuForm = () => {
           min="1"
           max="31"
         />
+      </div>
+
+      <div className={styles.checkboxField}>
+        <label className={styles.checkboxLabel}>
+          <input
+            type="checkbox"
+            name="isLunar"
+            checked={formData.isLunar}
+            onChange={handleChange}
+          />
+          음력 (Lunar Calendar)
+        </label>
       </div>
       
       <div className={styles.grid}>
@@ -155,6 +199,12 @@ export const SajuForm = () => {
           </label>
         </div>
       </div>
+
+      {error && (
+        <div className={styles.errorMessage}>
+          {error}
+        </div>
+      )}
 
       <Button type="submit" disabled={loading} className={styles.submitButton}>
         {loading ? '분석 중...' : '만세력 확인하기'}
