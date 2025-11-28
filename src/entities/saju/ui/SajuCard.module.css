@@ -73,7 +73,31 @@
   color: var(--foreground);
 }
 
-/* Optional: Color coding by element could be added here if we had element data */
+/* Ohaeng Colors */
+.wood {
+  color: #4ade80; /* Green */
+}
+
+.fire {
+  color: #f87171; /* Red */
+}
+
+.earth {
+  color: #fbbf24; /* Yellow/Gold */
+}
+
+.metal {
+  color: #e5e7eb; /* White/Gray */
+}
+
+.water {
+  color: #60a5fa; /* Blue */
+}
+
+.unknown {
+  color: var(--foreground);
+  opacity: 0.5;
+}
 
 .korean {
   font-size: 0.9rem;

@@ -11,11 +11,11 @@ const PillarView = ({ pillar, label }: { pillar: Pillar; label: string }) => (
   <div className={styles.pillar}>
     <div className={styles.label}>{label}</div>
     <div className={styles.characterBox}>
-      <div className={clsx(styles.character, styles.gan)}>{pillar.ganHan}</div>
+      <div className={clsx(styles.character, styles[pillar.ganElement || ''])}>{pillar.ganHan}</div>
       <div className={styles.korean}>{pillar.gan}</div>
     </div>
     <div className={styles.characterBox}>
-      <div className={clsx(styles.character, styles.ji)}>{pillar.jiHan}</div>
+      <div className={clsx(styles.character, styles[pillar.jiElement || ''])}>{pillar.jiHan}</div>
       <div className={styles.korean}>{pillar.ji}</div>
     </div>
   </div>

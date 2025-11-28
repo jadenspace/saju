@@ -16,7 +16,7 @@ export class SajuCalculator {
       year: this.createPillar(yearGanZhi),
       month: this.createPillar(monthGanZhi),
       day: this.createPillar(dayGanZhi),
-      hour: unknownTime ? { gan: '?', ji: '?', ganHan: '?', jiHan: '?' } : this.createPillar(timeGanZhi),
+      hour: unknownTime ? { gan: '?', ji: '?', ganHan: '?', jiHan: '?', ganElement: 'unknown', jiElement: 'unknown' } : this.createPillar(timeGanZhi),
       birthDate: `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`,
       birthTime: unknownTime ? '시간 모름' : `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`,
       gender,
@@ -34,7 +34,27 @@ export class SajuCalculator {
       ji: this.convertHanToKoreanJi(jiHan),
       ganHan,
       jiHan,
+      ganElement: this.getOhaeng(ganHan),
+      jiElement: this.getOhaeng(jiHan),
     };
+  }
+
+  private static getOhaeng(han: string): string {
+    const map: Record<string, string> = {
+      // Gan
+      '甲': 'wood', '乙': 'wood',
+      '丙': 'fire', '丁': 'fire',
+      '戊': 'earth', '己': 'earth',
+      '庚': 'metal', '辛': 'metal',
+      '壬': 'water', '癸': 'water',
+      // Ji
+      '寅': 'wood', '卯': 'wood',
+      '巳': 'fire', '午': 'fire',
+      '辰': 'earth', '戌': 'earth', '丑': 'earth', '未': 'earth',
+      '申': 'metal', '酉': 'metal',
+      '亥': 'water', '子': 'water',
+    };
+    return map[han] || '';
   }
 
   private static convertHanToKoreanGan(han: string): string {

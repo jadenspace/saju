@@ -3,6 +3,8 @@ export interface Pillar {
   ji: string;  // Jiji (Earthly Branch)
   ganHan: string; // Chinese character for Gan
   jiHan: string;  // Chinese character for Ji
+  ganElement?: string; // wood, fire, earth, metal, water
+  jiElement?: string;
   tenGods?: string; // Sip-shin (optional for now)
 }
 
