@@ -1,0 +1,92 @@
+.card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 2rem;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 1rem;
+}
+
+.header h2 {
+  margin: 0 0 0.5rem 0;
+  color: var(--primary);
+  font-size: 1.5rem;
+}
+
+.header p {
+  margin: 0;
+  color: var(--foreground);
+  opacity: 0.7;
+  font-size: 0.9rem;
+}
+
+.pillarsContainer {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.pillar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.label {
+  font-size: 0.8rem;
+  color: var(--foreground);
+  opacity: 0.6;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.characterBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.character {
+  font-size: 2.5rem;
+  font-weight: bold;
+  line-height: 1;
+  font-family: "Noto Serif KR", serif; /* Ideally load a serif font */
+}
+
+.gan {
+  color: var(--foreground);
+}
+
+.ji {
+  color: var(--foreground);
+}
+
+/* Optional: Color coding by element could be added here if we had element data */
+
+.korean {
+  font-size: 0.9rem;
+  color: var(--primary);
+  font-weight: 500;
+}
+
+@media (max-width: 600px) {
+  .pillarsContainer {
+    gap: 0.5rem;
+  }
+  
+  .character {
+    font-size: 2rem;
+  }
+}
