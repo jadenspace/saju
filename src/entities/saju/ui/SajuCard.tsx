@@ -1,5 +1,6 @@
 import clsx from 'clsx';
-import { SajuData, Pillar } from '../model/types';
+import { CHEONGAN_EXPLANATIONS, JIJI_EXPLANATIONS, SIPSIN_EXPLANATIONS } from '../../../shared/lib/saju/SajuExplanations';
+import { Pillar, SajuData } from '../model/types';
 import styles from './SajuCard.module.css';
 
 interface SajuCardProps {
@@ -11,12 +12,44 @@ const PillarView = ({ pillar, label }: { pillar: Pillar; label: string }) => (
   <div className={styles.pillar}>
     <div className={styles.label}>{label}</div>
     <div className={styles.characterBox}>
-      <div className={clsx(styles.character, styles[pillar.ganElement || ''])}>{pillar.ganHan}</div>
+      {pillar.tenGodsGan && (
+        <div className={styles.tooltipContainer}>
+          <div className={styles.sipsin}>{pillar.tenGodsGan}</div>
+          <div className={styles.tooltip}>{SIPSIN_EXPLANATIONS[pillar.tenGodsGan] || ''}</div>
+        </div>
+      )}
+      <div className={styles.tooltipContainer}>
+        <div className={clsx(styles.character, styles[pillar.ganElement || ''])}>{pillar.ganHan}</div>
+        <div className={styles.tooltip}>{CHEONGAN_EXPLANATIONS[pillar.ganHan] || ''}</div>
+      </div>
       <div className={styles.korean}>{pillar.gan}</div>
     </div>
     <div className={styles.characterBox}>
-      <div className={clsx(styles.character, styles[pillar.jiElement || ''])}>{pillar.jiHan}</div>
+      {pillar.tenGodsJi && (
+        <div className={styles.tooltipContainer}>
+          <div className={styles.sipsin}>{pillar.tenGodsJi}</div>
+          <div className={styles.tooltip}>{SIPSIN_EXPLANATIONS[pillar.tenGodsJi] || ''}</div>
+        </div>
+      )}
+      <div className={styles.tooltipContainer}>
+        <div className={clsx(styles.character, styles[pillar.jiElement || ''])}>{pillar.jiHan}</div>
+        <div className={styles.tooltip}>{JIJI_EXPLANATIONS[pillar.jiHan] || ''}</div>
+      </div>
       <div className={styles.korean}>{pillar.ji}</div>
+      {pillar.jijanggan && pillar.jijanggan.length > 0 && (
+        <div className={styles.jijanggan}>
+          {pillar.jijanggan.map((char, i) => (
+            <div key={i} className={styles.tooltipContainer}>
+              <span className={styles.jijangganChar}>{char}</span>
+              <div className={styles.tooltip}>
+                {pillar.jijangganTenGods?.[i] && SIPSIN_EXPLANATIONS[pillar.jijangganTenGods[i]] 
+                  ? `${pillar.jijangganTenGods[i]} - ${SIPSIN_EXPLANATIONS[pillar.jijangganTenGods[i]]}`
+                  : pillar.jijangganTenGods?.[i] || ''}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   </div>
 );

@@ -5,7 +5,10 @@ export interface Pillar {
   jiHan: string;  // Chinese character for Ji
   ganElement?: string; // wood, fire, earth, metal, water
   jiElement?: string;
-  tenGods?: string; // Sip-shin (optional for now)
+  tenGodsGan?: string; // Sipsin for Heavenly Stem
+  tenGodsJi?: string;  // Sipsin for Earthly Branch
+  jijanggan?: string[]; // Hidden Stems
+  jijangganTenGods?: string[]; // Sipsin for Hidden Stems
 }
 
 export interface SajuData {
