@@ -3,7 +3,10 @@ import { Pillar, SajuData } from '../../../entities/saju/model/types';
 
 export class SajuCalculator {
   static calculate(year: number, month: number, day: number, hour: number, minute: number, gender: 'male' | 'female' = 'male', unknownTime: boolean = false): SajuData {
-    const solar = Solar.fromYmdHms(year, month, day, unknownTime ? 12 : hour, unknownTime ? 0 : minute, 0);
+    // Apply Korea timezone correction
+    const correctedTime = this.applyKoreaTimezoneCorrection(year, month, day, hour, minute);
+    
+    const solar = Solar.fromYmdHms(year, month, day, unknownTime ? 12 : correctedTime.hour, unknownTime ? 0 : correctedTime.minute, 0);
     const lunar = solar.getLunar();
 
     // For Saju, we must use the Solar Terms (Jeolgi) based methods.
@@ -23,6 +26,67 @@ export class SajuCalculator {
       gender,
       solar: true,
       unknownTime,
+    };
+  }
+
+  // Apply Korea timezone and DST corrections
+  private static applyKoreaTimezoneCorrection(year: number, month: number, day: number, hour: number, minute: number): { hour: number; minute: number } {
+    const date = new Date(year, month - 1, day, hour, minute);
+    let adjustment = 0; // in minutes
+
+    // UTC+08:30 periods (subtract 30 minutes)
+    if (
+      (year === 1908 && month >= 4) ||
+      (year > 1908 && year < 1911) ||
+      (year === 1911 && month <= 12)
+    ) {
+      adjustment -= 30;
+    } else if (
+      (year === 1954 && month >= 3 && day >= 21) ||
+      (year > 1954 && year < 1961) ||
+      (year === 1961 && month <= 8 && day <= 9)
+    ) {
+      adjustment -= 30;
+    }
+
+    // Daylight Saving Time periods (subtract 60 minutes)
+    const dstPeriods = [
+      { start: new Date(1948, 5, 1, 0, 0), end: new Date(1948, 8, 13, 0, 0) },
+      { start: new Date(1949, 3, 3, 0, 0), end: new Date(1949, 8, 11, 0, 0) },
+      { start: new Date(1950, 3, 1, 0, 0), end: new Date(1950, 8, 10, 0, 0) },
+      { start: new Date(1951, 4, 6, 0, 0), end: new Date(1951, 8, 9, 0, 0) },
+      { start: new Date(1955, 4, 5, 0, 0), end: new Date(1955, 8, 9, 0, 0) },
+      { start: new Date(1956, 4, 20, 0, 0), end: new Date(1956, 8, 30, 0, 0) },
+      { start: new Date(1957, 4, 5, 0, 0), end: new Date(1957, 8, 22, 0, 0) },
+      { start: new Date(1958, 4, 4, 0, 0), end: new Date(1958, 8, 21, 0, 0) },
+      { start: new Date(1959, 4, 3, 0, 0), end: new Date(1959, 8, 20, 0, 0) },
+      { start: new Date(1960, 4, 1, 0, 0), end: new Date(1960, 8, 18, 0, 0) },
+      { start: new Date(1987, 4, 10, 2, 0), end: new Date(1987, 9, 11, 3, 0) },
+      { start: new Date(1988, 4, 8, 2, 0), end: new Date(1988, 9, 9, 3, 0) },
+    ];
+
+    for (const period of dstPeriods) {
+      if (date >= period.start && date <= period.end) {
+        adjustment -= 60;
+        break;
+      }
+    }
+
+    // Apply adjustment
+    let totalMinutes = hour * 60 + minute + adjustment;
+    
+    // Handle negative time (previous day)
+    if (totalMinutes < 0) {
+      totalMinutes += 24 * 60;
+    }
+    // Handle overflow (next day) 
+    if (totalMinutes >= 24 * 60) {
+      totalMinutes -= 24 * 60;
+    }
+
+    return {
+      hour: Math.floor(totalMinutes / 60),
+      minute: totalMinutes % 60,
     };
   }
 
