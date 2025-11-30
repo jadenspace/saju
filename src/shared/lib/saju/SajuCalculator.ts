@@ -1,5 +1,5 @@
-import { Solar } from 'lunar-javascript';
-import { Pillar, SajuData } from '../../../entities/saju/model/types';
+import { Lunar, Solar } from 'lunar-javascript';
+import { DaeunPeriod, Pillar, SajuData } from '../../../entities/saju/model/types';
 
 export class SajuCalculator {
   static calculate(year: number, month: number, day: number, hour: number, minute: number, gender: 'male' | 'female' = 'male', unknownTime: boolean = false): SajuData {
@@ -16,6 +16,12 @@ export class SajuCalculator {
     const dayMaster = dayGanZhi.charAt(0);
     const timeGanZhi = unknownTime ? '??' : lunar.getTimeInGanZhi();
 
+    // Calculate Daeun
+    const yearGan = yearGanZhi.charAt(0);
+    const daeunDirection = this.getDaeunDirection(yearGan, gender);
+    const daeunStartAge = this.calculateDaeunStartAge(lunar, daeunDirection, solar);
+    const daeun = this.generateDaeunSequence(monthGanZhi, daeunDirection, daeunStartAge, dayMaster);
+
     return {
       year: this.createPillar(yearGanZhi, dayMaster),
       month: this.createPillar(monthGanZhi, dayMaster),
@@ -26,6 +32,8 @@ export class SajuCalculator {
       gender,
       solar: true,
       unknownTime,
+      daeun,
+      daeunDirection,
     };
   }
 
@@ -215,5 +223,173 @@ export class SajuCalculator {
       'wood': 'earth', 'earth': 'water', 'water': 'fire', 'fire': 'metal', 'metal': 'wood'
     };
     return map[source] === target;
+  }
+
+  // Daeun (Grand Fortune) calculations
+  private static getDaeunDirection(yearGan: string, gender: 'male' | 'female'): 'forward' | 'backward' {
+    const yangGans = new Set(['甲', '丙', '戊', '庚', '壬']);
+    const isYangYear = yangGans.has(yearGan);
+    
+    // 양남음녀(陽男陰女): forward, 음남양녀(陰男陽女): backward
+    if ((isYangYear && gender === 'male') || (!isYangYear && gender === 'female')) {
+      return 'forward';
+    } else {
+      return 'backward';
+    }
+  }
+
+  private static calculateDaeunStartAge(lunar: Lunar, direction: 'forward' | 'backward', birthSolar: Solar): number {
+    // Get Jieqi (solar term) table from lunar calendar
+    const jieqiTable = (lunar as any).getJieQiTable();
+    
+    // Jie (節) terms only (not Qi/氣 terms) - these determine monthly boundaries
+    // Using simplified Chinese characters as returned by lunar-javascript
+    const jieTerms = ['立春', '惊蛰', '清明', '立夏', '芒种', '小暑', '立秋', '白露', '寒露', '立冬', '大雪', '小寒'];
+    
+    let closestJieName = '';
+    let closestJieDays = Infinity;
+    
+    // Find closest Jie term based on direction
+    for (const [name, jieqiData] of Object.entries(jieqiTable)) {
+      if (!jieTerms.includes(name)) continue;
+      
+      const jieqiInfo = jieqiData as any;
+      const jieqiDate = jieqiInfo._p;
+      
+      // Create Solar object for this Jieqi
+      const jieqiSolar = Solar.fromYmdHms(
+        jieqiDate.year,
+        jieqiDate.month,
+        jieqiDate.day,
+        jieqiDate.hour,
+        jieqiDate.minute,
+        jieqiDate.second
+      );
+      
+      // Calculate day difference
+      const birthDate = new Date(
+        (birthSolar as any).getYear(),
+        (birthSolar as any).getMonth() - 1,
+        (birthSolar as any).getDay(),
+        (birthSolar as any).getHour(),
+        (birthSolar as any).getMinute()
+      );
+      
+      const jieqiDateObj = new Date(
+        jieqiDate.year,
+        jieqiDate.month - 1,
+        jieqiDate.day,
+        jieqiDate.hour,
+        jieqiDate.minute
+      );
+      
+      const daysDiff = Math.ceil((jieqiDateObj.getTime() - birthDate.getTime()) / (1000 * 60 * 60 * 24));
+      
+      // For forward direction: find next Jie (daysDiff > 0)
+      // For backward direction: find previous Jie (daysDiff < 0)
+      if (direction === 'forward') {
+        if (daysDiff > 0 && daysDiff < closestJieDays) {
+          closestJieDays = daysDiff;
+          closestJieName = name;
+        }
+      } else {
+        if (daysDiff < 0 && Math.abs(daysDiff) < closestJieDays) {
+          closestJieDays = Math.abs(daysDiff);
+          closestJieName = name;
+        }
+      }
+    }
+    
+    // If no suitable Jie found in current year (e.g., birth in early January before first Jie)
+    // Need to check previous year for backward direction or next year for forward direction
+    if (closestJieDays === Infinity) {
+      const prevYear = (birthSolar as any).getYear() - 1;
+      const nextYear = (birthSolar as any).getYear() + 1;
+      const checkYear = direction === 'backward' ? prevYear : nextYear;
+      
+      const checkSolar = Solar.fromYmdHms(checkYear, 1, 1, 0, 0, 0);
+      const checkLunar = checkSolar.getLunar();
+      const checkJieqiTable = (checkLunar as any).getJieQiTable();
+      
+      for (const [name, jieqiData] of Object.entries(checkJieqiTable)) {
+        if (!jieTerms.includes(name)) continue;
+        
+        const jieqiInfo = jieqiData as any;
+        const jieqiDate = jieqiInfo._p;
+        
+        const birthDate = new Date(
+          (birthSolar as any).getYear(),
+          (birthSolar as any).getMonth() - 1,
+          (birthSolar as any).getDay(),
+          (birthSolar as any).getHour(),
+          (birthSolar as any).getMinute()
+        );
+        
+        const jieqiDateObj = new Date(
+          jieqiDate.year,
+          jieqiDate.month - 1,
+          jieqiDate.day,
+          jieqiDate.hour,
+          jieqiDate.minute
+        );
+        
+        const daysDiff = Math.ceil((jieqiDateObj.getTime() - birthDate.getTime()) / (1000 * 60 * 60 * 24));
+        
+        if (direction === 'forward') {
+          if (daysDiff > 0 && daysDiff < closestJieDays) {
+            closestJieDays = daysDiff;
+            closestJieName = name;
+          }
+        } else {
+          if (daysDiff < 0 && Math.abs(daysDiff) < closestJieDays) {
+            closestJieDays = Math.abs(daysDiff);
+            closestJieName = name;
+          }
+        }
+      }
+    }
+    
+    // Calculate Daeun start age: 3 days = 1 year
+    // Round to nearest integer (minimum 1 year)
+    const daeunSu = Math.max(1, Math.round(closestJieDays / 3));
+    
+    return daeunSu;
+  }
+
+  private static generateDaeunSequence(monthGanZhi: string, direction: 'forward' | 'backward', startAge: number, dayMaster: string): DaeunPeriod[] {
+    const gans = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'];
+    const jis = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'];
+    
+    const currentGan = monthGanZhi.charAt(0);
+    const currentJi = monthGanZhi.charAt(1);
+    
+    let ganIndex = gans.indexOf(currentGan);
+    let jiIndex = jis.indexOf(currentJi);
+    
+    const daeunPeriods: DaeunPeriod[] = [];
+    const increment = direction === 'forward' ? 1 : -1;
+    
+    for (let i = 0; i < 8; i++) {
+      ganIndex = (ganIndex + increment + gans.length) % gans.length;
+      jiIndex = (jiIndex + increment + jis.length) % jis.length;
+      
+      const ganHan = gans[ganIndex];
+      const jiHan = jis[jiIndex];
+      const ganZhi = ganHan + jiHan;
+      
+      daeunPeriods.push({
+        ganZhi,
+        ganHan,
+        jiHan,
+        gan: this.convertHanToKoreanGan(ganHan),
+        ji: this.convertHanToKoreanJi(jiHan),
+        ganElement: this.getOhaeng(ganHan),
+        jiElement: this.getOhaeng(jiHan),
+        startAge: startAge + i * 10,
+        endAge: startAge + i * 10 + 9, // 10-year period: start + 9 years
+      });
+    }
+    
+    return daeunPeriods;
   }
 }

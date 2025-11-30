@@ -67,6 +67,30 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
         <PillarView pillar={data.month} label="월주 (Month)" />
         <PillarView pillar={data.year} label="년주 (Year)" />
       </div>
+      
+      {/* Daeun Section */}
+      <div className={styles.daeunSection}>
+        <div className={styles.daeunHeader}>
+          <h3>대운 (大運)</h3>
+          <span className={styles.daeunDirection}>
+            {data.daeunDirection === 'forward' ? '순행 ▶' : '역행 ◀'}
+          </span>
+        </div>
+        <div className={styles.daeunContainer}>
+          {data.daeun.map((period, index) => (
+            <div key={index} className={styles.daeunPeriod}>
+              <div className={styles.daeunAge}>{period.startAge}-{period.endAge}세</div>
+              <div className={styles.daeunGanZhi}>
+                <span className={styles.daeunHan}>
+                  <span className={clsx(styles[period.ganElement || ''])}>{period.ganHan}</span>
+                  <span className={clsx(styles[period.jiElement || ''])}>{period.jiHan}</span>
+                </span>
+                <span className={styles.daeunKor}>{period.gan}{period.ji}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };

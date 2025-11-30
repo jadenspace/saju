@@ -11,6 +11,18 @@ export interface Pillar {
   jijangganTenGods?: string[]; // Sipsin for Hidden Stems
 }
 
+export interface DaeunPeriod {
+  ganZhi: string; // GanZhi combination (e.g., '甲子')
+  gan: string; // Korean name (e.g., '갑')
+  ji: string; // Korean name (e.g., '자')
+  ganHan: string; // Chinese character for Gan
+  jiHan: string; // Chinese character for Ji
+  ganElement?: string; // wood, fire, earth, metal, water
+  jiElement?: string;
+  startAge: number;
+  endAge: number;
+}
+
 export interface SajuData {
   year: Pillar;
   month: Pillar;
@@ -21,4 +33,6 @@ export interface SajuData {
   gender: 'male' | 'female';
   solar: boolean; // true if solar birth date
   unknownTime?: boolean;
+  daeun: DaeunPeriod[]; // Grand Fortune periods
+  daeunDirection: 'forward' | 'backward'; // Direction of Daeun
 }
