@@ -1,6 +1,8 @@
 import clsx from 'clsx';
+import { useState } from 'react';
 import { CHEONGAN_EXPLANATIONS, JIJI_EXPLANATIONS, SIPSIN_EXPLANATIONS } from '../../../shared/lib/saju/SajuExplanations';
 import { Pillar, SajuData } from '../model/types';
+import { OhaengAnalysis } from './OhaengAnalysis';
 import styles from './SajuCard.module.css';
 
 interface SajuCardProps {
@@ -58,6 +60,9 @@ const PillarView = ({ pillar, label }: { pillar: Pillar; label: string }) => (
 );
 
 export const SajuCard = ({ data, className }: SajuCardProps) => {
+  const [showOhaeng, setShowOhaeng] = useState(false);
+  const [showIlju, setShowIlju] = useState(false);
+
   return (
     <div className={clsx(styles.card, className)}>
       <div className={styles.header}>
@@ -94,6 +99,36 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
           ))}
         </div>
       </div>
+
+      {/* Analysis Buttons */}
+      <div className={styles.analysisButtons}>
+        <button 
+          className={clsx(styles.analysisButton, showIlju && styles.active)}
+          onClick={() => {
+            setShowIlju(!showIlju);
+            setShowOhaeng(false);
+          }}
+        >
+          일주 분석
+        </button>
+        <button 
+          className={clsx(styles.analysisButton, showOhaeng && styles.active)}
+          onClick={() => {
+            setShowOhaeng(!showOhaeng);
+            setShowIlju(false);
+          }}
+        >
+          오행 분석
+        </button>
+      </div>
+
+      {/* Analysis Sections */}
+      {showOhaeng && <OhaengAnalysis data={data} />}
+      {showIlju && (
+        <div className={styles.placeholder}>
+          <p>일주 분석 기능은 준비 중입니다.</p>
+        </div>
+      )}
     </div>
   );
 };

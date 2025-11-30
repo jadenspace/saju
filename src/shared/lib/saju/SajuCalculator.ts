@@ -22,11 +22,22 @@ export class SajuCalculator {
     const daeunStartAge = this.calculateDaeunStartAge(lunar, daeunDirection, solar);
     const daeun = this.generateDaeunSequence(monthGanZhi, daeunDirection, daeunStartAge, dayMaster);
 
+    // Calculate Ohaeng distribution
+    const pillars = [
+      this.createPillar(yearGanZhi, dayMaster),
+      this.createPillar(monthGanZhi, dayMaster),
+      this.createPillar(dayGanZhi, dayMaster),
+      unknownTime ? null : this.createPillar(timeGanZhi, dayMaster)
+    ].filter(p => p !== null) as Pillar[];
+    
+    const ohaengDistribution = this.calculateOhaengDistribution(pillars);
+    const ohaengAnalysis = this.analyzeOhaeng(ohaengDistribution);
+
     return {
-      year: this.createPillar(yearGanZhi, dayMaster),
-      month: this.createPillar(monthGanZhi, dayMaster),
-      day: this.createPillar(dayGanZhi, dayMaster),
-      hour: unknownTime ? { gan: '?', ji: '?', ganHan: '?', jiHan: '?', ganElement: 'unknown', jiElement: 'unknown' } : this.createPillar(timeGanZhi, dayMaster),
+      year: pillars[0],
+      month: pillars[1],
+      day: pillars[2],
+      hour: unknownTime ? { gan: '?', ji: '?', ganHan: '?', jiHan: '?', ganElement: 'unknown', jiElement: 'unknown' } : pillars[3],
       birthDate: `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`,
       birthTime: unknownTime ? '시간 모름' : `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`,
       gender,
@@ -34,6 +45,8 @@ export class SajuCalculator {
       unknownTime,
       daeun,
       daeunDirection,
+      ohaengDistribution,
+      ohaengAnalysis,
     };
   }
 
@@ -391,5 +404,88 @@ export class SajuCalculator {
     }
     
     return daeunPeriods;
+  }
+
+  // Ohaeng (Five Elements) analysis
+  private static calculateOhaengDistribution(pillars: Pillar[]): {
+    wood: number;
+    fire: number;
+    earth: number;
+    metal: number;
+    water: number;
+  } {
+    const distribution = {
+      wood: 0,
+      fire: 0,
+      earth: 0,
+      metal: 0,
+      water: 0
+    };
+
+    pillars.forEach(pillar => {
+      // Count Gan element
+      if (pillar.ganElement && pillar.ganElement !== 'unknown') {
+        distribution[pillar.ganElement as keyof typeof distribution]++;
+      }
+      // Count Ji element
+      if (pillar.jiElement && pillar.jiElement !== 'unknown') {
+        distribution[pillar.jiElement as keyof typeof distribution]++;
+      }
+    });
+
+    return distribution;
+  }
+
+  private static analyzeOhaeng(distribution: Record<string, number>): {
+    excess: string[];
+    deficient: string[];
+    missing: string[];
+    interpretation: string;
+  } {
+    const elementNames: Record<string, string> = {
+      wood: '목(木)',
+      fire: '화(火)',
+      earth: '토(土)',
+      metal: '금(金)',
+      water: '수(水)'
+    };
+
+    const excess: string[] = [];
+    const deficient: string[] = [];
+    const missing: string[] = [];
+
+    Object.entries(distribution).forEach(([element, count]) => {
+      if (count >= 3) {
+        excess.push(elementNames[element]);
+      } else if (count === 1) {
+        deficient.push(elementNames[element]);
+      } else if (count === 0) {
+        missing.push(elementNames[element]);
+      }
+    });
+
+    // Generate interpretation
+    let interpretation = '';
+    
+    if (excess.length > 0) {
+      interpretation += `${excess.join(', ')} 기운이 강합니다. `;
+    }
+    
+    if (missing.length > 0) {
+      interpretation += `${missing.join(', ')} 기운이 부족합니다. `;
+    }
+    
+    if (excess.length === 0 && missing.length === 0) {
+      interpretation = '오행이 비교적 균형있게 분포되어 있습니다.';
+    } else if (excess.length > 0 && missing.length > 0) {
+      interpretation += '불균형을 보완하는 것이 중요합니다.';
+    }
+
+    return {
+      excess,
+      deficient,
+      missing,
+      interpretation
+    };
   }
 }

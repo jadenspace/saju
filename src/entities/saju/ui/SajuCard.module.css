@@ -285,3 +285,51 @@
     font-size: 1.2rem;
   }
 }
+
+/* Analysis Buttons */
+.analysisButtons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.analysisButton {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  color: var(--foreground);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.analysisButton:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--primary);
+}
+
+.analysisButton.active {
+  background: var(--primary);
+  color: #000;
+  border-color: var(--primary);
+}
+
+.placeholder {
+  padding: 2rem;
+  text-align: center;
+  color: var(--foreground);
+  opacity: 0.7;
+  margin-top: 1rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 0.75rem;
+  border: 1px solid var(--border);
+}
+
+.placeholder p {
+  margin: 0;
+}

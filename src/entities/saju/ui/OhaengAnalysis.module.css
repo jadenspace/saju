@@ -1,0 +1,150 @@
+.container {
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 0.75rem;
+  border: 1px solid var(--border);
+  margin-top: 1rem;
+}
+
+.title {
+  margin: 0 0 1.5rem 0;
+  color: var(--primary);
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.chart {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  height: 200px;
+  margin-bottom: 2rem;
+  padding: 0 1rem;
+}
+
+.barContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  max-width: 80px;
+}
+
+.barWrapper {
+  width: 100%;
+  height: 150px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
+
+.bar {
+  width: 60%;
+  min-height: 20px;
+  border-radius: 0.25rem 0.25rem 0 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 0.25rem;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.bar:hover {
+  opacity: 0.8;
+  transform: translateY(-2px);
+}
+
+.count {
+  color: #000;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.elementName {
+  font-size: 0.85rem;
+  color: var(--foreground);
+  margin-bottom: 0.25rem;
+  font-weight: 500;
+}
+
+.percentage {
+  font-size: 0.75rem;
+  color: var(--primary);
+  opacity: 0.7;
+}
+
+.interpretation {
+  border-top: 1px solid var(--border);
+  padding-top: 1.5rem;
+}
+
+.summary {
+  margin: 0 0 1.5rem 0;
+  color: var(--foreground);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  text-align: center;
+  font-weight: 500;
+}
+
+.analysisItem {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 0.5rem;
+  border-left: 3px solid var(--primary);
+}
+
+.analysisItem:last-child {
+  margin-bottom: 0;
+}
+
+.label {
+  font-weight: 600;
+  color: var(--primary);
+  margin-right: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.value {
+  color: var(--foreground);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.description {
+  margin: 0.5rem 0 0 0;
+  color: var(--foreground);
+  opacity: 0.8;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 600px) {
+  .container {
+    padding: 1rem;
+  }
+  
+  .chart {
+    height: 160px;
+    padding: 0 0.5rem;
+  }
+  
+  .barWrapper {
+    height: 120px;
+  }
+  
+  .barContainer {
+    max-width: 60px;
+  }
+  
+  .count {
+    font-size: 0.8rem;
+  }
+  
+  .elementName {
+    font-size: 0.75rem;
+  }
+}

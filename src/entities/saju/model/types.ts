@@ -35,4 +35,17 @@ export interface SajuData {
   unknownTime?: boolean;
   daeun: DaeunPeriod[]; // Grand Fortune periods
   daeunDirection: 'forward' | 'backward'; // Direction of Daeun
+  ohaengDistribution: {
+    wood: number;
+    fire: number;
+    earth: number;
+    metal: number;
+    water: number;
+  };
+  ohaengAnalysis: {
+    excess: string[]; // 많은 오행 (3개 이상)
+    deficient: string[]; // 적은 오행 (1개)
+    missing: string[]; // 없는 오행 (0개)
+    interpretation: string; // 종합 해석
+  };
 }
