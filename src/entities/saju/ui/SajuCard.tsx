@@ -15,7 +15,7 @@ const PillarView = ({ pillar, label }: { pillar: Pillar; label: string }) => (
       {pillar.tenGodsGan && (
         <div className={styles.tooltipContainer}>
           <div className={styles.sipsin}>{pillar.tenGodsGan}</div>
-          <div className={styles.tooltip}>{SIPSIN_EXPLANATIONS[pillar.tenGodsGan] || ''}</div>
+          <div className={styles.tooltip} dangerouslySetInnerHTML={{ __html: (SIPSIN_EXPLANATIONS[pillar.tenGodsGan] || '').replace(/\n/g, '<br/>') }}></div>
         </div>
       )}
       <div className={styles.tooltipContainer}>
@@ -28,7 +28,7 @@ const PillarView = ({ pillar, label }: { pillar: Pillar; label: string }) => (
       {pillar.tenGodsJi && (
         <div className={styles.tooltipContainer}>
           <div className={styles.sipsin}>{pillar.tenGodsJi}</div>
-          <div className={styles.tooltip}>{SIPSIN_EXPLANATIONS[pillar.tenGodsJi] || ''}</div>
+          <div className={styles.tooltip} dangerouslySetInnerHTML={{ __html: (SIPSIN_EXPLANATIONS[pillar.tenGodsJi] || '').replace(/\n/g, '<br/>') }}></div>
         </div>
       )}
       <div className={styles.tooltipContainer}>
@@ -41,11 +41,14 @@ const PillarView = ({ pillar, label }: { pillar: Pillar; label: string }) => (
           {pillar.jijanggan.map((char, i) => (
             <div key={i} className={styles.tooltipContainer}>
               <span className={styles.jijangganChar}>{char}</span>
-              <div className={styles.tooltip}>
-                {pillar.jijangganTenGods?.[i] && SIPSIN_EXPLANATIONS[pillar.jijangganTenGods[i]] 
-                  ? `${pillar.jijangganTenGods[i]} - ${SIPSIN_EXPLANATIONS[pillar.jijangganTenGods[i]]}`
-                  : pillar.jijangganTenGods?.[i] || ''}
-              </div>
+              <div 
+                className={styles.tooltip} 
+                dangerouslySetInnerHTML={{ 
+                  __html: (pillar.jijangganTenGods?.[i] && SIPSIN_EXPLANATIONS[pillar.jijangganTenGods[i]] 
+                    ? `${pillar.jijangganTenGods[i]} - ${SIPSIN_EXPLANATIONS[pillar.jijangganTenGods[i]]}`
+                    : pillar.jijangganTenGods?.[i] || '').replace(/\n/g, '<br/>') 
+                }}
+              ></div>
             </div>
           ))}
         </div>
