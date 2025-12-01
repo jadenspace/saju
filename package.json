@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@next/third-parties": "^16.0.6",
     "clsx": "^2.1.1",
     "korean-lunar-calendar": "^0.3.6",
     "lunar-javascript": "^1.7.7",
