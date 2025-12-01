@@ -24,7 +24,9 @@ const PillarView = ({ pillar, label }: { pillar: Pillar; label: string }) => {
           {pillar.tenGodsGan || ''}
         </div>
         <div className={hasValue ? styles.tooltipContainer : ''}>
-          <div className={clsx(styles.character, styles[pillar.ganElement || ''])}>{pillar.ganHan}</div>
+          <div className={clsx(styles.characterContainer, styles[pillar.ganElement || 'unknown'])}>
+            <div className={styles.character}>{pillar.ganHan}</div>
+          </div>
           {hasValue && <div className={styles.tooltip}>{CHEONGAN_EXPLANATIONS[pillar.ganHan] || ''}</div>}
         </div>
         <div className={styles.korean}>{pillar.gan}</div>
@@ -35,7 +37,9 @@ const PillarView = ({ pillar, label }: { pillar: Pillar; label: string }) => {
           {pillar.tenGodsJi || ''}
         </div>
         <div className={hasValue ? styles.tooltipContainer : ''}>
-          <div className={clsx(styles.character, styles[pillar.jiElement || ''])}>{pillar.jiHan}</div>
+          <div className={clsx(styles.characterContainer, styles[pillar.jiElement || 'unknown'])}>
+            <div className={styles.character}>{pillar.jiHan}</div>
+          </div>
           {hasValue && <div className={styles.tooltip}>{JIJI_EXPLANATIONS[pillar.jiHan] || ''}</div>}
         </div>
         <div className={styles.korean}>{pillar.ji}</div>

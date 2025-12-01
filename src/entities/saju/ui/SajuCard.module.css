@@ -62,7 +62,29 @@
   font-size: 2.5rem;
   font-weight: bold;
   line-height: 1;
-  font-family: "Noto Serif KR", serif; /* Ideally load a serif font */
+  font-family: "Noto Serif KR", serif;
+  color: #fff; /* 흰색 글자 */
+  z-index: 1;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4); /* 밝은 배경에서의 가독성 확보 */
+}
+
+.characterContainer {
+  width: 80px;
+  height: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease;
+}
+
+.characterContainer:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 .gan {
@@ -73,28 +95,39 @@
   color: var(--foreground);
 }
 
-/* Ohaeng Colors */
+/* Ohaeng Background Colors - Synced with OhaengAnalysis */
 .wood {
-  color: #4ade80; /* Green */
+  background-color: #4ade80; /* Green */
+  border: 1px solid #22c55e;
 }
 
 .fire {
-  color: #f87171; /* Red */
+  background-color: #f87171; /* Red */
+  border: 1px solid #ef4444;
 }
 
 .earth {
-  color: #fbbf24; /* Yellow/Gold */
+  background-color: #fbbf24; /* Yellow/Gold */
+  border: 1px solid #f59e0b;
 }
 
 .metal {
-  color: #e5e7eb; /* White/Gray */
+  background-color: #9ca3af; /* Gray 400 - e5e7eb is too light for white text, using slightly darker gray */
+  border: 1px solid #6b7280;
 }
 
 .water {
-  color: #60a5fa; /* Blue */
+  background-color: #60a5fa; /* Blue */
+  border: 1px solid #3b82f6;
 }
 
 .unknown {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border);
+  color: var(--foreground);
+}
+
+.unknown .character {
   color: var(--foreground);
   opacity: 0.5;
 }
