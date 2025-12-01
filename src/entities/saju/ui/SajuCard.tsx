@@ -124,11 +124,7 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
 
       {/* Analysis Sections */}
       {showOhaeng && <OhaengAnalysis data={data} />}
-      {showIlju && (
-        <div className={styles.placeholder}>
-          <p>일주 분석 기능은 준비 중입니다.</p>
-        </div>
-      )}
+      {showIlju && <IljuAnalysis data={data} />}
     </div>
   );
 };
