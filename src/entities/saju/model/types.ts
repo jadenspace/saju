@@ -43,6 +43,13 @@ export interface SajuData {
     water: number;
   };
   ohaengAnalysis: {
+    elements: Array<{
+      element: string;      // 'wood', 'fire', 'earth', 'metal', 'water'
+      name: string;         // '목(木)', '화(火)' 등
+      count: number;        // 개수
+      level: string;        // '결핍', '부족', '균형', '강함', '과다'
+      description: string;  // OhaengData의 설명
+    }>;
     excess: string[]; // 많은 오행 (3개 이상)
     deficient: string[]; // 적은 오행 (1개)
     missing: string[]; // 없는 오행 (0개)

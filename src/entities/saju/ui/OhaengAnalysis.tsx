@@ -84,6 +84,30 @@ export const OhaengAnalysis = ({ data }: OhaengAnalysisProps) => {
           </div>
         )}
       </div>
+
+      {/* Detailed analysis for each element */}
+      <div className={styles.detailedAnalysis}>
+        <h4 className={styles.detailedTitle}>각 오행별 상세 분석</h4>
+        {ohaengAnalysis.elements.map(({ element, name, count, level, description }) => {
+          const elementColor = elementInfo.find(e => e.key === element)?.color || '#9ca3af';
+          
+          return (
+            <div key={element} className={styles.elementDetail}>
+              <div className={styles.elementHeader}>
+                <div className={styles.elementBadge} style={{ backgroundColor: elementColor }}>
+                  {name}
+                </div>
+                <div className={styles.elementStats}>
+                  <span className={styles.elementCount}>{count}개</span>
+                  <span className={styles.elementLevel}>({level})</span>
+                </div>
+              </div>
+              <p className={styles.elementDescription}>{description}</p>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };
+
