@@ -2,6 +2,7 @@ import clsx from 'clsx';
 import { useState } from 'react';
 import { CHEONGAN_EXPLANATIONS, JIJI_EXPLANATIONS, SIPSIN_EXPLANATIONS } from '../../../shared/lib/saju/SajuExplanations';
 import { Pillar, SajuData } from '../model/types';
+import { IljuAnalysis } from './IljuAnalysis';
 import { OhaengAnalysis } from './OhaengAnalysis';
 import styles from './SajuCard.module.css';
 
