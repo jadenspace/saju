@@ -11,54 +11,55 @@ interface SajuCardProps {
   className?: string;
 }
 
-const PillarView = ({ pillar, label }: { pillar: Pillar; label: string }) => (
-  <div className={styles.pillar}>
-    <div className={styles.label}>{label}</div>
-    <div className={styles.characterBox}>
-      {pillar.tenGodsGan && (
-        <div className={styles.tooltipContainer}>
-          <div className={styles.sipsin}>{pillar.tenGodsGan}</div>
-          <div className={styles.tooltip} dangerouslySetInnerHTML={{ __html: (SIPSIN_EXPLANATIONS[pillar.tenGodsGan] || '').replace(/\n/g, '<br/>') }}></div>
+const PillarView = ({ pillar, label }: { pillar: Pillar; label: string }) => {
+  // Check if pillar has meaningful values (not just placeholder "?")
+  const hasValue = pillar.ganHan !== '?' && pillar.jiHan !== '?';
+  
+  return (
+    <div className={styles.pillar}>
+      <div className={styles.label}>{label}</div>
+      <div className={styles.characterBox}>
+        {/* Always render sipsin area for consistent spacing */}
+        <div className={styles.sipsin}>
+          {pillar.tenGodsGan || ''}
         </div>
-      )}
-      <div className={styles.tooltipContainer}>
-        <div className={clsx(styles.character, styles[pillar.ganElement || ''])}>{pillar.ganHan}</div>
-        <div className={styles.tooltip}>{CHEONGAN_EXPLANATIONS[pillar.ganHan] || ''}</div>
+        <div className={hasValue ? styles.tooltipContainer : ''}>
+          <div className={clsx(styles.character, styles[pillar.ganElement || ''])}>{pillar.ganHan}</div>
+          {hasValue && <div className={styles.tooltip}>{CHEONGAN_EXPLANATIONS[pillar.ganHan] || ''}</div>}
+        </div>
+        <div className={styles.korean}>{pillar.gan}</div>
       </div>
-      <div className={styles.korean}>{pillar.gan}</div>
-    </div>
-    <div className={styles.characterBox}>
-      {pillar.tenGodsJi && (
-        <div className={styles.tooltipContainer}>
-          <div className={styles.sipsin}>{pillar.tenGodsJi}</div>
-          <div className={styles.tooltip} dangerouslySetInnerHTML={{ __html: (SIPSIN_EXPLANATIONS[pillar.tenGodsJi] || '').replace(/\n/g, '<br/>') }}></div>
+      <div className={styles.characterBox}>
+        {/* Always render sipsin area for consistent spacing */}
+        <div className={styles.sipsin}>
+          {pillar.tenGodsJi || ''}
         </div>
-      )}
-      <div className={styles.tooltipContainer}>
-        <div className={clsx(styles.character, styles[pillar.jiElement || ''])}>{pillar.jiHan}</div>
-        <div className={styles.tooltip}>{JIJI_EXPLANATIONS[pillar.jiHan] || ''}</div>
+        <div className={hasValue ? styles.tooltipContainer : ''}>
+          <div className={clsx(styles.character, styles[pillar.jiElement || ''])}>{pillar.jiHan}</div>
+          {hasValue && <div className={styles.tooltip}>{JIJI_EXPLANATIONS[pillar.jiHan] || ''}</div>}
+        </div>
+        <div className={styles.korean}>{pillar.ji}</div>
+        {pillar.jijanggan && pillar.jijanggan.length > 0 && (
+          <div className={styles.jijanggan}>
+            {pillar.jijanggan.map((char, i) => (
+              <div key={i} className={styles.tooltipContainer}>
+                <span className={styles.jijangganChar}>{char}</span>
+                <div 
+                  className={styles.tooltip} 
+                  dangerouslySetInnerHTML={{ 
+                    __html: (pillar.jijangganTenGods?.[i] && SIPSIN_EXPLANATIONS[pillar.jijangganTenGods[i]] 
+                      ? `${pillar.jijangganTenGods[i]} - ${SIPSIN_EXPLANATIONS[pillar.jijangganTenGods[i]]}`
+                      : pillar.jijangganTenGods?.[i] || '').replace(/\n/g, '<br/>') 
+                  }}
+                ></div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
-      <div className={styles.korean}>{pillar.ji}</div>
-      {pillar.jijanggan && pillar.jijanggan.length > 0 && (
-        <div className={styles.jijanggan}>
-          {pillar.jijanggan.map((char, i) => (
-            <div key={i} className={styles.tooltipContainer}>
-              <span className={styles.jijangganChar}>{char}</span>
-              <div 
-                className={styles.tooltip} 
-                dangerouslySetInnerHTML={{ 
-                  __html: (pillar.jijangganTenGods?.[i] && SIPSIN_EXPLANATIONS[pillar.jijangganTenGods[i]] 
-                    ? `${pillar.jijangganTenGods[i]} - ${SIPSIN_EXPLANATIONS[pillar.jijangganTenGods[i]]}`
-                    : pillar.jijangganTenGods?.[i] || '').replace(/\n/g, '<br/>') 
-                }}
-              ></div>
-            </div>
-          ))}
-        </div>
-      )}
     </div>
-  </div>
-);
+  );
+};
 
 export const SajuCard = ({ data, className }: SajuCardProps) => {
   const [showOhaeng, setShowOhaeng] = useState(false);
