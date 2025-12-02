@@ -366,3 +366,103 @@
 .placeholder p {
   margin: 0;
 }
+
+/* Additional mobile optimization for smaller screens */
+@media (max-width: 480px) {
+  .card {
+    padding: 0.75rem;
+  }
+
+  .header {
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .header h2 {
+    font-size: 1.1rem;
+  }
+
+  .header p {
+    font-size: 0.75rem;
+  }
+
+  /* Keep 4 columns but make them smaller */
+  .pillarsContainer {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.25rem;
+  }
+
+  .pillar {
+    gap: 0.4rem;
+  }
+
+  .label {
+    font-size: 0.6rem;
+  }
+
+  .character {
+    font-size: 1.4rem;
+  }
+
+  .characterContainer {
+    width: 50px;
+    height: 60px;
+  }
+
+  .korean {
+    font-size: 0.7rem;
+  }
+
+  .sipsin {
+    font-size: 0.6rem;
+    margin-bottom: 0.1rem;
+    height: 1rem;
+  }
+
+  .jijanggan {
+    gap: 0.1rem;
+    margin-top: 0.3rem;
+  }
+
+  .jijangganChar {
+    font-size: 0.65rem;
+  }
+
+  .daeunSection {
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+  }
+
+  .daeunHeader h3 {
+    font-size: 1rem;
+  }
+
+  .daeunDirection {
+    font-size: 0.75rem;
+  }
+
+  .daeunAge {
+    font-size: 0.65rem;
+  }
+
+  .daeunHan {
+    font-size: 1rem;
+  }
+
+  .daeunKor {
+    font-size: 0.7rem;
+  }
+
+  .analysisButtons {
+    gap: 0.5rem;
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+  }
+
+  .analysisButton {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+  }
+}
+
+
