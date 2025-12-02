@@ -48,3 +48,42 @@
   line-height: 1.6;
   margin: 0;
 }
+
+/* Tablet optimization */
+@media (max-width: 768px) {
+  .main {
+    padding: 1.5rem;
+  }
+
+  .title {
+    font-size: 2.5rem;
+  }
+
+  .subtitle {
+    font-size: 0.875rem;
+  }
+}
+
+/* Mobile optimization */
+@media (max-width: 480px) {
+  .main {
+    padding: 1rem;
+  }
+
+  .content {
+    gap: 1.5rem;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+
+  .subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+  }
+
+  .description {
+    font-size: 0.875rem;
+  }
+}
