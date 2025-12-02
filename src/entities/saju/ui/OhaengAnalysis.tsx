@@ -13,7 +13,7 @@ export const OhaengAnalysis = ({ data }: OhaengAnalysisProps) => {
     { key: 'fire', name: '화(火)', color: '#f87171' },
     { key: 'earth', name: '토(土)', color: '#fbbf24' },
     { key: 'metal', name: '금(金)', color: '#e5e7eb' },
-    { key: 'water', name: '수(水)', color: '#60a5fa' },
+    { key: 'water', name: '수(水)', color: '#1f2937' },
   ];
 
   const maxCount = Math.max(...Object.values(ohaengDistribution));
@@ -90,11 +90,18 @@ export const OhaengAnalysis = ({ data }: OhaengAnalysisProps) => {
         <h4 className={styles.detailedTitle}>각 오행별 상세 분석</h4>
         {ohaengAnalysis.elements.map(({ element, name, count, level, description }) => {
           const elementColor = elementInfo.find(e => e.key === element)?.color || '#9ca3af';
+          const isDark = element === 'water';
           
           return (
             <div key={element} className={styles.elementDetail}>
               <div className={styles.elementHeader}>
-                <div className={styles.elementBadge} style={{ backgroundColor: elementColor }}>
+                <div 
+                  className={styles.elementBadge} 
+                  style={{ 
+                    backgroundColor: elementColor,
+                    color: isDark ? '#ffffff' : '#000000'
+                  }}
+                >
                   {name}
                 </div>
                 <div className={styles.elementStats}>

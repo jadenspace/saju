@@ -7,14 +7,15 @@ interface IljuAnalysisProps {
 }
 
 export const IljuAnalysis = ({ data }: IljuAnalysisProps) => {
-  const ilju = data.day.ganHan + data.day.jiHan;
-  const analysis = getIljuAnalysis(ilju, data.gender);
+  const iljuHan = data.day.ganHan + data.day.jiHan;
+  const iljuKor = data.day.gan + data.day.ji;
+  const analysis = getIljuAnalysis(iljuHan, data.gender);
 
   if (!analysis) {
     return (
       <div className={styles.container}>
         <div className={styles.noData}>
-          <h3>{ilju}일주 분석</h3>
+          <h3>{iljuKor}({iljuHan})일주 분석</h3>
           <p>해당 일주의 상세 분석 데이터를 준비 중입니다.</p>
           <p className={styles.hint}>주요 일주 데이터부터 순차적으로 추가될 예정입니다.</p>
         </div>
@@ -26,7 +27,7 @@ export const IljuAnalysis = ({ data }: IljuAnalysisProps) => {
     <div className={styles.container}>
       <div className={styles.header}>
         <h3 className={styles.title}>
-          {ilju}일주 {data.gender === 'male' ? '남자' : '여자'}
+          {iljuKor}({iljuHan})일주 {data.gender === 'male' ? '남자' : '여자'}
         </h3>
         <p className={styles.summary}>{analysis.summary}</p>
       </div>

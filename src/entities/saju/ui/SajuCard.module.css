@@ -117,8 +117,9 @@
 }
 
 .water {
-  background-color: #60a5fa; /* Blue */
-  border: 1px solid #3b82f6;
+  background-color: #1f2937; /* Black/Dark Gray */
+  border: 1px solid #374151;
+  color: #ffffff;
 }
 
 .unknown {
@@ -161,6 +162,7 @@
 
 .jijanggan {
   display: flex;
+  justify-content: center; /* Center horizontally for row direction */
   gap: 0.2rem;
   margin-top: 0.5rem;
   width: 100%;
