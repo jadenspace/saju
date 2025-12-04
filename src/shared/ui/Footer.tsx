@@ -12,6 +12,10 @@ export const Footer = () => {
           <Link href="/privacy" className={styles.link}>
             개인정보처리방침
           </Link>
+          <span className={styles.divider}>|</span>
+          <Link href="/contact" className={styles.link}>
+            문의하기
+          </Link>
         </div>
       </div>
     </footer>

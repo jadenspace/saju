@@ -19,7 +19,8 @@
 
 .links {
   display: flex;
-  gap: 20px;
+  gap: 10px;
+  align-items: center;
 }
 
 .link {
@@ -30,6 +31,11 @@
 .link:hover {
   color: var(--primary);
   text-decoration: underline;
+}
+
+.divider {
+  color: #555;
+  font-size: 0.8rem;
 }
 
 @media (min-width: 600px) {

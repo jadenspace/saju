@@ -1,0 +1,58 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--foreground);
+}
+
+.textarea {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background-color: var(--secondary);
+  color: var(--foreground);
+  font-family: inherit;
+  font-size: 1rem;
+  resize: vertical;
+  transition: border-color 0.2s ease;
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.textarea::placeholder {
+  color: #666;
+}
+
+.actions {
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+}
+
+.submitButton {
+  width: 100%;
+}
+
+@media (min-width: 600px) {
+  .submitButton {
+    width: auto;
+    min-width: 200px;
+  }
+}

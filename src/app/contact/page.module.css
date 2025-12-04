@@ -1,0 +1,42 @@
+.main {
+  min-height: 100vh;
+  padding: 40px 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.container {
+  width: 100%;
+  max-width: 800px;
+}
+
+.header {
+  margin-bottom: 20px;
+}
+
+.backButton {
+  display: inline-block;
+  color: #888;
+  font-size: 0.9rem;
+  transition: color 0.2s ease;
+}
+
+.backButton:hover {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  text-align: center;
+  color: var(--primary);
+}
+
+.description {
+  text-align: center;
+  margin-bottom: 40px;
+  color: #ccc;
+  line-height: 1.6;
+}
