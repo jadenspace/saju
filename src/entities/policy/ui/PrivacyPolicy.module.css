@@ -7,6 +7,22 @@
   font-family: var(--font-sans);
 }
 
+.header {
+  margin-bottom: 20px;
+}
+
+.backButton {
+  display: inline-block;
+  color: #888;
+  font-size: 0.9rem;
+  transition: color 0.2s ease;
+}
+
+.backButton:hover {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
 .title {
   font-size: 2rem;
   font-weight: 700;
@@ -83,7 +99,6 @@
   color: #888;
   margin-top: 5px;
 }
-
 
 
 .tableWrapper {

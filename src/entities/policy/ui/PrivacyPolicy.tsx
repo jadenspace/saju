@@ -1,8 +1,14 @@
+import Link from 'next/link';
 import styles from './PrivacyPolicy.module.css';
 
 export const PrivacyPolicy = () => {
   return (
     <div className={styles.container}>
+      <div className={styles.header}>
+        <Link href="/" className={styles.backButton}>
+          ← 돌아가기
+        </Link>
+      </div>
       <h1 className={styles.title}>개인정보처리방침</h1>
       
       <p className={styles.intro}>
