@@ -1,4 +1,5 @@
 import { GoogleAdSense } from "@/shared/lib/google/GoogleAdSense";
+import { Footer } from "@/shared/ui/Footer";
 import { GoogleTagManager } from "@next/third-parties/google";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -30,6 +31,7 @@ export default function RootLayout({
       <GoogleAdSense />
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         {children}
+        <Footer />
       </body>
     </html>
   );
