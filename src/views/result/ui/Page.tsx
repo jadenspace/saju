@@ -6,6 +6,7 @@ import { SajuCalculator } from '@/shared/lib/saju/SajuCalculator';
 import { SajuCard } from '@/entities/saju/ui/SajuCard';
 import { Button } from '@/shared/ui/Button';
 import { SajuData } from '@/entities/saju/model/types';
+import { Loading } from '@/shared/ui/Loading';
 import styles from './Page.module.css';
 
 export const ResultPage = () => {
@@ -29,7 +30,7 @@ export const ResultPage = () => {
   }, [searchParams]);
 
   if (!sajuData) {
-    return <div className={styles.loading}>분석 중입니다...</div>;
+    return <Loading />;
   }
 
   return (
