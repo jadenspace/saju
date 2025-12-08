@@ -285,37 +285,7 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-/* Mobile Tooltip Optimization */
-@media (max-width: 480px) {
-  .tooltip {
-    position: fixed;
-    /* Fix to viewport */
-    top: 50vh !important;
-    /* Center vertically */
-    left: 50% !important;
-    /* Center horizontally */
-    bottom: auto;
-    /* Override default bottom positioning */
-    transform: translate(-50%, -50%) !important;
-    /* Center alignment */
-    width: 85vw;
-    max-width: 300px;
-    white-space: normal;
-    /* Allow wrapping */
-    text-align: center;
-    margin: 0;
-    /* Combine drop shadow and dimmed background overlay using spread radius */
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8), 0 0 0 9999px rgba(0, 0, 0, 0.55) !important;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    z-index: 9999 !important;
-    /* Highest z-index */
-  }
 
-  /* Hide the arrow on mobile since it's centered */
-  .tooltip::after {
-    display: none;
-  }
-}
 
 .tooltip::after {
   content: '';
@@ -562,5 +532,13 @@
   .analysisButton {
     padding: 0.5rem 0.75rem;
     font-size: 0.8rem;
+  }
+
+  .tooltip {
+    display: none !important;
+  }
+
+  .tooltipContainer {
+    cursor: default;
   }
 }

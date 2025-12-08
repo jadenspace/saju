@@ -327,4 +327,12 @@
     height: 3.25rem;
     font-size: 1rem;
   }
+
+  .tooltipContent {
+    display: none !important;
+  }
+
+  .infoIcon {
+    display: none !important;
+  }
 }
