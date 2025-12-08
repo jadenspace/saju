@@ -30,7 +30,7 @@ export default function RootLayout({
       <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID as string} />
       <GoogleAdSense />
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <main style={{ flex: 1 }}>
+        <main style={{ overflowX: "hidden", flex: 1 }}>
           {children}
         </main>
         <Footer />
