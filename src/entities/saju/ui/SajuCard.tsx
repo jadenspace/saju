@@ -126,7 +126,7 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
           </div>
         </div>
         <p>
-          {data.birthDate} {data.birthTime} {data.useTrueSolarTime ? '(진태양시)' : '(표준시)'} {data.gender === 'male' ? '남' : '여'}
+          {data.birthDate} {data.birthTime} {data.useTrueSolarTime ? '(-30)' : ''} {data.gender === 'male' ? '남' : '여'}
         </p>
       </div>
       <div className={styles.pillarsContainer}>

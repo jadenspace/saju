@@ -1,11 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { Input } from '@/shared/ui/Input';
 import { Button } from '@/shared/ui/Button';
 import styles from './SajuForm.module.css';
 import KoreanLunarCalendar from 'korean-lunar-calendar';
+
+// 로컬스토리지 키
+const STORAGE_KEY_TRUE_SOLAR_TIME = 'saju_useTrueSolarTime';
+const STORAGE_KEY_MIDNIGHT_MODE = 'saju_midnightMode';
 
 export const SajuForm = () => {
   const router = useRouter();
@@ -26,12 +30,42 @@ export const SajuForm = () => {
   const [error, setError] = useState<string>('');
   const [showSettings, setShowSettings] = useState(false);
 
+  // 초기 마운트 여부 추적
+  const isInitialMount = useRef(true);
+
+  // 로컬스토리지에서 설정 불러오기
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedUseTrueSolarTime = localStorage.getItem(STORAGE_KEY_TRUE_SOLAR_TIME);
+      const savedMidnightMode = localStorage.getItem(STORAGE_KEY_MIDNIGHT_MODE);
+
+      setFormData(prev => ({
+        ...prev,
+        useTrueSolarTime: savedUseTrueSolarTime !== null ? savedUseTrueSolarTime === 'true' : true,
+        midnightMode: (savedMidnightMode as 'early' | 'late') || 'early',
+      }));
+    }
+  }, []);
+
+  // 설정 변경 시 로컬스토리지에 저장 (초기 마운트 시 제외)
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(STORAGE_KEY_TRUE_SOLAR_TIME, String(formData.useTrueSolarTime));
+      localStorage.setItem(STORAGE_KEY_MIDNIGHT_MODE, formData.midnightMode);
+    }
+  }, [formData.useTrueSolarTime, formData.midnightMode]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
     if (type === 'checkbox') {
       const checked = (e.target as HTMLInputElement).checked;
-      setFormData(prev => ({ 
-        ...prev, 
+      setFormData(prev => ({
+        ...prev,
         [name]: checked,
         // Clear hour/minute if unknown time is checked
         hour: name === 'unknownTime' && checked ? '' : prev.hour,
@@ -48,7 +82,7 @@ export const SajuForm = () => {
     e.preventDefault();
     setLoading(true);
     setError('');
-    
+
     let finalYear = formData.year;
     let finalMonth = formData.month;
     let finalDay = formData.day;
@@ -63,7 +97,7 @@ export const SajuForm = () => {
           parseInt(formData.day),
           false // isLeapMonth - 윤달 여부, 기본 false
         );
-        
+
         const solarDate = calendar.getSolarCalendar();
         finalYear = String(solarDate.year);
         finalMonth = String(solarDate.month);
@@ -74,7 +108,7 @@ export const SajuForm = () => {
         return;
       }
     }
-    
+
     // Construct query params with converted solar date
     const params = new URLSearchParams({
       year: finalYear,
@@ -127,7 +161,7 @@ export const SajuForm = () => {
           >
             ×
           </button>
-          
+
           {/* 썸머타임 - 필수 적용 안내 */}
           <div className={styles.field}>
             <div className={styles.labelWithTooltip}>
@@ -135,7 +169,7 @@ export const SajuForm = () => {
               <div className={styles.tooltip}>
                 <span className={styles.infoIcon}>ⓘ</span>
                 <div className={styles.tooltipContent}>
-                  <strong>본 사이트에서는 썸머타임 적용이 필수입니다.</strong><br/>
+                  <strong>본 사이트에서는 썸머타임 적용이 필수입니다.</strong><br />
                   1948-1960, 1987-1988년 한국에서 시행된 일광절약시간을 자동으로 반영합니다.
                 </div>
               </div>
@@ -152,7 +186,7 @@ export const SajuForm = () => {
               <div className={styles.tooltip}>
                 <span className={styles.infoIcon}>ⓘ</span>
                 <div className={styles.tooltipContent}>
-                  <strong>기본값: 진태양시</strong><br/>
+                  <strong>기본값: 진태양시</strong><br />
                   한국 중심 경도(127.5°)와 표준 경도(135°) 차이를 보정합니다. 대부분의 사주명리학자들이 권장합니다.
                 </div>
               </div>
@@ -190,10 +224,10 @@ export const SajuForm = () => {
               <div className={styles.tooltip}>
                 <span className={styles.infoIcon}>ⓘ</span>
                 <div className={styles.tooltipContent}>
-                  <strong>기본값: 야자시</strong><br/>
-                  23:00-24:00 출생 시 적용됩니다.<br/>
-                  • 야자시: 23시를 다음날 자시(00시)로 처리<br/>
-                  • 조자시: 23시를 당일 자시로 처리<br/>
+                  <strong>기본값: 야자시</strong><br />
+                  23:00-24:00 출생 시 적용됩니다.<br />
+                  • 야자시: 23시를 다음날 자시(00시)로 처리<br />
+                  • 조자시: 23시를 당일 자시로 처리<br />
                   전통 사주명리학에서는 야자시를 주로 사용합니다.
                 </div>
               </div>
@@ -273,7 +307,7 @@ export const SajuForm = () => {
           음력
         </label>
       </div>
-      
+
       <div className={`${styles.grid} ${styles.timeGrid}`}>
         <Input
           label="시"
