@@ -14,17 +14,19 @@ interface SajuCardProps {
 const PillarView = ({ pillar, label }: { pillar: Pillar; label: string }) => {
   // Check if pillar has meaningful values (not just placeholder "?")
   const hasValue = pillar.ganHan !== '?' && pillar.jiHan !== '?';
-  
+
   return (
     <div className={styles.pillar}>
       <div className={styles.tooltipContainer}>
         <div className={styles.label}>{label}</div>
-        <div 
-          className={styles.tooltip}
-          dangerouslySetInnerHTML={{ 
-            __html: (PILLAR_EXPLANATIONS[label] || '').replace(/\n/g, '<br/>') 
-          }}
-        ></div>
+        <div className={styles.tooltip}>
+          {(PILLAR_EXPLANATIONS[label] || '').split('\n').map((line, i, arr) => (
+            <span key={i}>
+              {line}
+              {i < arr.length - 1 && <br />}
+            </span>
+          ))}
+        </div>
       </div>
       <div className={styles.characterBox}>
         {/* Always render sipsin area for consistent spacing */}
@@ -33,12 +35,14 @@ const PillarView = ({ pillar, label }: { pillar: Pillar; label: string }) => {
             <div className={styles.sipsin}>
               {pillar.tenGodsGan}
             </div>
-            <div 
-              className={styles.tooltip}
-              dangerouslySetInnerHTML={{ 
-                __html: `${pillar.tenGodsGan} - ${SIPSIN_EXPLANATIONS[pillar.tenGodsGan] || ''}`.replace(/\n/g, '<br/>') 
-              }}
-            ></div>
+            <div className={styles.tooltip}>
+              {`${pillar.tenGodsGan} - ${SIPSIN_EXPLANATIONS[pillar.tenGodsGan] || ''}`.split('\n').map((line, i, arr) => (
+                <span key={i}>
+                  {line}
+                  {i < arr.length - 1 && <br />}
+                </span>
+              ))}
+            </div>
           </div>
         )}
         {!pillar.tenGodsGan && (
@@ -59,12 +63,14 @@ const PillarView = ({ pillar, label }: { pillar: Pillar; label: string }) => {
             <div className={styles.sipsin}>
               {pillar.tenGodsJi}
             </div>
-            <div 
-              className={styles.tooltip}
-              dangerouslySetInnerHTML={{ 
-                __html: `${pillar.tenGodsJi} - ${SIPSIN_EXPLANATIONS[pillar.tenGodsJi] || ''}`.replace(/\n/g, '<br/>') 
-              }}
-            ></div>
+            <div className={styles.tooltip}>
+              {`${pillar.tenGodsJi} - ${SIPSIN_EXPLANATIONS[pillar.tenGodsJi] || ''}`.split('\n').map((line, i, arr) => (
+                <span key={i}>
+                  {line}
+                  {i < arr.length - 1 && <br />}
+                </span>
+              ))}
+            </div>
           </div>
         )}
         {!pillar.tenGodsJi && (
@@ -82,14 +88,16 @@ const PillarView = ({ pillar, label }: { pillar: Pillar; label: string }) => {
             {pillar.jijanggan.map((char, i) => (
               <div key={i} className={styles.tooltipContainer}>
                 <span className={styles.jijangganChar}>{char}</span>
-                <div 
-                  className={styles.tooltip} 
-                  dangerouslySetInnerHTML={{ 
-                    __html: (pillar.jijangganTenGods?.[i] && SIPSIN_EXPLANATIONS[pillar.jijangganTenGods[i]] 
-                      ? `${pillar.jijangganTenGods[i]} - ${SIPSIN_EXPLANATIONS[pillar.jijangganTenGods[i]]}`
-                      : pillar.jijangganTenGods?.[i] || '').replace(/\n/g, '<br/>') 
-                  }}
-                ></div>
+                <div className={styles.tooltip}>
+                  {(pillar.jijangganTenGods?.[i] && SIPSIN_EXPLANATIONS[pillar.jijangganTenGods[i]]
+                    ? `${pillar.jijangganTenGods[i]} - ${SIPSIN_EXPLANATIONS[pillar.jijangganTenGods[i]]}`
+                    : pillar.jijangganTenGods?.[i] || '').split('\n').map((line, j, arr) => (
+                      <span key={j}>
+                        {line}
+                        {j < arr.length - 1 && <br />}
+                      </span>
+                    ))}
+                </div>
               </div>
             ))}
           </div>
@@ -108,12 +116,14 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
       <div className={styles.header}>
         <div className={styles.tooltipContainer}>
           <h2>사주팔자 (四柱八字)</h2>
-          <div 
-            className={styles.tooltip}
-            dangerouslySetInnerHTML={{ 
-              __html: SAJU_PALJA_EXPLANATION.replace(/\n/g, '<br/>') 
-            }}
-          ></div>
+          <div className={styles.tooltip}>
+            {SAJU_PALJA_EXPLANATION.split('\n').map((line, i, arr) => (
+              <span key={i}>
+                {line}
+                {i < arr.length - 1 && <br />}
+              </span>
+            ))}
+          </div>
         </div>
         <p>
           {data.birthDate} {data.birthTime} {data.useTrueSolarTime ? '(진태양시)' : '(표준시)'} {data.gender === 'male' ? '남' : '여'}
@@ -125,18 +135,20 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
         <PillarView pillar={data.month} label="월주" />
         <PillarView pillar={data.year} label="년주" />
       </div>
-      
+
       {/* Daeun Section */}
       <div className={styles.daeunSection}>
         <div className={styles.daeunHeader}>
           <div className={styles.tooltipContainer}>
             <h3>대운 (大運)</h3>
-            <div 
-              className={styles.tooltip}
-              dangerouslySetInnerHTML={{ 
-                __html: DAEUN_EXPLANATION.replace(/\n/g, '<br/>') 
-              }}
-            ></div>
+            <div className={styles.tooltip}>
+              {DAEUN_EXPLANATION.split('\n').map((line, i, arr) => (
+                <span key={i}>
+                  {line}
+                  {i < arr.length - 1 && <br />}
+                </span>
+              ))}
+            </div>
           </div>
           <span className={styles.daeunDirection}>
             {data.daeunDirection === 'forward' ? '순행 ▶' : '역행 ◀'}
@@ -160,7 +172,7 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
 
       {/* Analysis Buttons */}
       <div className={styles.analysisButtons}>
-        <button 
+        <button
           className={clsx(styles.analysisButton, showIlju && styles.active)}
           onClick={() => {
             setShowIlju(!showIlju);
@@ -169,7 +181,7 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
         >
           일주 분석
         </button>
-        <button 
+        <button
           className={clsx(styles.analysisButton, showOhaeng && styles.active)}
           onClick={() => {
             setShowOhaeng(!showOhaeng);
