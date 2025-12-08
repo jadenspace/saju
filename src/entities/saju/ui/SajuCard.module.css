@@ -69,11 +69,11 @@
     gap: 0.75rem;
     padding: 0.5rem;
   }
-  
+
   .legendItem {
     font-size: 0.65rem;
   }
-  
+
   .legendIcon {
     width: 1rem;
     height: 1rem;
@@ -114,9 +114,11 @@
   font-weight: bold;
   line-height: 1;
   font-family: "Noto Serif KR", serif;
-  color: #fff; /* 흰색 글자 */
+  color: #fff;
+  /* 흰색 글자 */
   z-index: 1;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4); /* 밝은 배경에서의 가독성 확보 */
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  /* 밝은 배경에서의 가독성 확보 */
 }
 
 .characterContainer {
@@ -148,27 +150,32 @@
 
 /* Ohaeng Background Colors - Synced with OhaengAnalysis */
 .wood {
-  background-color: #4ade80; /* Green */
+  background-color: #4ade80;
+  /* Green */
   border: 1px solid #22c55e;
 }
 
 .fire {
-  background-color: #f87171; /* Red */
+  background-color: #f87171;
+  /* Red */
   border: 1px solid #ef4444;
 }
 
 .earth {
-  background-color: #fbbf24; /* Yellow/Gold */
+  background-color: #fbbf24;
+  /* Yellow/Gold */
   border: 1px solid #f59e0b;
 }
 
 .metal {
-  background-color: #9ca3af; /* Gray 400 - e5e7eb is too light for white text, using slightly darker gray */
+  background-color: #9ca3af;
+  /* Gray 400 - e5e7eb is too light for white text, using slightly darker gray */
   border: 1px solid #6b7280;
 }
 
 .water {
-  background-color: #1f2937; /* Black/Dark Gray */
+  background-color: #1f2937;
+  /* Black/Dark Gray */
   border: 1px solid #374151;
   color: #ffffff;
 }
@@ -194,7 +201,7 @@
   .pillarsContainer {
     gap: 0.5rem;
   }
-  
+
   .character {
     font-size: 2rem;
   }
@@ -205,7 +212,8 @@
   color: var(--foreground);
   opacity: 0.8;
   margin-bottom: 0.2rem;
-  height: 1.2rem; /* Fixed height for alignment */
+  height: 1.2rem;
+  /* Fixed height for alignment */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -218,7 +226,8 @@
   margin-top: 0.75rem;
   padding-top: 0.5rem;
   width: 100%;
-  border-top: 1px solid rgba(255, 255, 255, 0.1); /* 구분선 추가 */
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  /* 구분선 추가 */
 }
 
 .jijangganRow {
@@ -233,14 +242,17 @@
   font-size: 0.6rem;
   color: var(--foreground);
   opacity: 0.5;
-  width: 2rem; /* Fixed width for alignment */
+  width: 2rem;
+  /* Fixed width for alignment */
   text-align: right;
 }
 
 .jijangganChar {
-  font-size: 0.65rem; /* 더 작게 */
+  font-size: 0.65rem;
+  /* 더 작게 */
   color: var(--foreground);
-  opacity: 0.45; /* 더 흐리게 */
+  opacity: 0.45;
+  /* 더 흐리게 */
   width: 1rem;
   text-align: center;
 }
@@ -259,6 +271,7 @@
   bottom: 100%;
   left: 50%;
   transform: translateX(-50%);
+  /* Default horizontal centering */
   margin-bottom: 0.5rem;
   padding: 0.5rem 0.75rem;
   background: rgba(0, 0, 0, 0.9);
@@ -270,6 +283,38 @@
   pointer-events: none;
   transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Mobile Tooltip Optimization */
+@media (max-width: 480px) {
+  .tooltip {
+    position: fixed;
+    /* Fix to viewport */
+    top: 50vh !important;
+    /* Center vertically */
+    left: 50% !important;
+    /* Center horizontally */
+    bottom: auto;
+    /* Override default bottom positioning */
+    transform: translate(-50%, -50%) !important;
+    /* Center alignment */
+    width: 85vw;
+    max-width: 300px;
+    white-space: normal;
+    /* Allow wrapping */
+    text-align: center;
+    margin: 0;
+    /* Combine drop shadow and dimmed background overlay using spread radius */
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8), 0 0 0 9999px rgba(0, 0, 0, 0.55) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    z-index: 9999 !important;
+    /* Highest z-index */
+  }
+
+  /* Hide the arrow on mobile since it's centered */
+  .tooltip::after {
+    display: none;
+  }
 }
 
 .tooltip::after {
@@ -363,12 +408,12 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 0.5rem;
   }
-  
+
   .daeunPeriod {
     padding: 0.5rem;
     min-width: 80px;
   }
-  
+
   .daeunHan {
     font-size: 1.2rem;
   }
@@ -519,5 +564,3 @@
     font-size: 0.8rem;
   }
 }
-
-
