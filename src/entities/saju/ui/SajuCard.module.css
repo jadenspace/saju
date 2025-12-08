@@ -30,6 +30,57 @@
   font-size: 0.9rem;
 }
 
+/* Legend styles */
+.legend {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  color: var(--foreground);
+  opacity: 0.7;
+}
+
+.legendIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 0.25rem;
+  font-size: 0.65rem;
+  font-weight: bold;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+@media (max-width: 480px) {
+  .legend {
+    gap: 0.75rem;
+    padding: 0.5rem;
+  }
+  
+  .legendItem {
+    font-size: 0.65rem;
+  }
+  
+  .legendIcon {
+    width: 1rem;
+    height: 1rem;
+    font-size: 0.55rem;
+  }
+}
+
 .pillarsContainer {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -162,10 +213,12 @@
 
 .jijanggan {
   display: flex;
-  justify-content: center; /* Center horizontally for row direction */
-  gap: 0.2rem;
-  margin-top: 0.5rem;
+  justify-content: center;
+  gap: 0.15rem;
+  margin-top: 0.75rem;
+  padding-top: 0.5rem;
   width: 100%;
+  border-top: 1px solid rgba(255, 255, 255, 0.1); /* 구분선 추가 */
 }
 
 .jijangganRow {
@@ -185,9 +238,9 @@
 }
 
 .jijangganChar {
-  font-size: 0.8rem;
+  font-size: 0.65rem; /* 더 작게 */
   color: var(--foreground);
-  opacity: 0.7;
+  opacity: 0.45; /* 더 흐리게 */
   width: 1rem;
   text-align: center;
 }

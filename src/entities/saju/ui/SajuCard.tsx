@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { useState } from 'react';
-import { CHEONGAN_EXPLANATIONS, JIJI_EXPLANATIONS, SIPSIN_EXPLANATIONS } from '../../../shared/lib/saju/SajuExplanations';
+import { CHEONGAN_EXPLANATIONS, JIJI_EXPLANATIONS, SIPSIN_EXPLANATIONS, PILLAR_EXPLANATIONS, DAEUN_EXPLANATION, SAJU_PALJA_EXPLANATION } from '../../../shared/lib/saju/SajuExplanations';
 import { Pillar, SajuData } from '../model/types';
 import { IljuAnalysis } from './IljuAnalysis';
 import { OhaengAnalysis } from './OhaengAnalysis';
@@ -17,12 +17,33 @@ const PillarView = ({ pillar, label }: { pillar: Pillar; label: string }) => {
   
   return (
     <div className={styles.pillar}>
-      <div className={styles.label}>{label}</div>
+      <div className={styles.tooltipContainer}>
+        <div className={styles.label}>{label}</div>
+        <div 
+          className={styles.tooltip}
+          dangerouslySetInnerHTML={{ 
+            __html: (PILLAR_EXPLANATIONS[label] || '').replace(/\n/g, '<br/>') 
+          }}
+        ></div>
+      </div>
       <div className={styles.characterBox}>
         {/* Always render sipsin area for consistent spacing */}
-        <div className={styles.sipsin}>
-          {pillar.tenGodsGan || ''}
-        </div>
+        {pillar.tenGodsGan && (
+          <div className={styles.tooltipContainer}>
+            <div className={styles.sipsin}>
+              {pillar.tenGodsGan}
+            </div>
+            <div 
+              className={styles.tooltip}
+              dangerouslySetInnerHTML={{ 
+                __html: `${pillar.tenGodsGan} - ${SIPSIN_EXPLANATIONS[pillar.tenGodsGan] || ''}`.replace(/\n/g, '<br/>') 
+              }}
+            ></div>
+          </div>
+        )}
+        {!pillar.tenGodsGan && (
+          <div className={styles.sipsin}></div>
+        )}
         <div className={hasValue ? styles.tooltipContainer : ''}>
           <div className={clsx(styles.characterContainer, styles[pillar.ganElement || 'unknown'])}>
             <div className={styles.character}>{pillar.ganHan}</div>
@@ -33,9 +54,22 @@ const PillarView = ({ pillar, label }: { pillar: Pillar; label: string }) => {
       </div>
       <div className={styles.characterBox}>
         {/* Always render sipsin area for consistent spacing */}
-        <div className={styles.sipsin}>
-          {pillar.tenGodsJi || ''}
-        </div>
+        {pillar.tenGodsJi && (
+          <div className={styles.tooltipContainer}>
+            <div className={styles.sipsin}>
+              {pillar.tenGodsJi}
+            </div>
+            <div 
+              className={styles.tooltip}
+              dangerouslySetInnerHTML={{ 
+                __html: `${pillar.tenGodsJi} - ${SIPSIN_EXPLANATIONS[pillar.tenGodsJi] || ''}`.replace(/\n/g, '<br/>') 
+              }}
+            ></div>
+          </div>
+        )}
+        {!pillar.tenGodsJi && (
+          <div className={styles.sipsin}></div>
+        )}
         <div className={hasValue ? styles.tooltipContainer : ''}>
           <div className={clsx(styles.characterContainer, styles[pillar.jiElement || 'unknown'])}>
             <div className={styles.character}>{pillar.jiHan}</div>
@@ -72,7 +106,15 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
   return (
     <div className={clsx(styles.card, className)}>
       <div className={styles.header}>
-        <h2>사주팔자 (四柱八字)</h2>
+        <div className={styles.tooltipContainer}>
+          <h2>사주팔자 (四柱八字)</h2>
+          <div 
+            className={styles.tooltip}
+            dangerouslySetInnerHTML={{ 
+              __html: SAJU_PALJA_EXPLANATION.replace(/\n/g, '<br/>') 
+            }}
+          ></div>
+        </div>
         <p>
           {data.birthDate} {data.birthTime} {data.useTrueSolarTime ? '(진태양시)' : '(표준시)'} {data.gender === 'male' ? '남' : '여'}
         </p>
@@ -87,7 +129,15 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
       {/* Daeun Section */}
       <div className={styles.daeunSection}>
         <div className={styles.daeunHeader}>
-          <h3>대운 (大運)</h3>
+          <div className={styles.tooltipContainer}>
+            <h3>대운 (大運)</h3>
+            <div 
+              className={styles.tooltip}
+              dangerouslySetInnerHTML={{ 
+                __html: DAEUN_EXPLANATION.replace(/\n/g, '<br/>') 
+              }}
+            ></div>
+          </div>
           <span className={styles.daeunDirection}>
             {data.daeunDirection === 'forward' ? '순행 ▶' : '역행 ◀'}
           </span>
