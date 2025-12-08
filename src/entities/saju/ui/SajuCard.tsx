@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { useState } from 'react';
-import { CHEONGAN_EXPLANATIONS, JIJI_EXPLANATIONS, SIPSIN_EXPLANATIONS, PILLAR_EXPLANATIONS, DAEUN_EXPLANATION, SAJU_PALJA_EXPLANATION } from '../../../shared/lib/saju/SajuExplanations';
+import { CHEONGAN_EXPLANATIONS, JIJI_EXPLANATIONS, SIPSIN_EXPLANATIONS, PILLAR_EXPLANATIONS, DAEUN_EXPLANATION, DAEUN_DIRECTION_EXPLANATION, SAJU_PALJA_EXPLANATION } from '../../../shared/lib/saju/SajuExplanations';
 import { Pillar, SajuData } from '../model/types';
 import { IljuAnalysis } from './IljuAnalysis';
 import { OhaengAnalysis } from './OhaengAnalysis';
@@ -150,9 +150,19 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
               ))}
             </div>
           </div>
-          <span className={styles.daeunDirection}>
-            {data.daeunDirection === 'forward' ? '순행 ▶' : '역행 ◀'}
-          </span>
+          <div className={styles.tooltipContainer}>
+            <span className={styles.daeunDirection}>
+              {data.daeunDirection === 'forward' ? '순행 ▶' : '역행 ◀'}
+            </span>
+            <div className={styles.tooltip}>
+              {DAEUN_DIRECTION_EXPLANATION.split('\n').map((line, i, arr) => (
+                <span key={i}>
+                  {line}
+                  {i < arr.length - 1 && <br />}
+                </span>
+              ))}
+            </div>
+          </div>
         </div>
         <div className={styles.daeunContainer}>
           {data.daeun.map((period, index) => (

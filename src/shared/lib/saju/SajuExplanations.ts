@@ -53,4 +53,6 @@ export const PILLAR_EXPLANATIONS: Record<string, string> = {
 // 대운 (Great Fortune Cycles)에 대한 설명
 export const DAEUN_EXPLANATION = '인생의 큰 흐름을 10년 단위로 보여주는 운세예요.\n마치 계절이 바뀌듯이, 대운이 바뀌면 삶의 분위기와 방향도 달라져요.\n각 대운의 천간지지를 보고 어떤 시기인지 파악할 수 있어요.';
 
+export const DAEUN_DIRECTION_EXPLANATION = '대운이 흘러가는 방향이에요.\n순행(▶): 월주에서 앞으로 나아가며 대운이 흐릅니다. 양(陽)의 기운으로 진취적이고 적극적인 삶의 흐름입니다.\n역행(◀): 월주에서 뒤로 돌아가며 대운이 흐릅니다. 음(陰)의 기운으로 내면적이고 성찰적인 삶의 흐름입니다.\n* 남자는 양년생(甲·丙·戊·庚·壬), 여자는 음년생(乙·丁·己·辛·癸)이면 순행합니다.';
+
 export const SAJU_PALJA_EXPLANATION = '태어난 년·월·일·시의 천간지지 8글자예요.\n이 8글자가 내 인생의 설계도이자 타고난 운명의 지도랍니다.\n각 기둥(년주·월주·일주·시주)은 인생의 다른 시기와 영역을 나타내요.';
