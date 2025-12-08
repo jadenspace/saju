@@ -14,11 +14,8 @@ const STORAGE_KEY_MIDNIGHT_MODE = 'saju_midnightMode';
 export const SajuForm = () => {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    year: '',
-    month: '',
-    day: '',
-    hour: '',
-    minute: '',
+    birthDate: '', // YYYYMMDD
+    birthTime: '', // HHMM
     gender: 'male',
     unknownTime: false,
     isLunar: false,
@@ -67,11 +64,14 @@ export const SajuForm = () => {
       setFormData(prev => ({
         ...prev,
         [name]: checked,
-        // Clear hour/minute if unknown time is checked
-        hour: name === 'unknownTime' && checked ? '' : prev.hour,
-        minute: name === 'unknownTime' && checked ? '' : prev.minute
+        // Clear birthTime if unknown time is checked
+        birthTime: name === 'unknownTime' && checked ? '' : prev.birthTime
       }));
     } else {
+      // Validate numeric input for date and time
+      if (name === 'birthDate' || name === 'birthTime') {
+        if (!/^\d*$/.test(value)) return;
+      }
       setFormData(prev => ({ ...prev, [name]: value }));
     }
     // Clear error when user makes changes
@@ -83,18 +83,55 @@ export const SajuForm = () => {
     setLoading(true);
     setError('');
 
-    let finalYear = formData.year;
-    let finalMonth = formData.month;
-    let finalDay = formData.day;
+    // Check Date format (YYYYMMDD)
+    if (formData.birthDate.length !== 8) {
+      setError('생년월일 8자리를 정확히 입력해주세요. (예: 19901225)');
+      setLoading(false);
+      return;
+    }
+
+    const year = parseInt(formData.birthDate.substring(0, 4));
+    const month = parseInt(formData.birthDate.substring(4, 6));
+    const day = parseInt(formData.birthDate.substring(6, 8));
+
+    if (month < 1 || month > 12 || day < 1 || day > 31) {
+      setError('유효하지 않은 날짜입니다.');
+      setLoading(false);
+      return;
+    }
+
+    // Check Time format (HHMM) if time is known
+    let hour = '0';
+    let minute = '0';
+
+    if (!formData.unknownTime) {
+      if (formData.birthTime.length !== 4) {
+        setError('출생시간 4자리를 정확히 입력해주세요. (예: 1430)');
+        setLoading(false);
+        return;
+      }
+      hour = String(parseInt(formData.birthTime.substring(0, 2)));
+      minute = String(parseInt(formData.birthTime.substring(2, 4)));
+
+      if (parseInt(hour) < 0 || parseInt(hour) > 23 || parseInt(minute) < 0 || parseInt(minute) > 59) {
+        setError('유효하지 않은 시간입니다.');
+        setLoading(false);
+        return;
+      }
+    }
+
+    let finalYear = String(year);
+    let finalMonth = String(month);
+    let finalDay = String(day);
 
     // Convert lunar to solar if isLunar is checked
     if (formData.isLunar) {
       try {
         const calendar = new KoreanLunarCalendar();
         calendar.setLunarDate(
-          parseInt(formData.year),
-          parseInt(formData.month),
-          parseInt(formData.day),
+          year,
+          month,
+          day,
           false // isLeapMonth - 윤달 여부, 기본 false
         );
 
@@ -114,8 +151,8 @@ export const SajuForm = () => {
       year: finalYear,
       month: finalMonth,
       day: finalDay,
-      hour: formData.unknownTime ? '0' : formData.hour,
-      minute: formData.unknownTime ? '0' : formData.minute,
+      hour: hour,
+      minute: minute,
       gender: formData.gender,
       unknownTime: String(formData.unknownTime),
       useTrueSolarTime: String(formData.useTrueSolarTime),
@@ -146,7 +183,6 @@ export const SajuForm = () => {
             <path d="M10 12.5C8.61929 12.5 7.5 11.3807 7.5 10C7.5 8.61929 8.61929 7.5 10 7.5C11.3807 7.5 12.5 8.61929 12.5 10C12.5 11.3807 11.3807 12.5 10 12.5Z" />
             <path d="M17.5 10C17.5 9.65833 17.4833 9.31667 17.4417 8.98333L19.2667 7.575C19.425 7.45 19.475 7.225 19.3833 7.04167L17.6417 4.125C17.55 3.94167 17.3333 3.875 17.15 3.93333L15.0083 4.69167C14.5583 4.35833 14.075 4.075 13.55 3.85L13.2083 1.61667C13.1833 1.41667 13.0083 1.25 12.7917 1.25H9.20833C8.99167 1.25 8.81667 1.41667 8.79167 1.61667L8.45 3.85C7.925 4.075 7.44167 4.35833 6.99167 4.69167L4.85 3.93333C4.675 3.86667 4.45 3.94167 4.35833 4.125L2.61667 7.04167C2.51667 7.225 2.575 7.45 2.73333 7.575L4.55833 8.98333C4.51667 9.31667 4.5 9.65833 4.5 10C4.5 10.3417 4.51667 10.6833 4.55833 11.0167L2.73333 12.425C2.575 12.55 2.525 12.775 2.61667 12.9583L4.35833 15.875C4.45 16.0583 4.66667 16.125 4.85 16.0667L6.99167 15.3083C7.44167 15.6417 7.925 15.925 8.45 16.15L8.79167 18.3833C8.81667 18.5833 8.99167 18.75 9.20833 18.75H12.7917C13.0083 18.75 13.1833 18.5833 13.2083 18.3833L13.55 16.15C14.075 15.925 14.5583 15.6417 15.0083 15.3083L17.15 16.0667C17.325 16.1333 17.55 16.0583 17.6417 15.875L19.3833 12.9583C19.475 12.775 19.425 12.55 19.2667 12.425L17.4417 11.0167C17.4833 10.6833 17.5 10.3417 17.5 10Z" />
           </svg>
-          <span>설정</span>
         </button>
       </div>
 
@@ -260,93 +296,62 @@ export const SajuForm = () => {
         </div>
       )}
 
-      <div className={`${styles.grid} ${styles.dateGrid}`}>
+      {/* Date Input */}
+      <div className={styles.inputGroup}>
+        <div className={styles.inputHeader}>
+          <label className={styles.inputLabel}>생년월일</label>
+          <label className={styles.checkboxLabel}>
+            <input
+              type="checkbox"
+              name="isLunar"
+              checked={formData.isLunar}
+              onChange={handleChange}
+            />
+            음력
+          </label>
+        </div>
         <Input
-          label="년"
-          name="year"
-          type="number"
-          placeholder="YYYY"
-          value={formData.year}
+          name="birthDate"
+          type="text"
+          inputMode="numeric"
+          placeholder="YYYYMMDD (예: 19901225)"
+          value={formData.birthDate}
           onChange={handleChange}
           required
-          min="1900"
-          max="2100"
-        />
-        <Input
-          label="월"
-          name="month"
-          type="number"
-          placeholder="MM"
-          value={formData.month}
-          onChange={handleChange}
-          required
-          min="1"
-          max="12"
-        />
-        <Input
-          label="일"
-          name="day"
-          type="number"
-          placeholder="DD"
-          value={formData.day}
-          onChange={handleChange}
-          required
-          min="1"
-          max="31"
+          maxLength={8}
+          className={styles.mainInput}
         />
       </div>
 
-      <div className={styles.checkboxField}>
-        <label className={styles.checkboxLabel}>
-          <input
-            type="checkbox"
-            name="isLunar"
-            checked={formData.isLunar}
-            onChange={handleChange}
-          />
-          음력
-        </label>
-      </div>
-
-      <div className={`${styles.grid} ${styles.timeGrid}`}>
+      {/* Time Input */}
+      <div className={styles.inputGroup}>
+        <div className={styles.inputHeader}>
+          <label className={styles.inputLabel}>태어난 시간</label>
+          <label className={styles.checkboxLabel}>
+            <input
+              type="checkbox"
+              name="unknownTime"
+              checked={formData.unknownTime}
+              onChange={handleChange}
+            />
+            시간 모름
+          </label>
+        </div>
         <Input
-          label="시"
-          name="hour"
-          type="number"
-          placeholder="HH (0-23)"
-          value={formData.hour}
+          name="birthTime"
+          type="text"
+          inputMode="numeric"
+          placeholder="HHMM (예: 1430)"
+          value={formData.birthTime}
           onChange={handleChange}
           required={!formData.unknownTime}
           disabled={formData.unknownTime}
-          min="0"
-          max="23"
-        />
-        <Input
-          label="분"
-          name="minute"
-          type="number"
-          placeholder="MM"
-          value={formData.minute}
-          onChange={handleChange}
-          required={!formData.unknownTime}
-          disabled={formData.unknownTime}
-          min="0"
-          max="59"
+          maxLength={4}
+          className={styles.mainInput}
         />
       </div>
 
-      <div className={styles.checkboxField}>
-        <label className={styles.checkboxLabel}>
-          <input
-            type="checkbox"
-            name="unknownTime"
-            checked={formData.unknownTime}
-            onChange={handleChange}
-          />
-          시간 모름
-        </label>
-      </div>
-
+      {/* Gender Selection */}
       <div className={styles.field}>
         <label className={styles.label}>성별</label>
         <div className={styles.radioGroup}>
