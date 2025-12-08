@@ -270,7 +270,7 @@ export const SajuForm = () => {
                   onChange={(e) => setFormData(prev => ({ ...prev, useTrueSolarTime: true }))}
                   disabled={formData.unknownTime}
                 />
-                진태양시 (경도보정)
+                진태양시 <br className={styles.mobileBr} />(경도보정)
               </label>
               <label className={styles.radioLabel}>
                 <input
@@ -281,7 +281,7 @@ export const SajuForm = () => {
                   onChange={(e) => setFormData(prev => ({ ...prev, useTrueSolarTime: false }))}
                   disabled={formData.unknownTime}
                 />
-                표준시 (KST)
+                표준시 <br className={styles.mobileBr} />(KST)
               </label>
             </div>
           </div>
@@ -311,7 +311,7 @@ export const SajuForm = () => {
                   onChange={(e) => setFormData(prev => ({ ...prev, midnightMode: 'early' as 'early' | 'late' }))}
                   disabled={formData.unknownTime}
                 />
-                야자시 (夜子時)
+                야자시 <br className={styles.mobileBr} />(夜子時)
               </label>
               <label className={styles.radioLabel}>
                 <input
@@ -322,7 +322,7 @@ export const SajuForm = () => {
                   onChange={(e) => setFormData(prev => ({ ...prev, midnightMode: 'late' as 'early' | 'late' }))}
                   disabled={formData.unknownTime}
                 />
-                조자시 (朝子時)
+                조자시 <br className={styles.mobileBr} />(朝子時)
               </label>
             </div>
           </div>

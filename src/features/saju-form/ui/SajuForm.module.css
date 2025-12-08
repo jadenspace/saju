@@ -261,6 +261,10 @@
   pointer-events: none;
 }
 
+.mobileBr {
+  display: none;
+}
+
 .tooltip:hover .tooltipContent {
   visibility: visible;
   opacity: 1;
@@ -334,5 +338,9 @@
 
   .infoIcon {
     display: none !important;
+  }
+
+  .mobileBr {
+    display: inline;
   }
 }
