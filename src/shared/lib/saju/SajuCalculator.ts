@@ -2,11 +2,31 @@ import { Lunar, Solar } from 'lunar-javascript';
 import { DaeunPeriod, Pillar, SajuData } from '../../../entities/saju/model/types';
 
 export class SajuCalculator {
-  static calculate(year: number, month: number, day: number, hour: number, minute: number, gender: 'male' | 'female' = 'male', unknownTime: boolean = false): SajuData {
-    // Apply Korea timezone correction
-    const correctedTime = this.applyKoreaTimezoneCorrection(year, month, day, hour, minute);
+  static calculate(year: number, month: number, day: number, hour: number, minute: number, gender: 'male' | 'female' = 'male', unknownTime: boolean = false, useTrueSolarTime: boolean = true, applyDST: boolean = true, midnightMode: 'early' | 'late' = 'early'): SajuData {
+    // Apply midnight mode (야자시/조자시) correction first
+    let adjustedDate = { year, month, day };
+    let adjustedTime = { hour, minute };
     
-    const solar = Solar.fromYmdHms(year, month, day, unknownTime ? 12 : correctedTime.hour, unknownTime ? 0 : correctedTime.minute, 0);
+    if (!unknownTime && midnightMode === 'early' && hour === 23) {
+      // 야자시: 23:00-23:59는 다음날 00:00-00:59로 처리
+      adjustedTime.hour = 0;
+      // Increment date
+      const date = new Date(year, month - 1, day);
+      date.setDate(date.getDate() + 1);
+      adjustedDate.year = date.getFullYear();
+      adjustedDate.month = date.getMonth() + 1;
+      adjustedDate.day = date.getDate();
+    }
+    
+    // Apply Korea timezone correction
+    let correctedTime = this.applyKoreaTimezoneCorrection(adjustedDate.year, adjustedDate.month, adjustedDate.day, adjustedTime.hour, adjustedTime.minute, applyDST);
+    
+    // Apply true solar time correction if enabled
+    if (useTrueSolarTime && !unknownTime) {
+      correctedTime = this.applyTrueSolarTimeCorrection(correctedTime.hour, correctedTime.minute);
+    }
+    
+    const solar = Solar.fromYmdHms(adjustedDate.year, adjustedDate.month, adjustedDate.day, unknownTime ? 12 : correctedTime.hour, unknownTime ? 0 : correctedTime.minute, 0);
     const lunar = solar.getLunar();
 
     // For Saju, we must use the Solar Terms (Jeolgi) based methods.
@@ -43,6 +63,9 @@ export class SajuCalculator {
       gender,
       solar: true,
       unknownTime,
+      useTrueSolarTime,
+      applyDST,
+      midnightMode,
       daeun,
       daeunDirection,
       ohaengDistribution,
@@ -50,8 +73,32 @@ export class SajuCalculator {
     };
   }
 
+  // Apply true solar time correction for Korea
+  // Korea standard timezone uses 135°E longitude, but Korea's center is approximately 127.5°E
+  // Difference: 7.5° × 4 min/° = 30 minutes
+  // True solar time = Standard time - 30 minutes
+  private static applyTrueSolarTimeCorrection(hour: number, minute: number): { hour: number; minute: number } {
+    const LONGITUDE_CORRECTION_MINUTES = 30; // Korea longitude difference correction
+    
+    let totalMinutes = hour * 60 + minute - LONGITUDE_CORRECTION_MINUTES;
+    
+    // Handle negative time (previous day)
+    if (totalMinutes < 0) {
+      totalMinutes += 24 * 60;
+    }
+    // Handle overflow (next day)
+    if (totalMinutes >= 24 * 60) {
+      totalMinutes -= 24 * 60;
+    }
+    
+    return {
+      hour: Math.floor(totalMinutes / 60),
+      minute: totalMinutes % 60,
+    };
+  }
+
   // Apply Korea timezone and DST corrections
-  private static applyKoreaTimezoneCorrection(year: number, month: number, day: number, hour: number, minute: number): { hour: number; minute: number } {
+  private static applyKoreaTimezoneCorrection(year: number, month: number, day: number, hour: number, minute: number, applyDST: boolean = true): { hour: number; minute: number } {
     const date = new Date(year, month - 1, day, hour, minute);
     let adjustment = 0; // in minutes
 
@@ -70,26 +117,28 @@ export class SajuCalculator {
       adjustment -= 30;
     }
 
-    // Daylight Saving Time periods (subtract 60 minutes)
-    const dstPeriods = [
-      { start: new Date(1948, 5, 1, 0, 0), end: new Date(1948, 8, 13, 0, 0) },
-      { start: new Date(1949, 3, 3, 0, 0), end: new Date(1949, 8, 11, 0, 0) },
-      { start: new Date(1950, 3, 1, 0, 0), end: new Date(1950, 8, 10, 0, 0) },
-      { start: new Date(1951, 4, 6, 0, 0), end: new Date(1951, 8, 9, 0, 0) },
-      { start: new Date(1955, 4, 5, 0, 0), end: new Date(1955, 8, 9, 0, 0) },
-      { start: new Date(1956, 4, 20, 0, 0), end: new Date(1956, 8, 30, 0, 0) },
-      { start: new Date(1957, 4, 5, 0, 0), end: new Date(1957, 8, 22, 0, 0) },
-      { start: new Date(1958, 4, 4, 0, 0), end: new Date(1958, 8, 21, 0, 0) },
-      { start: new Date(1959, 4, 3, 0, 0), end: new Date(1959, 8, 20, 0, 0) },
-      { start: new Date(1960, 4, 1, 0, 0), end: new Date(1960, 8, 18, 0, 0) },
-      { start: new Date(1987, 4, 10, 2, 0), end: new Date(1987, 9, 11, 3, 0) },
-      { start: new Date(1988, 4, 8, 2, 0), end: new Date(1988, 9, 9, 3, 0) },
-    ];
+    // Daylight Saving Time periods (subtract 60 minutes) - only if applyDST is true
+    if (applyDST) {
+      const dstPeriods = [
+        { start: new Date(1948, 5, 1, 0, 0), end: new Date(1948, 8, 13, 0, 0) },
+        { start: new Date(1949, 3, 3, 0, 0), end: new Date(1949, 8, 11, 0, 0) },
+        { start: new Date(1950, 3, 1, 0, 0), end: new Date(1950, 8, 10, 0, 0) },
+        { start: new Date(1951, 4, 6, 0, 0), end: new Date(1951, 8, 9, 0, 0) },
+        { start: new Date(1955, 4, 5, 0, 0), end: new Date(1955, 8, 9, 0, 0) },
+        { start: new Date(1956, 4, 20, 0, 0), end: new Date(1956, 8, 30, 0, 0) },
+        { start: new Date(1957, 4, 5, 0, 0), end: new Date(1957, 8, 22, 0, 0) },
+        { start: new Date(1958, 4, 4, 0, 0), end: new Date(1958, 8, 21, 0, 0) },
+        { start: new Date(1959, 4, 3, 0, 0), end: new Date(1959, 8, 20, 0, 0) },
+        { start: new Date(1960, 4, 1, 0, 0), end: new Date(1960, 8, 18, 0, 0) },
+        { start: new Date(1987, 4, 10, 2, 0), end: new Date(1987, 9, 11, 3, 0) },
+        { start: new Date(1988, 4, 8, 2, 0), end: new Date(1988, 9, 9, 3, 0) },
+      ];
 
-    for (const period of dstPeriods) {
-      if (date >= period.start && date <= period.end) {
-        adjustment -= 60;
-        break;
+      for (const period of dstPeriods) {
+        if (date >= period.start && date <= period.end) {
+          adjustment -= 60;
+          break;
+        }
       }
     }
 

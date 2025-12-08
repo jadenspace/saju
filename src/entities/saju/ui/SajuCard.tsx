@@ -73,13 +73,15 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
     <div className={clsx(styles.card, className)}>
       <div className={styles.header}>
         <h2>사주팔자 (四柱八字)</h2>
-        <p>{data.birthDate} {data.birthTime} {data.gender === 'male' ? '남' : '여'}</p>
+        <p>
+          {data.birthDate} {data.birthTime} {data.useTrueSolarTime ? '(진태양시)' : '(표준시)'} {data.gender === 'male' ? '남' : '여'}
+        </p>
       </div>
       <div className={styles.pillarsContainer}>
-        <PillarView pillar={data.hour} label="시주 (Hour)" />
-        <PillarView pillar={data.day} label="일주 (Day)" />
-        <PillarView pillar={data.month} label="월주 (Month)" />
-        <PillarView pillar={data.year} label="년주 (Year)" />
+        <PillarView pillar={data.hour} label="시주" />
+        <PillarView pillar={data.day} label="일주" />
+        <PillarView pillar={data.month} label="월주" />
+        <PillarView pillar={data.year} label="년주" />
       </div>
       
       {/* Daeun Section */}

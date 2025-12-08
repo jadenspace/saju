@@ -22,9 +22,12 @@ export const ResultPage = () => {
     const minute = Number(searchParams.get('minute'));
     const gender = searchParams.get('gender') as 'male' | 'female';
     const unknownTime = searchParams.get('unknownTime') === 'true';
+    const useTrueSolarTime = searchParams.get('useTrueSolarTime') !== 'false'; // default to true
+    const applyDST = searchParams.get('applyDST') !== 'false'; // default to true
+    const midnightMode = (searchParams.get('midnightMode') || 'early') as 'early' | 'late'; // default to 'early'
 
     if (year && month && day) {
-      const data = SajuCalculator.calculate(year, month, day, hour, minute, gender, unknownTime);
+      const data = SajuCalculator.calculate(year, month, day, hour, minute, gender, unknownTime, useTrueSolarTime, applyDST, midnightMode);
       setSajuData(data);
     }
   }, [searchParams]);
