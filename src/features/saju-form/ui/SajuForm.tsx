@@ -19,6 +19,7 @@ export const SajuForm = () => {
     gender: 'male',
     unknownTime: false,
     isLunar: false,
+    isLeapMonth: false,
     useTrueSolarTime: true,
     applyDST: true,
     midnightMode: 'early' as 'early' | 'late',
@@ -61,12 +62,21 @@ export const SajuForm = () => {
     const { name, value, type } = e.target;
     if (type === 'checkbox') {
       const checked = (e.target as HTMLInputElement).checked;
-      setFormData(prev => ({
-        ...prev,
-        [name]: checked,
+      setFormData(prev => {
+        const next = { ...prev, [name]: checked };
+
         // Clear birthTime if unknown time is checked
-        birthTime: name === 'unknownTime' && checked ? '' : prev.birthTime
-      }));
+        if (name === 'unknownTime' && checked) {
+          next.birthTime = '';
+        }
+
+        // Reset leap month if lunar is unchecked
+        if (name === 'isLunar' && !checked) {
+          next.isLeapMonth = false;
+        }
+
+        return next;
+      });
     } else {
       // Validate numeric input for date and time
       if (name === 'birthDate' || name === 'birthTime') {
@@ -128,19 +138,42 @@ export const SajuForm = () => {
     if (formData.isLunar) {
       try {
         const calendar = new KoreanLunarCalendar();
+
+        // 1. Attempt to set the date
         calendar.setLunarDate(
           year,
           month,
           day,
-          false // isLeapMonth - 윤달 여부, 기본 false
+          formData.isLeapMonth // 윤달 여부 반영
         );
 
+        // 2. Initial Conversion
         const solarDate = calendar.getSolarCalendar();
+
+        // 3. Reverse Check: Convert back to Lunar to verify validity
+        // If the library accepted a non-existent leap month, it might silently convert it to a normal month or a different date.
+        // We must verify if the result actually matches what we asked for.
+        calendar.setSolarDate(solarDate.year, solarDate.month, solarDate.day);
+        const resultLunar = calendar.getLunarCalendar();
+
+        if (formData.isLeapMonth && !resultLunar.intercalation) {
+          setError(`${year}년 ${month}월에는 윤달이 없습니다.`);
+          setLoading(false);
+          return;
+        }
+
+        // Additional check: Ensure dates match exactly (catches invalid days like Feb 30)
+        if (resultLunar.year !== year || resultLunar.month !== month || resultLunar.day !== day) {
+          setError('유효하지 않은 음력 날짜입니다.');
+          setLoading(false);
+          return;
+        }
+
         finalYear = String(solarDate.year);
         finalMonth = String(solarDate.month);
         finalDay = String(solarDate.day);
       } catch (err) {
-        setError('유효하지 않은 음력 날짜입니다. 날짜를 확인해주세요.');
+        setError('유효하지 않은 음력 날짜입니다. 윤달 여부와 날짜를 확인해주세요.');
         setLoading(false);
         return;
       }
@@ -300,21 +333,34 @@ export const SajuForm = () => {
       <div className={styles.inputGroup}>
         <div className={styles.inputHeader}>
           <label className={styles.inputLabel}>생년월일</label>
-          <label className={styles.checkboxLabel}>
-            <input
-              type="checkbox"
-              name="isLunar"
-              checked={formData.isLunar}
-              onChange={handleChange}
-            />
-            음력
-          </label>
+          <div className={styles.dateOptions}>
+            <label className={styles.checkboxLabel}>
+              <input
+                type="checkbox"
+                name="isLunar"
+                checked={formData.isLunar}
+                onChange={handleChange}
+              />
+              음력
+            </label>
+            {formData.isLunar && (
+              <label className={styles.checkboxLabel}>
+                <input
+                  type="checkbox"
+                  name="isLeapMonth"
+                  checked={formData.isLeapMonth}
+                  onChange={handleChange}
+                />
+                윤달
+              </label>
+            )}
+          </div>
         </div>
         <Input
           name="birthDate"
           type="text"
           inputMode="numeric"
-          placeholder="YYYYMMDD (예: 19901225)"
+          placeholder="19901225"
           value={formData.birthDate}
           onChange={handleChange}
           required
@@ -326,7 +372,7 @@ export const SajuForm = () => {
       {/* Time Input */}
       <div className={styles.inputGroup}>
         <div className={styles.inputHeader}>
-          <label className={styles.inputLabel}>태어난 시간</label>
+          <label className={styles.inputLabel}>출생시간</label>
           <label className={styles.checkboxLabel}>
             <input
               type="checkbox"
@@ -341,7 +387,7 @@ export const SajuForm = () => {
           name="birthTime"
           type="text"
           inputMode="numeric"
-          placeholder="HHMM (예: 1430)"
+          placeholder="2200"
           value={formData.birthTime}
           onChange={handleChange}
           required={!formData.unknownTime}
