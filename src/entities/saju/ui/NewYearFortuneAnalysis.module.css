@@ -1,9 +1,9 @@
 .container {
   margin-top: 2rem;
   padding: 1.5rem;
-  background-color: #f8f9fa;
+  background-color: var(--secondary);
   border-radius: 12px;
-  border: 1px solid #e9ecef;
+  border: 1px solid var(--border);
 }
 
 .header {
@@ -14,12 +14,12 @@
 .header h3 {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #343a40;
+  color: var(--foreground);
   margin-bottom: 0.5rem;
 }
 
 .subtitle {
-  color: #868e96;
+  color: #aaa;
   font-size: 1rem;
 }
 
@@ -29,9 +29,9 @@
   gap: 1.5rem;
   margin-bottom: 2rem;
   padding: 1.5rem;
-  background-color: white;
+  background-color: rgba(255, 255, 255, 0.03);
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  border: 1px solid var(--border);
 }
 
 .scoreCircle {
@@ -42,9 +42,10 @@
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background-color: #e7f5ff;
-  color: #1971c2;
+  background-color: rgba(212, 175, 55, 0.1);
+  color: var(--primary);
   flex-shrink: 0;
+  border: 1px solid rgba(212, 175, 55, 0.3);
 }
 
 .scoreLabel {
@@ -64,14 +65,14 @@
 .summaryText {
   font-size: 1.1rem;
   font-weight: 600;
-  color: #495057;
+  color: var(--foreground);
   margin-bottom: 0.5rem;
 }
 
 .detailList {
   list-style-type: disc;
   padding-left: 1.2rem;
-  color: #495057;
+  color: #ccc;
   font-size: 0.95rem;
   line-height: 1.5;
 }
@@ -83,10 +84,10 @@
 }
 
 .card {
-  background-color: white;
+  background-color: rgba(255, 255, 255, 0.03);
   padding: 1.25rem;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  border: 1px solid var(--border);
 }
 
 .cardHeader {
@@ -102,7 +103,7 @@
 
 .cardTitle {
   font-weight: 700;
-  color: #343a40;
+  color: var(--foreground);
   flex: 1;
 }
 
@@ -114,22 +115,25 @@
 }
 
 .high {
-  background-color: #d3f9d8;
-  color: #2b8a3e;
+  background-color: rgba(43, 138, 62, 0.2);
+  color: #69db7c;
+  border: 1px solid rgba(43, 138, 62, 0.3);
 }
 
 .medium {
-  background-color: #fff3bf;
-  color: #f08c00;
+  background-color: rgba(240, 140, 0, 0.2);
+  color: #ffd43b;
+  border: 1px solid rgba(240, 140, 0, 0.3);
 }
 
 .low {
-  background-color: #ffe3e3;
-  color: #c92a2a;
+  background-color: rgba(201, 42, 42, 0.2);
+  color: #ff8787;
+  border: 1px solid rgba(201, 42, 42, 0.3);
 }
 
 .cardSummary {
-  color: #495057;
+  color: #ccc;
   font-size: 0.95rem;
   line-height: 1.4;
 }
