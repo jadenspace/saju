@@ -108,7 +108,13 @@ export const calculateNewYearFortune = (sajuData: SajuData): NewYearFortune => {
 
   // 2. Generate Overall Fortune
   const overallScore = 75; // Placeholder calculation
-  const overallSummary = `${CURRENT_YEAR}년 병오년(丙午年)은 당신에게 ${josa(yearGanTenGod, '와/과')} ${yearJiTenGod}의 기운이 들어오는 해입니다.`;
+  
+  let overallSummary = '';
+  if (yearGanTenGod === yearJiTenGod) {
+    overallSummary = `${CURRENT_YEAR}년 병오년(丙午年)은 당신에게 강한 ${yearGanTenGod}의 기운이 들어오는 해입니다.`;
+  } else {
+    overallSummary = `${CURRENT_YEAR}년 병오년(丙午年)은 당신에게 ${josa(yearGanTenGod, '와/과')} ${yearJiTenGod}의 기운이 들어오는 해입니다.`;
+  }
   
   // 3. Generate Specific Fortunes
   // Wealth: Related to '재성' (Wealth Star)
