@@ -1,4 +1,5 @@
 import { SajuData } from '../../../entities/saju/model/types';
+import { josa } from 'es-hangul';
 
 // Local Type Definitions
 export type Cheongan = '甲' | '乙' | '丙' | '丁' | '戊' | '己' | '庚' | '辛' | '壬' | '癸';
@@ -107,7 +108,7 @@ export const calculateNewYearFortune = (sajuData: SajuData): NewYearFortune => {
 
   // 2. Generate Overall Fortune
   const overallScore = 75; // Placeholder calculation
-  const overallSummary = `${CURRENT_YEAR}년 병오년(丙午年)은 당신에게 ${yearGanTenGod}와 ${yearJiTenGod}의 기운이 들어오는 해입니다.`;
+  const overallSummary = `${CURRENT_YEAR}년 병오년(丙午年)은 당신에게 ${josa(yearGanTenGod, '와/과')} ${yearJiTenGod}의 기운이 들어오는 해입니다.`;
   
   // 3. Generate Specific Fortunes
   // Wealth: Related to '재성' (Wealth Star)
@@ -134,8 +135,8 @@ export const calculateNewYearFortune = (sajuData: SajuData): NewYearFortune => {
       score: overallScore,
       summary: overallSummary,
       details: [
-        `천간 ${YEAR_GAN}(화)가 당신의 일간 ${dayMaster}에게 미치는 영향: ${yearGanTenGod}`,
-        `지지 ${YEAR_JI}(화)가 당신의 일간 ${dayMaster}에게 미치는 영향: ${yearJiTenGod}`,
+        `천간 ${josa(YEAR_GAN + '(화)', '이/가')} 당신의 일간 ${dayMaster}에게 미치는 영향: ${yearGanTenGod}`,
+        `지지 ${josa(YEAR_JI + '(화)', '이/가')} 당신의 일간 ${dayMaster}에게 미치는 영향: ${yearJiTenGod}`,
         hasJa ? '자오충(子午沖)이 발생하여 변화와 이동수가 있을 수 있습니다.' : '지지와의 특별한 충돌 없이 무난한 흐름입니다.'
       ]
     },
