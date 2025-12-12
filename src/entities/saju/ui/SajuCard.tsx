@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { CHEONGAN_EXPLANATIONS, JIJI_EXPLANATIONS, SIPSIN_EXPLANATIONS, PILLAR_EXPLANATIONS, DAEUN_EXPLANATION, DAEUN_DIRECTION_EXPLANATION, SAJU_PALJA_EXPLANATION } from '../../../shared/lib/saju/SajuExplanations';
 import { Pillar, SajuData } from '../model/types';
 import { IljuAnalysis } from './IljuAnalysis';
+import { NewYearFortuneAnalysis } from './NewYearFortuneAnalysis';
 import { OhaengAnalysis } from './OhaengAnalysis';
 import styles from './SajuCard.module.css';
 
@@ -110,6 +111,7 @@ const PillarView = ({ pillar, label }: { pillar: Pillar; label: string }) => {
 export const SajuCard = ({ data, className }: SajuCardProps) => {
   const [showOhaeng, setShowOhaeng] = useState(false);
   const [showIlju, setShowIlju] = useState(false);
+  const [showNewYear, setShowNewYear] = useState(false);
 
   return (
     <div className={clsx(styles.card, className)}>
@@ -183,10 +185,21 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
       {/* Analysis Buttons */}
       <div className={styles.analysisButtons}>
         <button
+          className={clsx(styles.analysisButton, showNewYear && styles.active)}
+          onClick={() => {
+            setShowNewYear(!showNewYear);
+            setShowIlju(false);
+            setShowOhaeng(false);
+          }}
+        >
+          신년운세
+        </button>
+        <button
           className={clsx(styles.analysisButton, showIlju && styles.active)}
           onClick={() => {
             setShowIlju(!showIlju);
             setShowOhaeng(false);
+            setShowNewYear(false);
           }}
         >
           일주 분석
@@ -196,6 +209,7 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
           onClick={() => {
             setShowOhaeng(!showOhaeng);
             setShowIlju(false);
+            setShowNewYear(false);
           }}
         >
           오행 분석
@@ -203,6 +217,7 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
       </div>
 
       {/* Analysis Sections */}
+      {showNewYear && <NewYearFortuneAnalysis data={data} />}
       {showOhaeng && <OhaengAnalysis data={data} />}
       {showIlju && <IljuAnalysis data={data} />}
     </div>

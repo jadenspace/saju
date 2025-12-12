@@ -1,0 +1,150 @@
+.container {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  border: 1px solid #e9ecef;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.header h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #343a40;
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  color: #868e96;
+  font-size: 1rem;
+}
+
+.overallSection {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.scoreCircle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: #e7f5ff;
+  color: #1971c2;
+  flex-shrink: 0;
+}
+
+.scoreLabel {
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.scoreValue {
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.summaryBox {
+  flex: 1;
+}
+
+.summaryText {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 0.5rem;
+}
+
+.detailList {
+  list-style-type: disc;
+  padding-left: 1.2rem;
+  color: #495057;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.gridSection {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.card {
+  background-color: white;
+  padding: 1.25rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.icon {
+  font-size: 1.2rem;
+  margin-right: 0.5rem;
+}
+
+.cardTitle {
+  font-weight: 700;
+  color: #343a40;
+  flex: 1;
+}
+
+.scoreBadge {
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.high {
+  background-color: #d3f9d8;
+  color: #2b8a3e;
+}
+
+.medium {
+  background-color: #fff3bf;
+  color: #f08c00;
+}
+
+.low {
+  background-color: #ffe3e3;
+  color: #c92a2a;
+}
+
+.cardSummary {
+  color: #495057;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+@media (max-width: 600px) {
+  .overallSection {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .detailList {
+    text-align: left;
+  }
+
+  .gridSection {
+    grid-template-columns: 1fr;
+  }
+}
