@@ -22,7 +22,7 @@ export const SajuForm = () => {
     isLeapMonth: false,
     useTrueSolarTime: true,
     applyDST: true,
-    midnightMode: 'early' as 'early' | 'late',
+    midnightMode: 'late' as 'early' | 'late',
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>('');
@@ -40,7 +40,7 @@ export const SajuForm = () => {
       setFormData(prev => ({
         ...prev,
         useTrueSolarTime: savedUseTrueSolarTime !== null ? savedUseTrueSolarTime === 'true' : true,
-        midnightMode: (savedMidnightMode as 'early' | 'late') || 'early',
+        midnightMode: (savedMidnightMode as 'early' | 'late') || 'late',
       }));
     }
   }, []);
@@ -289,15 +289,14 @@ export const SajuForm = () => {
           {/* 자시구분 */}
           <div className={styles.field}>
             <div className={styles.labelWithTooltip}>
-              <label className={styles.label}>자시구분 (子時區分)</label>
+              <label className={styles.label}>야자시 (夜子時) 설정</label>
               <div className={styles.tooltip}>
                 <span className={styles.infoIcon}>ⓘ</span>
                 <div className={styles.tooltipContent}>
-                  <strong>기본값: 야자시</strong><br />
-                  23:00-24:00 출생 시 적용됩니다.<br />
-                  • 야자시: 23시를 다음날 자시(00시)로 처리<br />
-                  • 조자시: 23시를 당일 자시로 처리<br />
-                  전통 사주명리학에서는 야자시를 주로 사용합니다.
+                  <strong>기본값: 미적용</strong><br />
+                  {formData.useTrueSolarTime ? '진태양시(23:30~)' : '표준시(23:00~)'} 기준<br />
+                  • 적용: 23시부터 내일로 간주 (일주 변경)<br />
+                  • 미적용: 23시도 오늘로 간주 (일주 유지)
                 </div>
               </div>
             </div>
@@ -311,7 +310,7 @@ export const SajuForm = () => {
                   onChange={(e) => setFormData(prev => ({ ...prev, midnightMode: 'early' as 'early' | 'late' }))}
                   disabled={formData.unknownTime}
                 />
-                야자시 <br className={styles.mobileBr} />(夜子時)
+                야자시 적용
               </label>
               <label className={styles.radioLabel}>
                 <input
@@ -322,7 +321,7 @@ export const SajuForm = () => {
                   onChange={(e) => setFormData(prev => ({ ...prev, midnightMode: 'late' as 'early' | 'late' }))}
                   disabled={formData.unknownTime}
                 />
-                조자시 <br className={styles.mobileBr} />(朝子時)
+                야자시 미적용
               </label>
             </div>
           </div>

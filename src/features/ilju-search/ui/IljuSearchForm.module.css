@@ -1,0 +1,188 @@
+.form {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 2.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    border-radius: 1.5rem;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+}
+
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.label {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--foreground);
+}
+
+.select {
+    appearance: none;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    padding: 0.875rem 1rem;
+    font-size: 1rem;
+    color: var(--foreground);
+    width: 100%;
+    transition: all 0.2s;
+    cursor: pointer;
+    text-align: center;
+}
+
+.select:hover,
+.select:focus {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--primary);
+    outline: none;
+}
+
+.select option {
+    background: #1a1b26;
+    /* Dark theme simple fallback */
+    color: white;
+}
+
+.searchTypeGroup {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.searchTypeBtn {
+    flex: 1;
+    padding: 0.75rem;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    color: var(--foreground);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.searchTypeBtn:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.searchTypeBtn.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.row {
+    display: flex;
+    gap: 1rem;
+}
+
+.yearInput {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    padding: 0.75rem;
+    font-size: 1rem;
+    color: var(--foreground);
+    text-align: center;
+}
+
+.submitButton {
+    margin-top: 1rem;
+    width: 100%;
+    padding: 1rem;
+    border-radius: 0.75rem;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    border: none;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.submitButton:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.1);
+}
+
+.submitButton:disabled {
+    opacity: 0.7;
+    cursor: wait;
+}
+
+.resultsArea {
+    margin-top: 2rem;
+    max-height: 400px;
+    overflow-y: auto;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 1rem;
+    padding: 1rem;
+    border: 1px solid var(--border);
+}
+
+.resultsHeader {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 0.75rem;
+    margin-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+    color: var(--foreground);
+    opacity: 0.8;
+}
+
+.resultsList {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 0.75rem;
+}
+
+.resultItem {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    text-align: center;
+    font-size: 0.95rem;
+    color: var(--foreground);
+    transition: background 0.2s;
+}
+
+.resultItem:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.settingsSection {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.checkboxLabel {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    color: var(--foreground);
+}
+
+.helperText {
+    font-size: 0.8rem;
+    opacity: 0.6;
+    margin-left: 1.5rem;
+}
