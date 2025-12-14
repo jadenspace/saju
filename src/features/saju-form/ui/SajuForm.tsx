@@ -293,12 +293,10 @@ export const SajuForm = () => {
               <div className={styles.tooltip}>
                 <span className={styles.infoIcon}>ⓘ</span>
                 <div className={styles.tooltipContent}>
-                  <div className={styles.tooltipContent}>
-                    <strong>기본값: 야자시 미적용</strong><br />
-                    {formData.useTrueSolarTime ? '진태양시 기준 (23:30 ~ 00:30)' : '표준시 기준 (23:00 ~ 00:00)'} 사이 출생 시 처리 방식입니다.<br />
-                    • 적용: 자시 시작(23:xx)을 내일의 시작으로 보아 일주가 바뀝니다.<br />
-                    • 미적용: 자시 시작(23:xx)을 당일의 밤(야자시)으로 보아 일주가 유지됩니다.<br />
-                  </div>
+                  <strong>기본값: 미적용</strong><br />
+                  {formData.useTrueSolarTime ? '진태양시(23:30~)' : '표준시(23:00~)'} 기준<br />
+                  • 적용: 23시부터 내일로 간주 (일주 변경)<br />
+                  • 미적용: 23시도 오늘로 간주 (일주 유지)
                 </div>
               </div>
             </div>
