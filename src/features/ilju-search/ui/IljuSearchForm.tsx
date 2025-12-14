@@ -5,6 +5,27 @@ import styles from './IljuSearchForm.module.css';
 export const IljuSearchForm = () => {
     const { results, isSearching, search, GANS, JIS, ILJU_60 } = useIljuSearch();
 
+    // Helper maps for display
+    const GAN_MAP: Record<string, string> = {
+        '甲': '갑', '乙': '을', '丙': '병', '丁': '정', '戊': '무',
+        '己': '기', '庚': '경', '辛': '신', '壬': '임', '癸': '계'
+    };
+    const JI_MAP: Record<string, string> = {
+        '子': '자', '丑': '축', '寅': '인', '卯': '묘', '辰': '진', '巳': '사',
+        '午': '오', '未': '미', '申': '신', '酉': '유', '戌': '술', '亥': '해'
+    };
+
+    const getDisplayValue = (val: string, type: SearchType) => {
+        if (type === 'gan') return `${val}(${GAN_MAP[val] || ''})`;
+        if (type === 'ji') return `${val}(${JI_MAP[val] || ''})`;
+        if (type === 'ilju') {
+            const gan = val[0];
+            const ji = val[1];
+            return `${val}(${GAN_MAP[gan] || ''}${JI_MAP[ji] || ''})`;
+        }
+        return val;
+    };
+
     const [type, setType] = useState<SearchType>('ilju');
     const [value, setValue] = useState<string>(ILJU_60[0]);
     const [startYear, setStartYear] = useState(1950);
@@ -68,13 +89,13 @@ export const IljuSearchForm = () => {
                     onChange={(e) => setValue(e.target.value)}
                 >
                     {type === 'ilju' && ILJU_60.map(v => (
-                        <option key={v} value={v}>{v}</option>
+                        <option key={v} value={v}>{getDisplayValue(v, 'ilju')}</option>
                     ))}
                     {type === 'gan' && GANS.map(v => (
-                        <option key={v} value={v}>{v}</option>
+                        <option key={v} value={v}>{getDisplayValue(v, 'gan')}</option>
                     ))}
                     {type === 'ji' && JIS.map(v => (
-                        <option key={v} value={v}>{v}</option>
+                        <option key={v} value={v}>{getDisplayValue(v, 'ji')}</option>
                     ))}
                 </select>
             </div>
@@ -113,13 +134,13 @@ export const IljuSearchForm = () => {
                     진태양시 적용
                 </label>
 
-                <label className={styles.checkboxLabel} title="야자시(23:00~00:00) 설정. 체크 시 23시를 다음날 자시로 처리합니다.">
+                <label className={styles.checkboxLabel} title={`야자시 설정. 체크 시 자시 시작(${useTrueSolarTime ? '23:30' : '23:00'})을 다음날로 처리합니다.`}>
                     <input
                         type="checkbox"
                         checked={midnightMode === 'early'}
                         onChange={(e) => setMidnightMode(e.target.checked ? 'early' : 'late')}
                     />
-                    야자시 적용 (23시 이후 다음날 적용)
+                    야자시 적용 (자시 시작 {useTrueSolarTime ? '23:30' : '23:00'} 이후 다음날 적용)
                 </label>
                 <p className={styles.helperText}>
                     * 검색 결과는 해당 날짜의 대표 일주(정오 기준)를 표시합니다.
