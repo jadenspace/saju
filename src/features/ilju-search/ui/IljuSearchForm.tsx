@@ -12,7 +12,7 @@ export const IljuSearchForm = () => {
 
     // Settings (Visual/Passthrough only for now, as search is date-based)
     const [useTrueSolarTime, setUseTrueSolarTime] = useState(true);
-    const [midnightMode, setMidnightMode] = useState<'early' | 'late'>('early');
+    const [midnightMode, setMidnightMode] = useState<'early' | 'late'>('late');
 
     const handleSearch = () => {
         search({
@@ -113,13 +113,13 @@ export const IljuSearchForm = () => {
                     진태양시 적용
                 </label>
 
-                <label className={styles.checkboxLabel} title="야자시(23:00~00:00) 설정">
+                <label className={styles.checkboxLabel} title="야자시(23:00~00:00) 설정. 체크 시 23시를 다음날 자시로 처리합니다.">
                     <input
                         type="checkbox"
                         checked={midnightMode === 'early'}
                         onChange={(e) => setMidnightMode(e.target.checked ? 'early' : 'late')}
                     />
-                    조자시/야자시 구분 (23시 이후 다음날 적용)
+                    야자시 적용 (23시 이후 다음날 적용)
                 </label>
                 <p className={styles.helperText}>
                     * 검색 결과는 해당 날짜의 대표 일주(정오 기준)를 표시합니다.

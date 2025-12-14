@@ -24,7 +24,7 @@ export const ResultPage = () => {
     const unknownTime = searchParams.get('unknownTime') === 'true';
     const useTrueSolarTime = searchParams.get('useTrueSolarTime') !== 'false'; // default to true
     const applyDST = searchParams.get('applyDST') !== 'false'; // default to true
-    const midnightMode = (searchParams.get('midnightMode') || 'early') as 'early' | 'late'; // default to 'early'
+    const midnightMode = (searchParams.get('midnightMode') || 'late') as 'early' | 'late'; // default to 'late'
 
     if (year && month && day) {
       const data = SajuCalculator.calculate(year, month, day, hour, minute, gender, unknownTime, useTrueSolarTime, applyDST, midnightMode);

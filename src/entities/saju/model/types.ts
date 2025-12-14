@@ -35,7 +35,7 @@ export interface SajuData {
   unknownTime?: boolean;
   useTrueSolarTime?: boolean; // true if using true solar time (longitude correction)
   applyDST?: boolean; // true if applying daylight saving time correction
-  midnightMode?: 'early' | 'late'; // 'early' = 야자시 (23:00-24:00 is previous day), 'late' = 조자시 (00:00-01:00 is next day)
+  midnightMode?: 'early' | 'late'; // 'early' = 야자시 적용 (23:00-24:00 is next day), 'late' = 야자시 미적용 (23:00-24:00 is current day)
   daeun: DaeunPeriod[]; // Grand Fortune periods
   daeunDirection: 'forward' | 'backward'; // Direction of Daeun
   ohaengDistribution: {
