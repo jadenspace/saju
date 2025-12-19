@@ -1,10 +1,10 @@
 import { SajuData } from '../../../entities/saju/model/types';
 import { josa } from 'es-hangul';
+import { calculateSipsin } from './TenGod';
 
 // Local Type Definitions
 export type Cheongan = '甲' | '乙' | '丙' | '丁' | '戊' | '己' | '庚' | '辛' | '壬' | '癸';
-export type Jiji = '子' | '丑' | '寅' | '묘' | '진' | '사' | '오' | '미' | '신' | '유' | '술' | '해' | '卯' | '辰' | '巳' | '午' | '未' | '申' | '酉' | '戌' | '亥';
-export type Ohaeng = 'wood' | 'fire' | 'earth' | 'metal' | 'water';
+export type Jiji = '子' | '丑' | '寅' | '卯' | '辰' | '巳' | '午' | '未' | '申' | '酉' | '戌' | '亥';
 export type Sipsin = '비견' | '겁재' | '식신' | '상관' | '편재' | '정재' | '편관' | '정관' | '편인' | '정인';
 
 // Types for New Year's Fortune
@@ -40,71 +40,13 @@ const CURRENT_YEAR = 2026;
 const YEAR_GAN: Cheongan = '丙'; // Bing
 const YEAR_JI: Jiji = '午';     // Wu
 
-// Helper: Get Ohaeng for a character
-const getOhaeng = (char: string): Ohaeng | null => {
-  if (['甲', '乙', '寅', '卯'].includes(char)) return 'wood';
-  if (['丙', '丁', '巳', '午'].includes(char)) return 'fire';
-  if (['戊', '己', '辰', '戌', '丑', '未'].includes(char)) return 'earth';
-  if (['庚', '辛', '申', '酉'].includes(char)) return 'metal';
-  if (['壬', '癸', '亥', '子'].includes(char)) return 'water';
-  return null;
-};
-
-// Helper: Calculate relation (Ten Gods)
-const calculateTenGod = (dayMaster: Cheongan, target: Cheongan | Jiji): Sipsin => {
-  const dmOhaeng = getOhaeng(dayMaster);
-  const targetOhaeng = getOhaeng(target);
-  
-  if (!dmOhaeng || !targetOhaeng) return '비견'; // Fallback
-
-  // Same Ohaeng
-  if (dmOhaeng === targetOhaeng) return '비견'; 
-  
-  // DM generates Target (Wood -> Fire)
-  if (
-    (dmOhaeng === 'wood' && targetOhaeng === 'fire') ||
-    (dmOhaeng === 'fire' && targetOhaeng === 'earth') ||
-    (dmOhaeng === 'earth' && targetOhaeng === 'metal') ||
-    (dmOhaeng === 'metal' && targetOhaeng === 'water') ||
-    (dmOhaeng === 'water' && targetOhaeng === 'wood')
-  ) return '식신';
-
-  // Target generates DM (Water -> Wood)
-  if (
-    (targetOhaeng === 'wood' && dmOhaeng === 'fire') ||
-    (targetOhaeng === 'fire' && dmOhaeng === 'earth') ||
-    (targetOhaeng === 'earth' && dmOhaeng === 'metal') ||
-    (targetOhaeng === 'metal' && dmOhaeng === 'water') ||
-    (targetOhaeng === 'water' && dmOhaeng === 'wood')
-  ) return '편인';
-
-  // DM controls Target (Wood -> Earth)
-  if (
-    (dmOhaeng === 'wood' && targetOhaeng === 'earth') ||
-    (dmOhaeng === 'fire' && targetOhaeng === 'metal') ||
-    (dmOhaeng === 'earth' && targetOhaeng === 'water') ||
-    (dmOhaeng === 'metal' && targetOhaeng === 'wood') ||
-    (dmOhaeng === 'water' && targetOhaeng === 'fire')
-  ) return '편재';
-
-  // Target controls DM (Metal -> Wood)
-  if (
-    (targetOhaeng === 'wood' && dmOhaeng === 'earth') ||
-    (targetOhaeng === 'fire' && dmOhaeng === 'metal') ||
-    (targetOhaeng === 'earth' && dmOhaeng === 'water') ||
-    (targetOhaeng === 'metal' && dmOhaeng === 'wood') ||
-    (targetOhaeng === 'water' && dmOhaeng === 'fire')
-  ) return '편관';
-
-  return '비견';
-};
 
 export const calculateNewYearFortune = (sajuData: SajuData): NewYearFortune => {
   const dayMaster = sajuData.day.ganHan as Cheongan;
   
   // 1. Analyze Year Gan/Ji relation to Day Master
-  const yearGanTenGod = calculateTenGod(dayMaster, YEAR_GAN);
-  const yearJiTenGod = calculateTenGod(dayMaster, YEAR_JI);
+  const yearGanTenGod = calculateSipsin(dayMaster, YEAR_GAN);
+  const yearJiTenGod = calculateSipsin(dayMaster, YEAR_JI);
 
   // 2. Generate Overall Fortune
   const overallScore = 75; // Placeholder calculation

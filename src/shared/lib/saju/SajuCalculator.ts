@@ -1,5 +1,8 @@
 import { Lunar, Solar } from 'lunar-javascript';
 import { DaeunPeriod, Pillar, SajuData, Seun } from '../../../entities/saju/model/types';
+import { JIJANGGAN_MAP, JIJANGGAN_WEIGHTS } from './JijangganData';
+import { calculateSipsin, getOhaeng, getPolarity } from './TenGod';
+import { addMinutes, getKoreaHistoricalOffset, getLongitudeOffset } from './TimeCorrection';
 
 export class SajuCalculator {
   static calculate(year: number, month: number, day: number, hour: number, minute: number, gender: 'male' | 'female' = 'male', unknownTime: boolean = false, useTrueSolarTime: boolean = true, applyDST: boolean = true, midnightMode: 'early' | 'late' = 'late'): SajuData {
@@ -19,15 +22,14 @@ export class SajuCalculator {
 
     if (!unknownTime) {
       // 2a. Apply Korea Historical Timezone/DST Adjustments
-      // We calculate the minute offset first.
-      const timezoneOffset = this.getKoreaTimezoneOffset(current.year, current.month, current.day, current.hour, current.minute, applyDST);
-      current = this.addMinutes(current, timezoneOffset);
+      const timezoneOffset = getKoreaHistoricalOffset(current, applyDST);
+      current = addMinutes(current, timezoneOffset);
 
       // 2b. Apply True Solar Time (Longitude) Correction
-      // Standard KST is 135E. Korea Center is 127.5E. Diff is -30 mins.
-      // If useTrueSolarTime is true, we subtract 30 minutes from the Standard KST.
+      // Default: Seoul (127.5E) -> -30 mins
       if (useTrueSolarTime) {
-        current = this.addMinutes(current, -30);
+        const longitudeOffset = getLongitudeOffset(127.5);
+        current = addMinutes(current, longitudeOffset);
       }
     }
 
@@ -122,138 +124,23 @@ export class SajuCalculator {
     };
   }
 
-  private static addMinutes(date: { year: number, month: number, day: number, hour: number, minute: number }, minutes: number) {
-    // Use UTC to avoid local system DST issues
-    const d = new Date(Date.UTC(date.year, date.month - 1, date.day, date.hour, date.minute));
-    d.setUTCMinutes(d.getUTCMinutes() + minutes);
-    return {
-      year: d.getUTCFullYear(),
-      month: d.getUTCMonth() + 1,
-      day: d.getUTCDate(),
-      hour: d.getUTCHours(),
-      minute: d.getUTCMinutes()
-    };
-  }
 
   private static calculateRatHourGanZhi(dayStem: string): string {
     const map: Record<string, string> = {
       '甲': '甲子', '己': '甲子',
       '乙': '丙子', '庚': '丙子',
       '丙': '戊子', '辛': '戊子',
-      '丁': '庚子', '壬': '庚子',
+      '丁': '庚子', '壬': '庚자',
       '戊': '壬子', '癸': '壬子'
     };
     return map[dayStem] || '??';
   }
 
-  private static getKoreaTimezoneOffset(year: number, month: number, day: number, hour: number, minute: number, applyDST: boolean): number {
-    const date = new Date(year, month - 1, day, hour, minute);
-    let adjustment = 0; // in minutes
-
-    // UTC+08:30 periods (subtract 30 minutes to align to standard)
-    // Concept: We want to convert Historical Local Time -> Continuous Standard Time (UTC+9-ish base)?
-    // Actually, simply:
-    // If time was recorded in UTC+8.30, it is 30 mins BEHIND UTC+9.
-    // If we want "Standard Solar Time" at 135E (UTC+9), we need to add 30 mins to get to UTC+9?
-    // Wait. "True Solar Time" correction subtracts 30 mins from UTC+9.
-    // Let's stick to what the original code INTENDED, which was likely:
-    // "Remove artificial DST/Timezone shifts to get back to raw solar-like time".
-
-    // Original Code logic:
-    // 1908-1911 (UTC+8.30): "adjustment -= 30".
-    // 1954-1961 (UTC+8.30): "adjustment -= 30".
-    // This implies the input time is "Later" than it should be?
-    // If clock says 12:30 (UTC+8.30), it is 04:00 UTC.
-    // If clock says 13:00 (UTC+9), it is 04:00 UTC.
-    // So 12:30 (Old) == 13:00 (Standard).
-    // The user inputs 12:30. We want to treat it as... wait.
-    // We want the SOLAR time.
-    // Solar Noon at 127.5E is at 12:30 (UTC+9).
-    // Solar Noon at 127.5E is at 12:00 (UTC+8.5).
-    // So if the era is UTC+8.5, and user says 12:00. This IS Solar Noon.
-    // So NO adjustment needed for True Solar Time if time is UTC+8.5?
-    // The original code `applyTrueSolarTimeCorrection` ALWAYS Subtracts 30 mins.
-    // This assumes input is UTC+9.
-    // If input is UTC+8.5, we should ADD 30 mins to make it look like UTC+9, THEN subtract 30 mins?
-    // OR we just skip the subtract?
-
-    // Let's analyze: UseTrueSolarTime = true (Target: 127.5E Solar Time).
-    // Input: 12:00. Era: UTC+8.5.
-    // Actual absolute time: 03:30 UTC.
-    // Solar Noon at 127.5E (UTC+8.5) is 03:30 UTC.
-    // So 12:00 IS Solar Noon. Result should be 12:00.
-    // Current Code path:
-    // 1. adjustment -= 30 (from getOffset). Total = -30.
-    // 2. Add Total: 12:00 - 30m = 11:30.
-    // 3. True Solar: 11:30 - 30m = 11:00.
-    // This logic produces 11:00 for Solar Noon. WRONG.
-
-    // To get 12:00 (Solar Noon), we need net 0 change.
-    // If we kept `useTrueSolarTime` logic (-30) fixed:
-    // Then `timezoneOffset` must be +30.
-    // So for UTC+8.5 eras, we should ADD 30 mins to "normalize" to UTC+9?
-    // Yes. 12:00 (UTC+8.5) == 12:30 (UTC+9).
-    // So we treat it as 12:30 UTC+9.
-    // Then True Solar Time (-30) makes it 12:00. Correct.
-
-    // So for UTC+8.5 periods, adjustment should be +30.
-    // Original code had `-30`. This suggests original code was completely Wrong or I am misunderstanding.
-    // Let's assume the Original Code `applyKoreaTimezoneCorrection` was verifying "Sip-I-Ji" which are 2-hour blocks?
-    // Maybe it was trying to convert everything to UTC+9?
-
-    // Let's fix the adjustment values based on logic: "Normalize to KST (UTC+9)".
-
-    // 1908-1911 (UTC+8.5) -> Add 30 mins.
-    if (
-      (year === 1908 && month >= 4) ||
-      (year > 1908 && year < 1911) ||
-      (year === 1911 && month <= 12)
-    ) {
-      adjustment += 30; // 12:00 -> 12:30 KST
-    } else if (
-      (year === 1954 && month >= 3 && day >= 21) ||
-      (year > 1954 && year < 1961) ||
-      (year === 1961 && month <= 8 && day <= 9)
-    ) {
-      adjustment += 30;
-    }
-
-    // DST (Daylight Saving). Clock is advanced +1 hour.
-    // 13:00 DST == 12:00 Standard.
-    // We should SUBTRACT 60 mins to normalize.
-    // Original code: `adjustment -= 60`. This is CORRECT.
-
-    if (applyDST) {
-      const dstPeriods = [
-        { start: new Date(1948, 5, 1, 0, 0), end: new Date(1948, 8, 13, 0, 0) },
-        { start: new Date(1949, 3, 3, 0, 0), end: new Date(1949, 8, 11, 0, 0) },
-        { start: new Date(1950, 3, 1, 0, 0), end: new Date(1950, 8, 10, 0, 0) },
-        { start: new Date(1951, 4, 6, 0, 0), end: new Date(1951, 8, 9, 0, 0) },
-        { start: new Date(1955, 4, 5, 0, 0), end: new Date(1955, 8, 9, 0, 0) },
-        { start: new Date(1956, 4, 20, 0, 0), end: new Date(1956, 8, 30, 0, 0) },
-        { start: new Date(1957, 4, 5, 0, 0), end: new Date(1957, 8, 22, 0, 0) },
-        { start: new Date(1958, 4, 4, 0, 0), end: new Date(1958, 8, 21, 0, 0) },
-        { start: new Date(1959, 4, 3, 0, 0), end: new Date(1959, 8, 20, 0, 0) },
-        { start: new Date(1960, 4, 1, 0, 0), end: new Date(1960, 8, 18, 0, 0) },
-        { start: new Date(1987, 4, 10, 2, 0), end: new Date(1987, 9, 11, 3, 0) },
-        { start: new Date(1988, 4, 8, 2, 0), end: new Date(1988, 9, 9, 3, 0) },
-      ];
-
-      for (const period of dstPeriods) {
-        if (date >= period.start && date <= period.end) {
-          adjustment -= 60;
-          break;
-        }
-      }
-    }
-
-    return adjustment;
-  }
 
   private static createPillar(ganZhi: string, dayMaster: string): Pillar {
     const ganHan = ganZhi.charAt(0);
     const jiHan = ganZhi.charAt(1);
-    const jijangganHan = this.getJijanggan(jiHan);
+    const jijangganHan = JIJANGGAN_MAP[jiHan] || [];
     const jijangganKor = jijangganHan.map(h => this.convertHanToKoreanGan(h));
 
     return {
@@ -261,121 +148,15 @@ export class SajuCalculator {
       ji: this.convertHanToKoreanJi(jiHan),
       ganHan,
       jiHan,
-      ganElement: this.getOhaeng(ganHan),
-      jiElement: this.getOhaeng(jiHan),
-      tenGodsGan: this.getSipsin(dayMaster, ganHan),
-      tenGodsJi: this.getSipsin(dayMaster, jiHan),
+      ganElement: getOhaeng(ganHan) || '',
+      jiElement: getOhaeng(jiHan) || '',
+      tenGodsGan: calculateSipsin(dayMaster, ganHan),
+      tenGodsJi: calculateSipsin(dayMaster, jiHan),
       jijanggan: jijangganKor,
-      jijangganTenGods: jijangganHan.map(char => this.getSipsin(dayMaster, char)),
+      jijangganTenGods: jijangganHan.map(char => calculateSipsin(dayMaster, char)),
     };
   }
 
-  private static getOhaeng(han: string): string {
-    const map: Record<string, string> = {
-      // Gan
-      '甲': 'wood', '乙': 'wood',
-      '丙': 'fire', '丁': 'fire',
-      '戊': 'earth', '己': 'earth',
-      '庚': 'metal', '辛': 'metal',
-      '壬': 'water', '癸': 'water',
-      // Ji
-      '寅': 'wood', '卯': 'wood',
-      '巳': 'fire', '午': 'fire',
-      '辰': 'earth', '戌': 'earth', '丑': 'earth', '未': 'earth',
-      '申': 'metal', '酉': 'metal',
-      '亥': 'water', '子': 'water',
-    };
-    return map[han] || '';
-  }
-
-  private static convertHanToKoreanGan(han: string): string {
-    const map: Record<string, string> = {
-      '甲': '갑', '乙': '을', '丙': '병', '丁': '정', '戊': '무',
-      '己': '기', '庚': '경', '辛': '신', '壬': '임', '癸': '계'
-    };
-    return map[han] || han;
-  }
-
-  private static convertHanToKoreanJi(han: string): string {
-    const map: Record<string, string> = {
-      '子': '자', '丑': '축', '寅': '인', '卯': '묘', '辰': '진', '巳': '사',
-      '午': '오', '未': '미', '申': '신', '酉': '유', '戌': '술', '亥': '해'
-    };
-    return map[han] || han;
-  }
-  private static getSipsin(dayMaster: string, target: string): string {
-    if (dayMaster === target) return '비견'; // Same Gan
-
-    const dmElement = this.getOhaeng(dayMaster);
-    const targetElement = this.getOhaeng(target);
-    const dmPolarity = this.getPolarity(dayMaster);
-    const targetPolarity = this.getPolarity(target);
-
-    const samePolarity = dmPolarity === targetPolarity;
-
-    if (dmElement === targetElement) {
-      return samePolarity ? '비견' : '겁재';
-    }
-
-    // Generating (Seng)
-    if (this.isGenerating(dmElement, targetElement)) {
-      // Day Master generates Target (Output)
-      return samePolarity ? '식신' : '상관';
-    }
-    if (this.isGenerating(targetElement, dmElement)) {
-      // Target generates Day Master (Resource)
-      return samePolarity ? '편인' : '정인';
-    }
-
-    // Controlling (Geuk)
-    if (this.isControlling(dmElement, targetElement)) {
-      // Day Master controls Target (Wealth)
-      return samePolarity ? '편재' : '정재';
-    }
-    if (this.isControlling(targetElement, dmElement)) {
-      // Target controls Day Master (Power)
-      return samePolarity ? '편관' : '정관';
-    }
-
-    return '';
-  }
-
-  private static getJijanggan(ji: string): string[] {
-    const map: Record<string, string[]> = {
-      '子': ['癸'],
-      '丑': ['癸', '辛', '己'],
-      '寅': ['戊', '丙', '甲'],
-      '卯': ['乙'],
-      '辰': ['乙', '癸', '戊'],
-      '巳': ['戊', '庚', '丙'],
-      '午': ['己', '丁'], // 또는 ['丙', '己', '丁']
-      '未': ['丁', '乙', '己'],
-      '申': ['戊', '壬', '庚'],
-      '酉': ['辛'],
-      '戌': ['辛', '丁', '戊'],
-      '亥': ['戊', '甲', '壬'],
-    };
-    return map[ji] || [];
-  }
-
-  private static getPolarity(han: string): 'yang' | 'yin' {
-    const yangSet = new Set(['甲', '丙', '戊', '庚', '壬', '寅', '申', '巳', '亥', '辰', '戌']);
-    return yangSet.has(han) ? 'yang' : 'yin';
-  }
-
-  private static isGenerating(source: string, target: string): boolean {
-    const map: Record<string, string> = {
-      'wood': 'fire', 'fire': 'earth', 'earth': 'metal', 'metal': 'water', 'water': 'wood'
-    };
-    return map[source] === target;
-  }
-
-  private static isControlling(source: string, target: string): boolean {
-    const map: Record<string, string> = {
-      'wood': 'earth', 'earth': 'water', 'water': 'fire', 'fire': 'metal', 'metal': 'wood'
-    };
-    return map[source] === target;
-  }
 
   // Daeun (Grand Fortune) calculations
   private static getDaeunDirection(yearGan: string, gender: 'male' | 'female'): 'forward' | 'backward' {
@@ -391,121 +172,42 @@ export class SajuCalculator {
   }
 
   private static calculateDaeunStartAge(lunar: Lunar, direction: 'forward' | 'backward', birthSolar: Solar): number {
-    // Get Jieqi (solar term) table from lunar calendar
     const jieqiTable = (lunar as any).getJieQiTable();
-
-    // Jie (節) terms only (not Qi/氣 terms) - these determine monthly boundaries
-    // Using simplified Chinese characters as returned by lunar-javascript
     const jieTerms = ['立春', '惊蛰', '清明', '立夏', '芒种', '小暑', '立秋', '白露', '寒露', '立冬', '大雪', '小寒'];
+    // Normalize terminology (some libs use simplified/traditional)
+    const jieTermsMap: Record<string, string> = {
+      '立春': '立春', '惊蛰': '惊蛰', '清明': '清明', '立夏': '立夏', '芒종': '芒종', '小暑': '小暑',
+      '立秋': '立秋', '白露': '白露', '寒露': '寒露', '立冬': '立冬', '大雪': '大雪', '小寒': '小寒'
+    };
 
-    let closestJieName = '';
     let closestJieDays = Infinity;
+    const birthTime = new Date((birthSolar as any).getYear(), (birthSolar as any).getMonth() - 1, (birthSolar as any).getDay(), (birthSolar as any).getHour(), (birthSolar as any).getMinute()).getTime();
 
-    // Find closest Jie term based on direction
-    for (const [name, jieqiData] of Object.entries(jieqiTable)) {
-      if (!jieTerms.includes(name)) continue;
-
-      const jieqiInfo = jieqiData as any;
-      const jieqiDate = jieqiInfo._p;
-
-      // Create Solar object for this Jieqi
-      const jieqiSolar = Solar.fromYmdHms(
-        jieqiDate.year,
-        jieqiDate.month,
-        jieqiDate.day,
-        jieqiDate.hour,
-        jieqiDate.minute,
-        jieqiDate.second
-      );
-
-      // Calculate day difference
-      const birthDate = new Date(
-        (birthSolar as any).getYear(),
-        (birthSolar as any).getMonth() - 1,
-        (birthSolar as any).getDay(),
-        (birthSolar as any).getHour(),
-        (birthSolar as any).getMinute()
-      );
-
-      const jieqiDateObj = new Date(
-        jieqiDate.year,
-        jieqiDate.month - 1,
-        jieqiDate.day,
-        jieqiDate.hour,
-        jieqiDate.minute
-      );
-
-      const daysDiff = Math.ceil((jieqiDateObj.getTime() - birthDate.getTime()) / (1000 * 60 * 60 * 24));
-
-      // For forward direction: find next Jie (daysDiff > 0)
-      // For backward direction: find previous Jie (daysDiff < 0)
-      if (direction === 'forward') {
-        if (daysDiff > 0 && daysDiff < closestJieDays) {
-          closestJieDays = daysDiff;
-          closestJieName = name;
-        }
-      } else {
-        if (daysDiff < 0 && Math.abs(daysDiff) < closestJieDays) {
-          closestJieDays = Math.abs(daysDiff);
-          closestJieName = name;
-        }
-      }
-    }
-
-    // If no suitable Jie found in current year (e.g., birth in early January before first Jie)
-    // Need to check previous year for backward direction or next year for forward direction
-    if (closestJieDays === Infinity) {
-      const prevYear = (birthSolar as any).getYear() - 1;
-      const nextYear = (birthSolar as any).getYear() + 1;
-      const checkYear = direction === 'backward' ? prevYear : nextYear;
-
-      const checkSolar = Solar.fromYmdHms(checkYear, 1, 1, 0, 0, 0);
-      const checkLunar = checkSolar.getLunar();
-      const checkJieqiTable = (checkLunar as any).getJieQiTable();
-
-      for (const [name, jieqiData] of Object.entries(checkJieqiTable)) {
+    const findInTable = (table: any) => {
+      for (const [name, jieqiData] of Object.entries(table)) {
         if (!jieTerms.includes(name)) continue;
-
-        const jieqiInfo = jieqiData as any;
-        const jieqiDate = jieqiInfo._p;
-
-        const birthDate = new Date(
-          (birthSolar as any).getYear(),
-          (birthSolar as any).getMonth() - 1,
-          (birthSolar as any).getDay(),
-          (birthSolar as any).getHour(),
-          (birthSolar as any).getMinute()
-        );
-
-        const jieqiDateObj = new Date(
-          jieqiDate.year,
-          jieqiDate.month - 1,
-          jieqiDate.day,
-          jieqiDate.hour,
-          jieqiDate.minute
-        );
-
-        const daysDiff = Math.ceil((jieqiDateObj.getTime() - birthDate.getTime()) / (1000 * 60 * 60 * 24));
+        const jieqiDate = (jieqiData as any)._p;
+        const jieqiTime = new Date(jieqiDate.year, jieqiDate.month - 1, jieqiDate.day, jieqiDate.hour, jieqiDate.minute).getTime();
+        const diffDays = (jieqiTime - birthTime) / (1000 * 60 * 60 * 24);
 
         if (direction === 'forward') {
-          if (daysDiff > 0 && daysDiff < closestJieDays) {
-            closestJieDays = daysDiff;
-            closestJieName = name;
-          }
+          if (diffDays > 0 && diffDays < closestJieDays) closestJieDays = diffDays;
         } else {
-          if (daysDiff < 0 && Math.abs(daysDiff) < closestJieDays) {
-            closestJieDays = Math.abs(daysDiff);
-            closestJieName = name;
-          }
+          if (diffDays < 0 && Math.abs(diffDays) < closestJieDays) closestJieDays = Math.abs(diffDays);
         }
       }
+    };
+
+    findInTable(jieqiTable);
+
+    if (closestJieDays === Infinity) {
+      const checkYear = direction === 'backward' ? (birthSolar as any).getYear() - 1 : (birthSolar as any).getYear() + 1;
+      const checkSolar = Solar.fromYmdHms(checkYear, 1, 1, 0, 0, 0);
+      findInTable((checkSolar.getLunar() as any).getJieQiTable());
     }
 
-    // Calculate Daeun start age: 3 days = 1 year
-    // Floor to nearest integer (minimum 1 year)
-    const daeunSu = Math.max(1, Math.floor(closestJieDays / 3));
-
-    return daeunSu;
+    // Official Formula: floor(abs(days) / 3)
+    return Math.max(1, Math.floor(closestJieDays / 3));
   }
 
   private static generateDaeunSequence(monthGanZhi: string, direction: 'forward' | 'backward', startAge: number, dayMaster: string, birthYear: number): DaeunPeriod[] {
@@ -535,8 +237,8 @@ export class SajuCalculator {
         jiHan,
         gan: this.convertHanToKoreanGan(ganHan),
         ji: this.convertHanToKoreanJi(jiHan),
-        ganElement: this.getOhaeng(ganHan),
-        jiElement: this.getOhaeng(jiHan),
+        ganElement: getOhaeng(ganHan) || '',
+        jiElement: getOhaeng(jiHan) || '',
         startAge: startAge + i * 10,
         endAge: startAge + i * 10 + 9, // 10-year period: start + 9 years
         seun: this.generateSeunSequence(birthYear + startAge + i * 10, dayMaster),
@@ -565,10 +267,10 @@ export class SajuCalculator {
         jiHan,
         gan: this.convertHanToKoreanGan(ganHan),
         ji: this.convertHanToKoreanJi(jiHan),
-        ganElement: this.getOhaeng(ganHan),
-        jiElement: this.getOhaeng(jiHan),
-        tenGodsGan: this.getSipsin(dayMaster, ganHan),
-        tenGodsJi: this.getSipsin(dayMaster, jiHan),
+        ganElement: getOhaeng(ganHan) || '',
+        jiElement: getOhaeng(jiHan) || '',
+        tenGodsGan: calculateSipsin(dayMaster, ganHan),
+        tenGodsJi: calculateSipsin(dayMaster, jiHan),
       });
     }
 
@@ -576,30 +278,44 @@ export class SajuCalculator {
   }
 
   // Ohaeng (Five Elements) analysis
-  private static calculateOhaengDistribution(pillars: Pillar[]): {
+  private static calculateOhaengDistribution(pillars: Pillar[], options: { includeHiddenStems?: boolean } = {}): {
     wood: number;
     fire: number;
     earth: number;
     metal: number;
     water: number;
   } {
-    const distribution = {
-      wood: 0,
-      fire: 0,
-      earth: 0,
-      metal: 0,
-      water: 0
-    };
+    const distribution = { wood: 0, fire: 0, earth: 0, metal: 0, water: 0 };
 
     pillars.forEach(pillar => {
-      // Count Gan element
+      // 1. Gan/Ji (Surface characters)
       if (pillar.ganElement && pillar.ganElement !== 'unknown') {
-        distribution[pillar.ganElement as keyof typeof distribution]++;
+        const key = pillar.ganElement as keyof typeof distribution;
+        distribution[key] += 1;
       }
-      // Count Ji element
       if (pillar.jiElement && pillar.jiElement !== 'unknown') {
-        distribution[pillar.jiElement as keyof typeof distribution]++;
+        const key = pillar.jiElement as keyof typeof distribution;
+        distribution[key] += 1;
       }
+
+      // 2. Hidden Stems (Jijanggan) factor if enabled
+      if (options.includeHiddenStems) {
+        const weights = JIJANGGAN_WEIGHTS[pillar.jiHan] || [];
+        const hiddenGans = JIJANGGAN_MAP[pillar.jiHan] || [];
+        hiddenGans.forEach((gan, idx) => {
+          const element = getOhaeng(gan);
+          if (element) {
+            const weight = weights[idx] || 0;
+            distribution[element as keyof typeof distribution] += weight;
+          }
+        });
+      }
+    });
+
+    // Round values for display if they became decimals
+    Object.keys(distribution).forEach(key => {
+      const k = key as keyof typeof distribution;
+      distribution[k] = Math.round(distribution[k] * 100) / 100;
     });
 
     return distribution;
@@ -657,19 +373,11 @@ export class SajuCalculator {
     };
 
     const elementNames: Record<string, string> = {
-      wood: '목',
-      fire: '화',
-      earth: '토',
-      metal: '금',
-      water: '수'
+      wood: '목', fire: '화', earth: '토', metal: '금', water: '수'
     };
 
     const elementNamesWithHanja: Record<string, string> = {
-      wood: '목(木)',
-      fire: '화(火)',
-      earth: '토(土)',
-      metal: '금(金)',
-      water: '수(水)'
+      wood: '목(木)', fire: '화(火)', earth: '토(土)', metal: '금(金)', water: '수(水)'
     };
 
     const getOhaengLevel = (count: number): string => {
@@ -677,22 +385,14 @@ export class SajuCalculator {
       if (count === 1) return '부족';
       if (count === 2) return '균형';
       if (count === 3) return '강함';
-      return '과다'; // 4개 이상
+      return '과다';
     };
 
-    // 각 요소별 상세 분석
     const elements = Object.entries(distribution).map(([element, count]) => {
       const koreanName = elementNames[element];
-      const level = getOhaengLevel(count);
+      const level = getOhaengLevel(Math.floor(count)); // Use floor for level mapping if weights are used
       const description = OHAENG_DATA[koreanName]?.[level] || '';
-
-      return {
-        element,
-        name: elementNamesWithHanja[element],
-        count,
-        level,
-        description
-      };
+      return { element, name: elementNamesWithHanja[element], count, level, description };
     });
 
     const excess: string[] = [];
@@ -700,38 +400,32 @@ export class SajuCalculator {
     const missing: string[] = [];
 
     Object.entries(distribution).forEach(([element, count]) => {
-      if (count >= 3) {
-        excess.push(elementNamesWithHanja[element]);
-      } else if (count === 1) {
-        deficient.push(elementNamesWithHanja[element]);
-      } else if (count === 0) {
-        missing.push(elementNamesWithHanja[element]);
-      }
+      if (count >= 3) excess.push(elementNamesWithHanja[element]);
+      else if (count === 1) deficient.push(elementNamesWithHanja[element]);
+      else if (count === 0) missing.push(elementNamesWithHanja[element]);
     });
 
-    // Generate interpretation
     let interpretation = '';
+    if (excess.length > 0) interpretation += `${excess.join(', ')} 기운이 강합니다. `;
+    if (missing.length > 0) interpretation += `${missing.join(', ')} 기운이 부족합니다. `;
+    if (excess.length === 0 && missing.length === 0) interpretation = '오행이 비교적 균형있게 분포되어 있습니다.';
+    else if (excess.length > 0 && missing.length > 0) interpretation += '불균형을 보완하는 것이 중요합니다.';
 
-    if (excess.length > 0) {
-      interpretation += `${excess.join(', ')} 기운이 강합니다. `;
-    }
-
-    if (missing.length > 0) {
-      interpretation += `${missing.join(', ')} 기운이 부족합니다. `;
-    }
-
-    if (excess.length === 0 && missing.length === 0) {
-      interpretation = '오행이 비교적 균형있게 분포되어 있습니다.';
-    } else if (excess.length > 0 && missing.length > 0) {
-      interpretation += '불균형을 보완하는 것이 중요합니다.';
-    }
-
-    return {
-      elements,
-      excess,
-      deficient,
-      missing,
-      interpretation
+    return { elements, excess, deficient, missing, interpretation };
+  }
+  private static convertHanToKoreanGan(han: string): string {
+    const map: Record<string, string> = {
+      '甲': '갑', '乙': '을', '丙': '병', '丁': '정', '戊': '무',
+      '己': '기', '庚': '경', '辛': '신', '壬': '임', '癸': '계'
     };
+    return map[han] || han;
+  }
+
+  private static convertHanToKoreanJi(han: string): string {
+    const map: Record<string, string> = {
+      '子': '자', '丑': '축', '寅': '인', '卯': '묘', '辰': '진', '巳': '사',
+      '午': '오', '未': '미', '申': '신', '酉': '유', '戌': '술', '亥': '해'
+    };
+    return map[han] || han;
   }
 }
