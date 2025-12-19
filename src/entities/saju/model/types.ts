@@ -73,3 +73,54 @@ export interface SajuData {
     interpretation: string; // 종합 해석
   };
 }
+export interface NewYearFortune {
+  year: number;
+  gan: string;
+  ji: string;
+  yearSummary: {
+    score: number;
+    summaryText: string; // "Core Summary"
+    reason: string[];    // "Why (Bullets)"
+  };
+  yearNature: string;    // "Nature of the Year"
+  fortuneAreas: {
+    money: FortuneAreaBase;
+    relationship: FortuneAreaBase;
+    career: FortuneAreaBase;
+    selfGrowth: FortuneAreaBase;
+  };
+  keyMonths?: {
+    month: number;
+    theme: string;
+    advice: string;
+  }[];
+  fortuneGuide: {
+    do: string[];
+    dont: string[];
+    keywords: string[];
+  };
+  expertMeta: {
+    fortuneType: string;
+    warningLevel: 'low' | 'medium' | 'high';
+    recommendedActivities: string[];
+  };
+  analysisTags: {
+    dominantTengod: string;
+    supportTengod: string;
+    event?: string;
+    palace?: string;
+    ohaengExcess?: string;
+    ohaengLack?: string;
+    quality: 'stable' | 'volatile' | 'mixed';
+    pace: 'fast' | 'slow' | 'mixed';
+    theme: string;
+    guideType: 'push' | 'manage' | 'defense' | 'reset';
+  };
+}
+
+export interface FortuneAreaBase {
+  score: number;
+  pros: string;
+  cons: string;
+  strategy: string;
+}
