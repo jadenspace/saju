@@ -342,16 +342,16 @@ export class SajuCalculator {
 
   private static getJijanggan(ji: string): string[] {
     const map: Record<string, string[]> = {
-      '子': ['壬', '癸'],
+      '子': ['癸'],
       '丑': ['癸', '辛', '己'],
       '寅': ['戊', '丙', '甲'],
-      '卯': ['甲', '乙'],
+      '卯': ['乙'],
       '辰': ['乙', '癸', '戊'],
       '巳': ['戊', '庚', '丙'],
-      '午': ['丙', '己', '丁'],
+      '午': ['己', '丁'], // 또는 ['丙', '己', '丁']
       '未': ['丁', '乙', '己'],
       '申': ['戊', '壬', '庚'],
-      '酉': ['庚', '辛'],
+      '酉': ['辛'],
       '戌': ['辛', '丁', '戊'],
       '亥': ['戊', '甲', '壬'],
     };
@@ -502,8 +502,8 @@ export class SajuCalculator {
     }
 
     // Calculate Daeun start age: 3 days = 1 year
-    // Round to nearest integer (minimum 1 year)
-    const daeunSu = Math.max(1, Math.round(closestJieDays / 3));
+    // Floor to nearest integer (minimum 1 year)
+    const daeunSu = Math.max(1, Math.floor(closestJieDays / 3));
 
     return daeunSu;
   }
