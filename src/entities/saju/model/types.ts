@@ -11,6 +11,19 @@ export interface Pillar {
   jijangganTenGods?: string[]; // Sipsin for Hidden Stems
 }
 
+export interface Seun {
+  year: number;
+  ganZhi: string;
+  gan: string;
+  ji: string;
+  ganHan: string;
+  jiHan: string;
+  ganElement?: string;
+  jiElement?: string;
+  tenGodsGan?: string;
+  tenGodsJi?: string;
+}
+
 export interface DaeunPeriod {
   ganZhi: string; // GanZhi combination (e.g., '甲子')
   gan: string; // Korean name (e.g., '갑')
@@ -21,6 +34,7 @@ export interface DaeunPeriod {
   jiElement?: string;
   startAge: number;
   endAge: number;
+  seun: Seun[];
 }
 
 export interface SajuData {

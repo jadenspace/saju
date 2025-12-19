@@ -1,5 +1,5 @@
 import { Lunar, Solar } from 'lunar-javascript';
-import { DaeunPeriod, Pillar, SajuData } from '../../../entities/saju/model/types';
+import { DaeunPeriod, Pillar, SajuData, Seun } from '../../../entities/saju/model/types';
 
 export class SajuCalculator {
   static calculate(year: number, month: number, day: number, hour: number, minute: number, gender: 'male' | 'female' = 'male', unknownTime: boolean = false, useTrueSolarTime: boolean = true, applyDST: boolean = true, midnightMode: 'early' | 'late' = 'late'): SajuData {
@@ -88,7 +88,8 @@ export class SajuCalculator {
     const yearGan = yearGanZhi.charAt(0);
     const daeunDirection = this.getDaeunDirection(yearGan, gender);
     const daeunStartAge = this.calculateDaeunStartAge(lunar, daeunDirection, solar);
-    const daeun = this.generateDaeunSequence(monthGanZhi, daeunDirection, daeunStartAge, dayMaster);
+    const birthYear = baseTime.year;
+    const daeun = this.generateDaeunSequence(monthGanZhi, daeunDirection, daeunStartAge, dayMaster, birthYear);
 
     // Calculate Ohaeng distribution
     const pillars = [
@@ -507,7 +508,7 @@ export class SajuCalculator {
     return daeunSu;
   }
 
-  private static generateDaeunSequence(monthGanZhi: string, direction: 'forward' | 'backward', startAge: number, dayMaster: string): DaeunPeriod[] {
+  private static generateDaeunSequence(monthGanZhi: string, direction: 'forward' | 'backward', startAge: number, dayMaster: string, birthYear: number): DaeunPeriod[] {
     const gans = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'];
     const jis = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'];
 
@@ -538,10 +539,40 @@ export class SajuCalculator {
         jiElement: this.getOhaeng(jiHan),
         startAge: startAge + i * 10,
         endAge: startAge + i * 10 + 9, // 10-year period: start + 9 years
+        seun: this.generateSeunSequence(birthYear + startAge + i * 10, dayMaster),
       });
     }
 
     return daeunPeriods;
+  }
+
+  private static generateSeunSequence(startYear: number, dayMaster: string): Seun[] {
+    const seunSequence: Seun[] = [];
+
+    for (let i = 0; i < 10; i++) {
+      const year = startYear + i;
+      const solar = Solar.fromYmdHms(year, 1, 1, 12, 0, 0);
+      const lunar = solar.getLunar();
+      const ganZhi = lunar.getYearInGanZhiByLiChun();
+
+      const ganHan = ganZhi.charAt(0);
+      const jiHan = ganZhi.charAt(1);
+
+      seunSequence.push({
+        year,
+        ganZhi,
+        ganHan,
+        jiHan,
+        gan: this.convertHanToKoreanGan(ganHan),
+        ji: this.convertHanToKoreanJi(jiHan),
+        ganElement: this.getOhaeng(ganHan),
+        jiElement: this.getOhaeng(jiHan),
+        tenGodsGan: this.getSipsin(dayMaster, ganHan),
+        tenGodsJi: this.getSipsin(dayMaster, jiHan),
+      });
+    }
+
+    return seunSequence;
   }
 
   // Ohaeng (Five Elements) analysis
