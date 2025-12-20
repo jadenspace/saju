@@ -113,6 +113,22 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
   const [showIlju, setShowIlju] = useState(false);
   const [showNewYear, setShowNewYear] = useState(false);
 
+  // Calculate current age and default Daeun index
+  const getCurrentAge = () => {
+    const birthDate = new Date(data.birthDate);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear() + 1; // Korean age
+    return age;
+  };
+
+  const defaultDaeunIndex = data.daeun.findIndex(
+    period => getCurrentAge() >= period.startAge && getCurrentAge() <= period.endAge
+  );
+
+  const [selectedDaeunIndex, setSelectedDaeunIndex] = useState<number | null>(
+    defaultDaeunIndex !== -1 ? defaultDaeunIndex : null
+  );
+
   return (
     <div className={clsx(styles.card, className)}>
       <div className={styles.header}>
@@ -168,8 +184,13 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
         </div>
         <div className={styles.daeunContainer}>
           {data.daeun.map((period, index) => (
-            <div key={index} className={styles.daeunPeriod}>
+            <div
+              key={index}
+              className={clsx(styles.daeunPeriod, selectedDaeunIndex === index && styles.active)}
+              onClick={() => setSelectedDaeunIndex(selectedDaeunIndex === index ? null : index)}
+            >
               <div className={styles.daeunAge}>{period.startAge}-{period.endAge}세</div>
+              <div className={styles.daeunYears}>({period.seun[0].year} ~ {period.seun[9].year})</div>
               <div className={styles.daeunGanZhi}>
                 <span className={styles.daeunHan}>
                   <span className={clsx(styles[period.ganElement || ''])}>{period.ganHan}</span>
@@ -180,6 +201,40 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
             </div>
           ))}
         </div>
+
+        {/* Seun Section */}
+        {selectedDaeunIndex !== null && (
+          <div className={styles.seunSection}>
+            <div className={styles.seunHeader}>
+              <h4>세운 (歲運) - {data.daeun[selectedDaeunIndex].startAge}세 ~ {data.daeun[selectedDaeunIndex].endAge}세</h4>
+            </div>
+            <div className={styles.seunGrid}>
+              {data.daeun[selectedDaeunIndex].seun.map((yearFortune, idx) => {
+                const isCurrentYear = yearFortune.year === new Date().getFullYear();
+                const birthYear = new Date(data.birthDate).getFullYear();
+                const age = yearFortune.year - birthYear + 1; // Korean age
+
+                return (
+                  <div key={idx} className={clsx(styles.seunItem, isCurrentYear && styles.active)}>
+                    <div className={styles.seunAge}>{age}세</div>
+                    <div className={styles.seunYear}>{yearFortune.year}년</div>
+                    <div className={styles.seunGanZhi}>
+                      <span className={styles.seunHan}>
+                        <span className={clsx(styles[yearFortune.ganElement || ''])}>{yearFortune.ganHan}</span>
+                        <span className={clsx(styles[yearFortune.jiElement || ''])}>{yearFortune.jiHan}</span>
+                      </span>
+                      <span className={styles.seunKor}>{yearFortune.gan}{yearFortune.ji}</span>
+                    </div>
+                    <div className={styles.seunSipsin}>
+                      <span className={styles.sipsinMini}>{yearFortune.tenGodsGan}</span>
+                      <span className={styles.sipsinMini}>{yearFortune.tenGodsJi}</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Analysis Buttons */}

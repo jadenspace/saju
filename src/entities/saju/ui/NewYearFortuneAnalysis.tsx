@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { SajuData } from '../model/types';
-import { calculateNewYearFortune, NewYearFortune } from '../../../shared/lib/saju/NewYearFortune';
+import { SajuData, NewYearFortune } from '../model/types';
+import { calculateNewYearFortune } from '../../../shared/lib/saju/NewYearFortune';
 import styles from './NewYearFortuneAnalysis.module.css';
 import clsx from 'clsx';
 
@@ -30,31 +30,55 @@ export const NewYearFortuneAnalysis = ({ data }: Props) => {
       <div className={styles.overallSection}>
         <div className={styles.scoreCircle}>
           <span className={styles.scoreLabel}>총운</span>
-          <span className={styles.scoreValue}>{fortune.overall.score}</span>
+          <span className={styles.scoreValue}>{fortune.yearSummary.score}</span>
         </div>
         <div className={styles.summaryBox}>
-          <p className={styles.summaryText}>{fortune.overall.summary}</p>
-          <ul className={styles.detailList}>
-            {fortune.overall.details.map((detail, idx) => (
-              <li key={idx}>{detail}</li>
+          <p className={styles.summaryText}>"{fortune.yearSummary.summaryText}"</p>
+          <div className={styles.natureBadge}>
+            운의 성격: {fortune.yearNature}
+          </div>
+          <div className={styles.tagSection}>
+            <span className={styles.tag}># {fortune.analysisTags.dominantTengod} 주도</span>
+            {fortune.analysisTags.event && (
+              <span className={styles.tag}># {fortune.analysisTags.palace}지 {fortune.analysisTags.event}</span>
+            )}
+            <span className={styles.tag}># {fortune.analysisTags.theme}</span>
+            {fortune.analysisTags.ohaengLack && (
+              <span className={styles.tag}># {fortune.analysisTags.ohaengLack} 보완</span>
+            )}
+          </div>
+          <ul className={styles.reasonList}>
+            {fortune.yearSummary.reason.map((item: string, idx: number) => (
+              <li key={idx}>{item}</li>
             ))}
           </ul>
         </div>
       </div>
 
-      <div className={styles.gridSection}>
-        <FortuneCard title="재물운" data={fortune.wealth} icon="💰" />
-        <FortuneCard title="애정운" data={fortune.love} icon="❤️" />
-        <FortuneCard title="직업운" data={fortune.career} icon="💼" />
-        <FortuneCard title="건강운" data={fortune.health} icon="💪" />
+      <div className={styles.areaGrid}>
+        <ExpertAreaCard title="재물운" data={fortune.fortuneAreas.money} icon="💰" />
+        <ExpertAreaCard title="애정·관계운" data={fortune.fortuneAreas.relationship} icon="❤️" />
+        <ExpertAreaCard title="직업·사회운" data={fortune.fortuneAreas.career} icon="💼" />
+        <ExpertAreaCard title="자기계발·내적 성찰" data={fortune.fortuneAreas.selfGrowth} icon="📚" />
+      </div>
+
+      <div className={styles.actionGuide}>
+        <div className={styles.guideBox}>
+          <h4 className={styles.doTitle}>✅ 올해 운을 잘 쓰는 행동 (Do)</h4>
+          <ul>{fortune.fortuneGuide.do.map((v: string, i: number) => <li key={i}>{v}</li>)}</ul>
+        </div>
+        <div className={styles.guideBox}>
+          <h4 className={styles.dontTitle}>⚠️ 올해 특히 조심해야 할 행동 (Don't)</h4>
+          <ul>{fortune.fortuneGuide.dont.map((v: string, i: number) => <li key={i}>{v}</li>)}</ul>
+        </div>
       </div>
     </div>
   );
 };
 
-const FortuneCard = ({ title, data, icon }: { title: string, data: any, icon: string }) => {
+const ExpertAreaCard = ({ title, data, icon }: { title: string, data: any, icon: string }) => {
   return (
-    <div className={styles.card}>
+    <div className={styles.expertCard}>
       <div className={styles.cardHeader}>
         <span className={styles.icon}>{icon}</span>
         <span className={styles.cardTitle}>{title}</span>
@@ -62,7 +86,13 @@ const FortuneCard = ({ title, data, icon }: { title: string, data: any, icon: st
           {data.score}점
         </span>
       </div>
-      <p className={styles.cardSummary}>{data.summary}</p>
+      <div className={styles.cardContent}>
+        <p className={styles.prosText}><strong>좋은 점:</strong> {data.pros}</p>
+        <p className={styles.consText}><strong>주의점:</strong> {data.cons}</p>
+        <div className={styles.strategyBox}>
+           <strong>이렇게 쓰면 좋다:</strong> {data.strategy}
+        </div>
+      </div>
     </div>
   );
 };
