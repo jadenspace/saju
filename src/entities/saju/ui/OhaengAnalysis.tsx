@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import { SajuData } from '../model/types';
 import styles from './OhaengAnalysis.module.css';
 
@@ -5,102 +6,72 @@ interface OhaengAnalysisProps {
   data: SajuData;
 }
 
+const ELEMENT_INFO = {
+  wood: { name: '목', hanja: '木', color: '#4ade80' },
+  fire: { name: '화', hanja: '火', color: '#f87171' },
+  earth: { name: '토', hanja: '土', color: '#fbbf24' },
+  metal: { name: '금', hanja: '金', color: '#94a3b8' },
+  water: { name: '수', hanja: '水', color: '#1e293b' },
+};
+
 export const OhaengAnalysis = ({ data }: OhaengAnalysisProps) => {
   const { ohaengDistribution, ohaengAnalysis } = data;
-
-  const elementInfo = [
-    { key: 'wood', name: '목(木)', color: '#4ade80' },
-    { key: 'fire', name: '화(火)', color: '#f87171' },
-    { key: 'earth', name: '토(土)', color: '#fbbf24' },
-    { key: 'metal', name: '금(金)', color: '#e5e7eb' },
-    { key: 'water', name: '수(水)', color: '#1f2937' },
-  ];
-
-  const maxCount = Math.max(...Object.values(ohaengDistribution));
-  const total = Object.values(ohaengDistribution).reduce((a, b) => a + b, 0);
+  const total = Object.values(ohaengDistribution).reduce((sum, val) => sum + val, 0);
 
   return (
     <div className={styles.container}>
-      <h3 className={styles.title}>오행 분석</h3>
+      <h3 className={styles.mainTitle}>오행 분포 (五行分布)</h3>
 
-      {/* Distribution Chart */}
-      <div className={styles.chart}>
-        {elementInfo.map(({ key, name, color }) => {
-          const count = ohaengDistribution[key as keyof typeof ohaengDistribution];
+      <div className={styles.horizontalGrid}>
+        {(Object.entries(ohaengDistribution) as [keyof typeof ELEMENT_INFO, number][]).map(([key, count]) => {
+          const info = ELEMENT_INFO[key];
           const percentage = total > 0 ? (count / total) * 100 : 0;
-          const barHeight = maxCount > 0 ? (count / maxCount) * 100 : 0;
 
           return (
-            <div key={key} className={styles.barContainer}>
-              <div className={styles.barWrapper}>
-                <div
-                  className={styles.bar}
-                  style={{
-                    height: `${barHeight}%`,
-                    backgroundColor: color
-                  }}
-                >
-                  <span className={styles.count}>{count}</span>
+            <div key={key} className={styles.elementRow}>
+              <div className={clsx(styles.elementIcon, styles[key])}>
+                {info.hanja}
+              </div>
+              <div className={styles.elementInfo}>
+                <div className={styles.elementLabel}>
+                  <span className={styles.name}>{info.name}</span>
+                  <span className={styles.count}>{count}개</span>
+                </div>
+                <div className={styles.barContainer}>
+                  <div
+                    className={clsx(styles.bar, styles[key])}
+                    style={{ width: `${percentage}%` }}
+                  />
                 </div>
               </div>
-              <div className={styles.elementName}>{name}</div>
-              <div className={styles.percentage}>{percentage.toFixed(0)}%</div>
+              <div className={styles.percentageText}>{Math.round(percentage)}%</div>
             </div>
           );
         })}
       </div>
 
-      {/* Interpretation */}
       <div className={styles.interpretation}>
-        <p className={styles.summary}>{ohaengAnalysis.interpretation}</p>
-
-        {ohaengAnalysis.excess.length > 0 && (
-          <div className={styles.analysisItem}>
-            <span className={styles.label}>강한 기운:</span>
-            <span className={styles.value}>{ohaengAnalysis.excess.join(', ')}</span>
-            <p className={styles.description}>
-              해당 오행의 특성이 강하게 나타납니다. 장점을 발휘하되 과도함을 주의하세요.
-            </p>
-          </div>
-        )}
-
-        {ohaengAnalysis.deficient.length > 0 && (
-          <div className={styles.analysisItem}>
-            <span className={styles.label}>약한 기운:</span>
-            <span className={styles.value}>{ohaengAnalysis.deficient.join(', ')}</span>
-            <p className={styles.description}>
-              해당 오행을 보완하면 균형을 이룰 수 있습니다.
-            </p>
-          </div>
-        )}
-
-        {ohaengAnalysis.missing.length > 0 && (
-          <div className={styles.analysisItem}>
-            <span className={styles.label}>부족한 기운:</span>
-            <span className={styles.value}>{ohaengAnalysis.missing.join(', ')}</span>
-            <p className={styles.description}>
-              해당 오행의 특성이 부족합니다. 의식적으로 보완하는 것이 좋습니다.
-            </p>
-          </div>
-        )}
+        <p className={styles.summaryText}>{ohaengAnalysis.interpretation}</p>
+        <div className={styles.tags}>
+          {ohaengAnalysis.excess.map((tag, i) => (
+            <span key={i} className={clsx(styles.tag, styles.excess)}># {tag} 과다</span>
+          ))}
+          {ohaengAnalysis.missing.map((tag, i) => (
+            <span key={i} className={clsx(styles.tag, styles.missing)}># {tag} 부족</span>
+          ))}
+        </div>
       </div>
 
-      {/* Detailed analysis for each element */}
+      {/* Detailed Analysis */}
       <div className={styles.detailedAnalysis}>
-        <h4 className={styles.detailedTitle}>각 오행별 상세 분석</h4>
+        <h4 className={styles.detailedTitle}>상세 분석</h4>
         {ohaengAnalysis.elements.map(({ element, name, count, level, description }) => {
-          const elementColor = elementInfo.find(e => e.key === element)?.color || '#9ca3af';
-          const isDark = element === 'water';
-
+          const info = ELEMENT_INFO[element as keyof typeof ELEMENT_INFO];
           return (
             <div key={element} className={styles.elementDetail}>
               <div className={styles.elementHeader}>
                 <div
-                  className={styles.elementBadge}
-                  style={{
-                    backgroundColor: elementColor,
-                    color: isDark ? '#ffffff' : '#000000'
-                  }}
+                  className={clsx(styles.elementBadge, styles[element])}
                 >
                   {name}
                 </div>
@@ -116,11 +87,9 @@ export const OhaengAnalysis = ({ data }: OhaengAnalysisProps) => {
       </div>
 
       <div className={styles.disclaimer}>
-        오행 개수는 한 가지 ‘경향’을 보여줍니다. 하지만 오행은 서로 돕기도(상생) 하고 제어하기도(상극) 하며,
-        조합에 따라 장점이 강화되거나 단점이 완화될 수 있습니다.
-        결과는 나를 단정하는 진단이 아니라, 균형을 찾기 위한 힌트로 봐주세요.
+        오행 분석 결과는 사주의 전반적인 경향을 파악하기 위한 조언입니다.
+        개별 요소의 상호작용에 따라 실제 작용은 달라질 수 있으므로 참고용으로 활용해 주세요.
       </div>
     </div>
   );
 };
-

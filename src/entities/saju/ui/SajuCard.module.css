@@ -30,278 +30,6 @@
   font-size: 0.9rem;
 }
 
-/* Legend styles */
-.legend {
-  display: flex;
-  justify-content: center;
-  gap: 1.5rem;
-  margin-top: 1rem;
-  padding: 0.75rem;
-  background: rgba(255, 255, 255, 0.02);
-  border-radius: 0.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.legendItem {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.75rem;
-  color: var(--foreground);
-  opacity: 0.7;
-}
-
-.legendIcon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 1.2rem;
-  height: 1.2rem;
-  border-radius: 0.25rem;
-  font-size: 0.65rem;
-  font-weight: bold;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-@media (max-width: 480px) {
-  .legend {
-    gap: 0.75rem;
-    padding: 0.5rem;
-  }
-
-  .legendItem {
-    font-size: 0.65rem;
-  }
-
-  .legendIcon {
-    width: 1rem;
-    height: 1rem;
-    font-size: 0.55rem;
-  }
-}
-
-.pillarsContainer {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1rem;
-}
-
-.pillar {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-}
-
-.label {
-  font-size: 0.8rem;
-  color: var(--foreground);
-  opacity: 0.6;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.characterBox {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-.character {
-  font-size: 2.5rem;
-  font-weight: bold;
-  line-height: 1;
-  font-family: "Noto Serif KR", serif;
-  color: #fff;
-  /* 흰색 글자 */
-  z-index: 1;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
-  /* 밝은 배경에서의 가독성 확보 */
-}
-
-.characterContainer {
-  width: 80px;
-  height: 100px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  border-radius: 0.75rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  position: relative;
-  overflow: hidden;
-  transition: transform 0.2s ease;
-}
-
-.characterContainer:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-}
-
-.gan {
-  color: var(--foreground);
-}
-
-.ji {
-  color: var(--foreground);
-}
-
-/* Ohaeng Background Colors - Synced with OhaengAnalysis */
-.wood {
-  background-color: #4ade80;
-  /* Green */
-  border: 1px solid #22c55e;
-}
-
-.fire {
-  background-color: #f87171;
-  /* Red */
-  border: 1px solid #ef4444;
-}
-
-.earth {
-  background-color: #fbbf24;
-  /* Yellow/Gold */
-  border: 1px solid #f59e0b;
-}
-
-.metal {
-  background-color: #9ca3af;
-  /* Gray 400 - e5e7eb is too light for white text, using slightly darker gray */
-  border: 1px solid #6b7280;
-}
-
-.water {
-  background-color: #1f2937;
-  /* Black/Dark Gray */
-  border: 1px solid #374151;
-  color: #ffffff;
-}
-
-.unknown {
-  background-color: rgba(255, 255, 255, 0.1);
-  border: 1px solid var(--border);
-  color: var(--foreground);
-}
-
-.unknown .character {
-  color: var(--foreground);
-  opacity: 0.5;
-}
-
-.korean {
-  font-size: 0.9rem;
-  color: var(--primary);
-  font-weight: 500;
-}
-
-@media (max-width: 600px) {
-  .pillarsContainer {
-    gap: 0.5rem;
-  }
-
-  .character {
-    font-size: 2rem;
-  }
-}
-
-.sipsin {
-  font-size: 0.8rem;
-  color: var(--foreground);
-  opacity: 0.8;
-  margin-bottom: 0.2rem;
-  height: 1.2rem;
-  /* Fixed height for alignment */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.jijanggan {
-  display: flex;
-  justify-content: center;
-  gap: 0.15rem;
-  margin-top: 0.75rem;
-  padding-top: 0.5rem;
-  width: 100%;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  /* 구분선 추가 */
-}
-
-.jijangganRow {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.3rem;
-  width: 100%;
-}
-
-.jijangganSipsin {
-  font-size: 0.6rem;
-  color: var(--foreground);
-  opacity: 0.5;
-  width: 2rem;
-  /* Fixed width for alignment */
-  text-align: right;
-}
-
-.jijangganChar {
-  font-size: 0.65rem;
-  /* 더 작게 */
-  color: var(--foreground);
-  opacity: 0.45;
-  /* 더 흐리게 */
-  width: 1rem;
-  text-align: center;
-}
-
-/* Tooltip styles */
-.tooltipContainer {
-  position: relative;
-  display: inline-block;
-  cursor: help;
-}
-
-.tooltip {
-  visibility: hidden;
-  opacity: 0;
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  /* Default horizontal centering */
-  margin-bottom: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  background: rgba(0, 0, 0, 0.9);
-  color: var(--foreground);
-  border-radius: 0.5rem;
-  font-size: 0.75rem;
-  white-space: nowrap;
-  z-index: 1000;
-  pointer-events: none;
-  transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-
-
-
-.tooltip::after {
-  content: '';
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  border: 6px solid transparent;
-  border-top-color: rgba(0, 0, 0, 0.9);
-}
-
-.tooltipContainer:hover .tooltip {
-  visibility: visible;
-  opacity: 1;
-}
-
 /* Daeun Section */
 .daeunSection {
   margin-top: 2rem;
@@ -326,6 +54,50 @@
   font-size: 0.9rem;
   color: var(--foreground);
   opacity: 0.7;
+}
+
+.daeunInfoPill {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.4rem 0.8rem;
+  border-radius: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.2s ease;
+}
+
+.daeunInfoPill:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.daeunDirectionBadge {
+  font-size: 0.85rem;
+  color: var(--foreground);
+  opacity: 0.9;
+  padding-right: 0.5rem;
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.daeunSuBadge {
+  font-size: 0.85rem;
+  color: var(--foreground);
+  opacity: 0.8;
+}
+
+.highlight {
+  color: var(--primary);
+  font-weight: 700;
+  margin-left: 0.2rem;
+}
+
+.tooltipTitle {
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .daeunContainer {
@@ -381,6 +153,8 @@
 }
 
 .daeunHan {
+  display: flex;
+  gap: 0.25rem;
   font-size: 1.5rem;
   font-weight: bold;
   color: var(--foreground);
@@ -404,8 +178,15 @@
 }
 
 @keyframes slideDown {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .seunHeader {
@@ -466,6 +247,8 @@
 }
 
 .seunHan {
+  display: flex;
+  gap: 0.2rem;
   font-size: 1.1rem;
   font-weight: bold;
   font-family: "Noto Serif KR", serif;
@@ -490,31 +273,11 @@
   border-radius: 0.2rem;
 }
 
-@media (max-width: 600px) {
-  .seunGrid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 600px) {
-  .daeunContainer {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.5rem;
-  }
-
-  .daeunPeriod {
-    padding: 0.5rem;
-    min-width: 80px;
-  }
-
-  .daeunHan {
-    font-size: 1.2rem;
-  }
-}
-
 /* Analysis Buttons */
 .analysisButtons {
   display: flex;
+  flex-wrap: wrap;
+  /* Added for responsiveness */
   gap: 1rem;
   margin-top: 2rem;
   padding-top: 1.5rem;
@@ -523,6 +286,8 @@
 
 .analysisButton {
   flex: 1;
+  min-width: 100px;
+  /* Ensure buttons don't get too small */
   padding: 0.75rem 1rem;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--border);
@@ -545,123 +310,70 @@
   border-color: var(--primary);
 }
 
-.placeholder {
-  padding: 2rem;
-  text-align: center;
+/* Tooltip styles */
+.tooltipContainer {
+  position: relative;
+  display: inline-block;
+  cursor: help;
+}
+
+.tooltip {
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(0, 0, 0, 0.9);
   color: var(--foreground);
-  opacity: 0.7;
-  margin-top: 1rem;
-  background: rgba(255, 255, 255, 0.02);
-  border-radius: 0.75rem;
-  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  z-index: 1000;
+  pointer-events: none;
+  transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-.placeholder p {
-  margin: 0;
+.tooltipContainer:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
 }
 
-/* Additional mobile optimization for smaller screens */
-@media (max-width: 480px) {
-  .card {
-    padding: 0.75rem;
+/* Element Colors (for Daeun/Seun Hanja) */
+.wood {
+  color: #4ade80;
+}
+
+.fire {
+  color: #f87171;
+}
+
+.earth {
+  color: #fbbf24;
+}
+
+.metal {
+  color: #9ca3af;
+}
+
+.water {
+  color: #334155;
+}
+
+@media (max-width: 600px) {
+  .daeunContainer {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
   }
 
-  .header {
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
-  }
-
-  .header h2 {
-    font-size: 1.1rem;
-  }
-
-  .header p {
-    font-size: 0.75rem;
-  }
-
-  /* Keep 4 columns but make them smaller */
-  .pillarsContainer {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0.25rem;
-  }
-
-  .pillar {
-    gap: 0.4rem;
-  }
-
-  .label {
-    font-size: 0.6rem;
-  }
-
-  .character {
-    font-size: 1.4rem;
-  }
-
-  .characterContainer {
-    width: 50px;
-    height: 60px;
-  }
-
-  .korean {
-    font-size: 0.7rem;
-  }
-
-  .sipsin {
-    font-size: 0.6rem;
-    margin-bottom: 0.1rem;
-    height: 1rem;
-  }
-
-  .jijanggan {
-    gap: 0.1rem;
-    margin-top: 0.3rem;
-  }
-
-  .jijangganChar {
-    font-size: 0.65rem;
-  }
-
-  .daeunSection {
-    margin-top: 1.25rem;
-    padding-top: 1rem;
-  }
-
-  .daeunHeader h3 {
-    font-size: 1rem;
-  }
-
-  .daeunDirection {
-    font-size: 0.75rem;
-  }
-
-  .daeunAge {
-    font-size: 0.65rem;
-  }
-
-  .daeunHan {
-    font-size: 1rem;
-  }
-
-  .daeunKor {
-    font-size: 0.7rem;
+  .seunGrid {
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .analysisButtons {
     gap: 0.5rem;
-    margin-top: 1.25rem;
-    padding-top: 1rem;
-  }
-
-  .analysisButton {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.8rem;
-  }
-
-  .tooltip {
-    display: none !important;
-  }
-
-  .tooltipContainer {
-    cursor: default;
   }
 }

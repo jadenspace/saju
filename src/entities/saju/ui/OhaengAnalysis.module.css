@@ -1,186 +1,153 @@
 .container {
   padding: 1.5rem;
-  background: rgba(255, 255, 255, 0.02);
-  border-radius: 0.75rem;
-  border: 1px solid var(--border);
-  margin-top: 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1.5rem;
+  margin-top: 1.5rem;
+  color: var(--foreground);
 }
 
-.title {
-  margin: 0 0 1.5rem 0;
-  color: var(--primary);
+.mainTitle {
   font-size: 1.1rem;
-  text-align: center;
-}
-
-.chart {
-  display: flex;
-  justify-content: space-around;
-  align-items: flex-end;
-  height: 200px;
+  font-weight: 700;
   margin-bottom: 2rem;
-  padding: 0 1rem;
+  color: var(--primary);
+  border-left: 4px solid var(--primary);
+  padding-left: 0.75rem;
 }
 
-.barContainer {
+.horizontalGrid {
   display: flex;
   flex-direction: column;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.elementRow {
+  display: flex;
   align-items: center;
+  gap: 1rem;
+}
+
+.elementIcon {
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 1rem;
+  font-weight: bold;
+  color: white;
+  flex-shrink: 0;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.elementInfo {
   flex: 1;
-  max-width: 80px;
 }
 
-.barWrapper {
-  width: 100%;
-  height: 150px;
+.elementLabel {
   display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  margin-bottom: 0.5rem;
+  justify-content: space-between;
+  margin-bottom: 0.4rem;
+  font-size: 0.9rem;
 }
 
-.bar {
-  width: 60%;
-  min-height: 20px;
-  border-radius: 0.25rem 0.25rem 0 0;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  padding-top: 0.25rem;
-  transition: all 0.3s ease;
-  position: relative;
-}
-
-.bar:hover {
-  opacity: 0.8;
-  transform: translateY(-2px);
+.name {
+  font-weight: 600;
+  color: var(--foreground);
+  opacity: 0.9;
 }
 
 .count {
-  color: #000;
-  font-weight: bold;
-  font-size: 0.9rem;
-}
-
-.elementName {
-  font-size: 0.85rem;
   color: var(--foreground);
-  margin-bottom: 0.25rem;
-  font-weight: 500;
+  opacity: 0.5;
 }
 
-.percentage {
-  font-size: 0.75rem;
-  color: var(--primary);
-  opacity: 0.7;
+.barContainer {
+  height: 0.6rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.bar {
+  height: 100%;
+  border-radius: 1rem;
+  transition: width 0.8s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+}
+
+.percentageText {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--foreground);
+  opacity: 0.8;
+  width: 3rem;
+  text-align: right;
 }
 
 .interpretation {
-  border-top: 1px solid var(--border);
-  padding-top: 1.5rem;
+  padding: 1.5rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.summary {
-  margin: 0 0 1.5rem 0;
-  color: var(--foreground);
+.summaryText {
   font-size: 0.95rem;
-  line-height: 1.6;
-  text-align: center;
-  font-weight: 500;
-}
-
-.analysisItem {
+  line-height: 1.7;
+  color: var(--foreground);
+  opacity: 0.9;
   margin-bottom: 1rem;
-  padding: 1rem;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 0.5rem;
-  border-left: 3px solid var(--primary);
+  text-align: center;
 }
 
-.analysisItem:last-child {
-  margin-bottom: 0;
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
 }
 
-.label {
+.tag {
+  padding: 0.3rem 0.8rem;
+  border-radius: 2rem;
+  font-size: 0.8rem;
   font-weight: 600;
-  color: var(--primary);
-  margin-right: 0.5rem;
-  font-size: 0.9rem;
 }
 
-.value {
+.tag.excess {
+  background: rgba(248, 113, 113, 0.1);
+  color: #f87171;
+  border: 1px solid rgba(248, 113, 113, 0.2);
+}
+
+.tag.missing {
+  background: rgba(255, 255, 255, 0.05);
   color: var(--foreground);
-  font-size: 0.9rem;
-  font-weight: 500;
+  opacity: 0.6;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.description {
-  margin: 0.5rem 0 0 0;
-  color: var(--foreground);
-  opacity: 0.8;
-  font-size: 0.85rem;
-  line-height: 1.5;
-}
-
-@media (max-width: 600px) {
-  .container {
-    padding: 1rem;
-  }
-  
-  .chart {
-    height: 160px;
-    padding: 0 0.5rem;
-  }
-  
-  .barWrapper {
-    height: 120px;
-  }
-  
-  .barContainer {
-    max-width: 60px;
-  }
-  
-  .count {
-    font-size: 0.8rem;
-  }
-  
-  .elementName {
-    font-size: 0.75rem;
-  }
-}
-
-/* Detailed Analysis Styles */
 .detailedAnalysis {
   margin-top: 2rem;
-  padding-top: 2rem;
-  border-top: 1px solid var(--border);
 }
 
 .detailedTitle {
-  margin: 0 0 1.5rem 0;
-  color: var(--foreground);
   font-size: 1rem;
-  font-weight: 600;
-  text-align: center;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: var(--foreground);
+  opacity: 0.8;
 }
 
 .elementDetail {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
   padding: 1.25rem;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.05);
-  transition: all 0.2s ease;
-}
-
-.elementDetail:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.1);
-  transform: translateY(-1px);
-}
-
-.elementDetail:last-child {
-  margin-bottom: 0;
+  border-radius: 1rem;
 }
 
 .elementHeader {
@@ -191,83 +158,88 @@
 }
 
 .elementBadge {
-  padding: 0.4rem 1rem;
-  border-radius: 1rem;
-  font-weight: 600;
+  padding: 0.3rem 0.75rem;
+  border-radius: 0.5rem;
   font-size: 0.9rem;
-  color: #000;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .elementStats {
   display: flex;
   gap: 0.5rem;
-  align-items: center;
+  font-size: 0.85rem;
 }
 
 .elementCount {
-  color: var(--foreground);
   font-weight: 600;
-  font-size: 0.9rem;
+  color: var(--foreground);
 }
 
 .elementLevel {
   color: var(--primary);
-  font-size: 0.85rem;
-  font-weight: 500;
-  opacity: 0.9;
+  opacity: 0.8;
 }
 
 .elementDescription {
-  margin: 0;
-  color: var(--foreground);
   font-size: 0.9rem;
-  line-height: 1.7;
-  opacity: 0.85;
-}
-
-
-@media (max-width: 600px) {
-  .detailedAnalysis {
-    margin-top: 1.5rem;
-    padding-top: 1.5rem;
-  }
-  
-  .elementDetail {
-    padding: 1rem;
-  }
-  
-  .elementBadge {
-    padding: 0.3rem 0.75rem;
-    font-size: 0.85rem;
-  }
-  
-  .elementCount,
-  .elementLevel {
-    font-size: 0.8rem;
-  }
-  
-  .elementDescription {
-    font-size: 0.85rem;
-  }
-
-  .disclaimer {
-    font-size: 0.75rem;
-    padding: 0.75rem;
-  }
+  line-height: 1.6;
+  color: var(--foreground);
+  opacity: 0.8;
+  margin: 0;
 }
 
 .disclaimer {
-  margin-top: 1.5rem;
+  margin-top: 2rem;
   padding: 1rem;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 0.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 0.75rem;
+  font-size: 0.8rem;
   color: var(--foreground);
-  font-size: 0.85rem;
+  opacity: 0.5;
   line-height: 1.6;
   text-align: center;
-  opacity: 0.7;
 }
 
+/* Element Colors */
+.wood {
+  background-color: #4ade80;
+}
 
+.fire {
+  background-color: #f87171;
+}
+
+.earth {
+  background-color: #fbbf24;
+}
+
+.metal {
+  background-color: #94a3b8;
+}
+
+.water {
+  background-color: #1e293b;
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .elementIcon {
+    width: 2rem;
+    height: 2rem;
+    font-size: 0.85rem;
+  }
+
+  .percentageText {
+    width: 2.5rem;
+    font-size: 0.8rem;
+  }
+
+  .summaryText {
+    font-size: 0.85rem;
+  }
+}
