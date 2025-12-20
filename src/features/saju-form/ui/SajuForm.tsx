@@ -441,11 +441,10 @@ export const SajuForm = () => {
         <Button
           type="button"
           disabled={loading}
-          variant="outline"
           className={styles.secondaryButton}
           onClick={(e: React.MouseEvent) => handleSubmit(e as unknown as React.FormEvent, 'result')}
         >
-          {loading ? '분석 중...' : '토정비결'}
+          {loading ? '분석 중...' : '사주 결과보기'}
         </Button>
       </div>
     </form>
