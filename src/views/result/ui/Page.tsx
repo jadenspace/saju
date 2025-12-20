@@ -2,7 +2,7 @@
 
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { SajuCalculator } from '@/shared/lib/saju/SajuCalculator';
+import { SajuCalculator } from '@/shared/lib/saju/calculators/SajuCalculator';
 import { SajuCard } from '@/entities/saju/ui/SajuCard';
 import { Button } from '@/shared/ui/Button';
 import { SajuData } from '@/entities/saju/model/types';

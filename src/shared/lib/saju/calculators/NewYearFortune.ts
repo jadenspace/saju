@@ -1,4 +1,4 @@
-import { NewYearFortune, SajuData, FortuneAreaBase } from '../../../entities/saju/model/types';
+import { NewYearFortune, SajuData, FortuneAreaBase } from '../../../../entities/saju/model/types';
 import { calculateSipsin } from './TenGod';
 import { josa } from 'es-hangul';
 
@@ -18,7 +18,7 @@ type PalaceType = '년' | '월' | '일' | '시';
  */
 export const calculateNewYearFortune = (sajuData: SajuData): NewYearFortune => {
   const dayMaster = sajuData.day.ganHan;
-  
+
   // 1. Dominant & Support Sipsin
   const dominantTengod = calculateSipsin(dayMaster, YEAR_JI); // Year Ji base
   const supportTengod = calculateSipsin(dayMaster, YEAR_GAN);  // Year Gan base
@@ -57,11 +57,17 @@ export const calculateNewYearFortune = (sajuData: SajuData): NewYearFortune => {
     '편인': '통찰', '정인': '수렴'
   };
   const theme = themeMap[dominantTengod] || '균형';
-  const guideType: 'push' | 'manage' | 'defense' | 'reset' = 
+  const guideType: 'push' | 'manage' | 'defense' | 'reset' =
     event === '충' ? 'reset' : (['편재', '상관', '겁재'].includes(dominantTengod) ? 'push' : 'manage');
 
   // 6. Detailed Interpretation Logic
   const interpretation = getExpertInterpretation(dominantTengod, supportTengod, event, palace, ohaengExcess, ohaengLack, sajuData);
+
+  // 7. Key Months (주요 월) - 사용자 피드백에 따라 주요 월만 표시
+  const keyMonths = calculateKeyMonths(sajuData, dominantTengod, event);
+
+  // 8. Lucky Info (행운 정보) - 용신 오행 기반
+  const luckyInfo = calculateLuckyInfo(sajuData);
 
   return {
     year: CURRENT_YEAR,
@@ -74,6 +80,7 @@ export const calculateNewYearFortune = (sajuData: SajuData): NewYearFortune => {
     },
     yearNature: `${pace === 'fast' ? '빠르고 ' : '차분하고 '}${quality === 'volatile' ? '변동성이 큰 ' : '안정적인 '}해`,
     fortuneAreas: interpretation.areas,
+    keyMonths,
     fortuneGuide: interpretation.guide,
     expertMeta: {
       fortuneType: `${dominantTengod} 주도의 ${theme} 테마`,
@@ -91,7 +98,8 @@ export const calculateNewYearFortune = (sajuData: SajuData): NewYearFortune => {
       pace,
       theme,
       guideType
-    }
+    },
+    luckyInfo,
   };
 };
 
@@ -121,7 +129,7 @@ function getExpertInterpretation(
   // 1. Money
   const money = {
     score: ['편재', '정재', '식신'].includes(dominant) ? 85 : 70,
-    pros: dominant === '식신' || dominant === '상관' 
+    pros: dominant === '식신' || dominant === '상관'
       ? "나의 전문 기술이나 창의적인 아이디어가 시장에서 인정받으며 실질적인 수익으로 연결될 가능성이 매우 높습니다."
       : `${dominant}의 영향으로 활동 범위가 넓어지며 새로운 수익원 창출에 유리한 흐름입니다.`,
     cons: event === '충' || event === '형'
@@ -193,4 +201,89 @@ function calculateDynamicScore(dominant: string, event: string, saju: SajuData):
   if (event === '충') score -= 5;
   if (saju.ohaengAnalysis.missing.length === 0) score += 5; // Balanced chart
   return Math.min(95, Math.max(45, score));
+}
+
+/**
+ * 주요 월 계산 - 3개의 핵심 월만 반환
+ */
+function calculateKeyMonths(saju: SajuData, dominant: string, event: string): Array<{ month: number; theme: string; advice: string }> {
+  // 2026년 월별 천간지지 (인월 = 경인, 묘월 = 신묘, ...)
+  const monthBranches = ['寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥', '子', '丑'];
+  const dayJi = saju.day.jiHan;
+
+  const months: Array<{ month: number; theme: string; advice: string; priority: number }> = [];
+
+  monthBranches.forEach((ji, idx) => {
+    const month = idx + 1;
+    let theme = '';
+    let advice = '';
+    let priority = 0;
+
+    // 일지와 충 관계
+    if ((dayJi === '子' && ji === '午') || (dayJi === '午' && ji === '子') ||
+      (dayJi === '卯' && ji === '酉') || (dayJi === '酉' && ji === '卯') ||
+      (dayJi === '寅' && ji === '申') || (dayJi === '申' && ji === '寅') ||
+      (dayJi === '巳' && ji === '亥') || (dayJi === '亥' && ji === '巳') ||
+      (dayJi === '辰' && ji === '戌') || (dayJi === '戌' && ji === '辰') ||
+      (dayJi === '丑' && ji === '未') || (dayJi === '未' && ji === '丑')) {
+      theme = '변화의 달';
+      advice = '큰 결정은 신중히, 환경 변화에 유연하게 대응하세요.';
+      priority = 3;
+    }
+    // 삼합 또는 육합 관계
+    else if (isHarmony(dayJi, ji)) {
+      theme = '기회의 달';
+      advice = '새로운 인연과 기회가 찾아오는 시기, 적극적으로 행동하세요.';
+      priority = 2;
+    }
+    // 형 관계
+    else if (dayJi === ji) {
+      theme = '주의의 달';
+      advice = '건강과 대인관계에 특히 신경 쓰세요.';
+      priority = 1;
+    }
+
+    if (priority > 0) {
+      months.push({ month, theme, advice, priority });
+    }
+  });
+
+  // 우선순위 높은 순으로 정렬 후 상위 3개 반환
+  return months
+    .sort((a, b) => b.priority - a.priority)
+    .slice(0, 3)
+    .map(({ month, theme, advice }) => ({ month, theme, advice }));
+}
+
+function isHarmony(ji1: string, ji2: string): boolean {
+  const sixHarmony: Record<string, string> = {
+    '子': '丑', '丑': '子',
+    '寅': '亥', '亥': '寅',
+    '卯': '戌', '戌': '卯',
+    '辰': '酉', '酉': '辰',
+    '巳': '申', '申': '巳',
+    '午': '未', '未': '午'
+  };
+  return sixHarmony[ji1] === ji2;
+}
+
+/**
+ * 행운 정보 계산 - 부족한 오행 기반
+ */
+function calculateLuckyInfo(saju: SajuData): { color: string; direction: string; number: string } {
+  // 부족한 오행을 보완하는 색상/방향/숫자
+  const lackElement = saju.ohaengAnalysis.missing[0] || saju.ohaengAnalysis.deficient[0] || '';
+
+  const elementInfo: Record<string, { color: string; direction: string; number: string }> = {
+    '목(木)': { color: '청색, 녹색', direction: '동쪽', number: '3, 8' },
+    '화(火)': { color: '적색, 분홍색', direction: '남쪽', number: '2, 7' },
+    '토(土)': { color: '황색, 갈색', direction: '중앙', number: '5, 10' },
+    '금(金)': { color: '백색, 금색', direction: '서쪽', number: '4, 9' },
+    '수(水)': { color: '흑색, 감색', direction: '북쪽', number: '1, 6' },
+  };
+
+  // 부족한 오행이 있으면 해당 오행의 정보, 없으면 화(火) 기본값 (2026년 세운 오행)
+  const info = elementInfo[lackElement] || { color: '적색, 오렌지색', direction: '남쪽', number: '2, 7' };
+
+  return info;
 }

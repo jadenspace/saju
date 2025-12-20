@@ -1,0 +1,101 @@
+.container {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+}
+
+.title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--foreground);
+}
+
+.subtitle {
+    font-size: 0.85rem;
+    color: var(--foreground);
+    opacity: 0.6;
+    margin-bottom: 1.5rem;
+}
+
+.gongmangInfo {
+    margin-bottom: 1.5rem;
+}
+
+.gongmangChars {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.char {
+    padding: 1rem 2rem;
+    background: rgba(100, 116, 139, 0.1);
+    border: 1px solid rgba(100, 116, 139, 0.3);
+    border-radius: 0.75rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--foreground);
+}
+
+.affectedSection {
+    margin-bottom: 1.5rem;
+}
+
+.affectedTitle {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #f59e0b;
+    margin-bottom: 0.75rem;
+}
+
+.affectedList {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.affectedItem {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: rgba(245, 158, 11, 0.1);
+    border-radius: 0.5rem;
+}
+
+.pillarName {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--foreground);
+}
+
+.pillarMeaning {
+    font-size: 0.85rem;
+    color: var(--foreground);
+    opacity: 0.7;
+}
+
+.noAffected {
+    font-size: 0.9rem;
+    color: var(--foreground);
+    opacity: 0.7;
+    text-align: center;
+    padding: 1rem;
+    background: rgba(34, 197, 94, 0.1);
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.description {
+    font-size: 0.8rem;
+    color: var(--foreground);
+    opacity: 0.6;
+    line-height: 1.6;
+    margin: 0;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 0.5rem;
+}

@@ -1,7 +1,7 @@
-import { SajuCalculator } from './SajuCalculator';
-import { calculateNewYearFortune } from './NewYearFortune';
-import { JIJANGGAN_MAP } from './JijangganData';
-import { calculateSipsin } from './TenGod';
+import { SajuCalculator } from './calculators/SajuCalculator';
+import { calculateNewYearFortune } from './calculators/NewYearFortune';
+import { JIJANGGAN_MAP } from './data/JijangganData';
+import { calculateSipsin } from './calculators/TenGod';
 
 async function runTests() {
   console.log('--- Saju Logic & New Year Fortune Verification Start ---');
@@ -27,11 +27,11 @@ async function runTests() {
   console.log(`Event: ${fortune.analysisTags.event || 'None'}, Palace: ${fortune.analysisTags.palace || 'N/A'}`);
   console.log(`Year Nature: ${fortune.yearNature}`);
   console.log(`Summary: ${fortune.yearSummary.summaryText}`);
-  
+
   console.log('\n[Fortune Areas]:');
   console.log(`Money Score: ${fortune.fortuneAreas.money.score}`);
   console.log(`Career Strategy: ${fortune.fortuneAreas.career.strategy}`);
-  
+
   console.log('\n[Fortune Guide]:');
   console.log(`Do: ${fortune.fortuneGuide.do.join(', ')}`);
   console.log(`Keywords: ${fortune.fortuneGuide.keywords.join(', ')}`);

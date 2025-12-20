@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { Solar } from 'lunar-javascript';
-import { ILJU_60 } from '@/shared/lib/saju/IljuData';
+import { ILJU_60 } from '@/shared/lib/saju/data/IljuData';
 
 export type SearchType = 'gan' | 'ji' | 'ilju';
 

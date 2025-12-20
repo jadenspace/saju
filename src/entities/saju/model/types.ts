@@ -9,6 +9,7 @@ export interface Pillar {
   tenGodsJi?: string;  // Sipsin for Earthly Branch
   jijanggan?: string[]; // Hidden Stems
   jijangganTenGods?: string[]; // Sipsin for Hidden Stems
+  twelveStage?: string; // 12운성 (장생, 목욕, 관대, 건록, 제왕, 쇠, 병, 사, 므, 절, 태, 양)
 }
 
 export interface Seun {
@@ -72,6 +73,16 @@ export interface SajuData {
     missing: string[]; // 없는 오행 (0개)
     interpretation: string; // 종합 해석
   };
+  // 공망 정보
+  gongmang?: {
+    dayBased: [string, string]; // 일주 기준 공망 지지
+    affectedPillars: string[]; // 공망에 해당하는 주 (년주/월주/일주/시주)
+  };
+  // 12신살 분석
+  twelveSinsalAnalysis?: {
+    yearBased: Array<{ pillar: string; sinsal: string }>; // 년지 기준
+    dayBased: Array<{ pillar: string; sinsal: string }>;  // 일지 기준
+  };
 }
 export interface NewYearFortune {
   year: number;
@@ -115,6 +126,12 @@ export interface NewYearFortune {
     pace: 'fast' | 'slow' | 'mixed';
     theme: string;
     guideType: 'push' | 'manage' | 'defense' | 'reset';
+  };
+  // 행운 정보
+  luckyInfo?: {
+    color: string;
+    direction: string;
+    number: string;
   };
 }
 

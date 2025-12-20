@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { SajuData, NewYearFortune } from '../model/types';
-import { calculateNewYearFortune } from '../../../shared/lib/saju/NewYearFortune';
+import { calculateNewYearFortune } from '../../../shared/lib/saju/calculators/NewYearFortune';
 import styles from './NewYearFortuneAnalysis.module.css';
 import clsx from 'clsx';
 
@@ -62,6 +62,46 @@ export const NewYearFortuneAnalysis = ({ data }: Props) => {
         <ExpertAreaCard title="자기계발·내적 성찰" data={fortune.fortuneAreas.selfGrowth} icon="📚" />
       </div>
 
+      {/* 주요 월운 */}
+      {fortune.keyMonths && fortune.keyMonths.length > 0 && (
+        <div className={styles.keyMonthsSection}>
+          <h4 className={styles.sectionTitle}>📅 주요 월운</h4>
+          <div className={styles.monthsGrid}>
+            {fortune.keyMonths.map((m, idx) => (
+              <div key={idx} className={styles.monthCard}>
+                <span className={styles.monthNumber}>{m.month}월</span>
+                <span className={styles.monthTheme}>{m.theme}</span>
+                <p className={styles.monthAdvice}>{m.advice}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* 행운 정보 */}
+      {fortune.luckyInfo && (
+        <div className={styles.luckySection}>
+          <h4 className={styles.sectionTitle}>🍀 행운 정보</h4>
+          <div className={styles.luckyGrid}>
+            <div className={styles.luckyItem}>
+              <span className={styles.luckyIcon}>🎨</span>
+              <span className={styles.luckyLabel}>행운의 색상</span>
+              <span className={styles.luckyValue}>{fortune.luckyInfo.color}</span>
+            </div>
+            <div className={styles.luckyItem}>
+              <span className={styles.luckyIcon}>🧭</span>
+              <span className={styles.luckyLabel}>행운의 방향</span>
+              <span className={styles.luckyValue}>{fortune.luckyInfo.direction}</span>
+            </div>
+            <div className={styles.luckyItem}>
+              <span className={styles.luckyIcon}>🔢</span>
+              <span className={styles.luckyLabel}>행운의 숫자</span>
+              <span className={styles.luckyValue}>{fortune.luckyInfo.number}</span>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className={styles.actionGuide}>
         <div className={styles.guideBox}>
           <h4 className={styles.doTitle}>✅ 올해 운을 잘 쓰는 행동 (Do)</h4>
@@ -90,7 +130,7 @@ const ExpertAreaCard = ({ title, data, icon }: { title: string, data: any, icon:
         <p className={styles.prosText}><strong>좋은 점:</strong> {data.pros}</p>
         <p className={styles.consText}><strong>주의점:</strong> {data.cons}</p>
         <div className={styles.strategyBox}>
-           <strong>이렇게 쓰면 좋다:</strong> {data.strategy}
+          <strong>이렇게 쓰면 좋다:</strong> {data.strategy}
         </div>
       </div>
     </div>

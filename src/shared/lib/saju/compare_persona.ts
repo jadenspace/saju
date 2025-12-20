@@ -1,5 +1,5 @@
-import { SajuCalculator } from './SajuCalculator';
-import { calculateNewYearFortune } from './NewYearFortune';
+import { SajuCalculator } from './calculators/SajuCalculator';
+import { calculateNewYearFortune } from './calculators/NewYearFortune';
 
 function printPersona(name: string, year: number, month: number, day: number, hour: number, gender: 'male' | 'female') {
   const saju = SajuCalculator.calculate(year, month, day, hour, 0, gender);

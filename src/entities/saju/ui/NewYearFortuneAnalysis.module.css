@@ -163,9 +163,23 @@
   font-weight: 700;
 }
 
-.high { background: rgba(43, 138, 62, 0.2); color: #69db7c; border: 1px solid rgba(43, 138, 62, 0.3); }
-.medium { background: rgba(240, 140, 0, 0.2); color: #ffd43b; border: 1px solid rgba(240, 140, 0, 0.3); }
-.low { background: rgba(201, 42, 42, 0.2); color: #ff8787; border: 1px solid rgba(201, 42, 42, 0.3); }
+.high {
+  background: rgba(43, 138, 62, 0.2);
+  color: #69db7c;
+  border: 1px solid rgba(43, 138, 62, 0.3);
+}
+
+.medium {
+  background: rgba(240, 140, 0, 0.2);
+  color: #ffd43b;
+  border: 1px solid rgba(240, 140, 0, 0.3);
+}
+
+.low {
+  background: rgba(201, 42, 42, 0.2);
+  color: #ff8787;
+  border: 1px solid rgba(201, 42, 42, 0.3);
+}
 
 .cardContent {
   display: flex;
@@ -173,14 +187,20 @@
   gap: 0.75rem;
 }
 
-.prosText, .consText {
+.prosText,
+.consText {
   font-size: 1rem;
   line-height: 1.5;
   color: #ddd;
 }
 
-.prosText strong { color: #51cf66; }
-.consText strong { color: #ff8787; }
+.prosText strong {
+  color: #51cf66;
+}
+
+.consText strong {
+  color: #ff8787;
+}
 
 .strategyBox {
   margin-top: 0.5rem;
@@ -217,8 +237,13 @@
   font-size: 1.1rem;
 }
 
-.doTitle { color: #51cf66; }
-.dontTitle { color: #ff8787; }
+.doTitle {
+  color: #51cf66;
+}
+
+.dontTitle {
+  color: #ff8787;
+}
 
 .guideBox ul {
   list-style: none;
@@ -236,8 +261,116 @@
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
+/* Key Months Section */
+.keyMonthsSection {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.sectionTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+
+.monthsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.monthCard {
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.monthNumber {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.monthTheme {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.monthAdvice {
+  font-size: 0.8rem;
+  color: #aaa;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Lucky Section */
+.luckySection {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: linear-gradient(145deg, rgba(212, 175, 55, 0.05), rgba(212, 175, 55, 0.02));
+  border-radius: 12px;
+  border: 1px solid rgba(212, 175, 55, 0.15);
+}
+
+.luckyGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.luckyItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+}
+
+.luckyIcon {
+  font-size: 1.5rem;
+}
+
+.luckyLabel {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.luckyValue {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--primary);
+  text-align: center;
+}
+
 @media (max-width: 600px) {
-  .container { padding: 1rem; }
-  .summaryText { font-size: 1.2rem; }
-  .guideBox ul { grid-template-columns: 1fr; }
+  .container {
+    padding: 1rem;
+  }
+
+  .summaryText {
+    font-size: 1.2rem;
+  }
+
+  .guideBox ul {
+    grid-template-columns: 1fr;
+  }
+
+  .luckyGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .monthsGrid {
+    grid-template-columns: 1fr;
+  }
 }

@@ -1,4 +1,4 @@
-import { getIljuAnalysis } from '../../../shared/lib/saju/IljuData';
+import { getIljuAnalysis } from '../../../shared/lib/saju/data/IljuData';
 import { SajuData } from '../model/types';
 import styles from './IljuAnalysis.module.css';
 

@@ -1,10 +1,12 @@
 import clsx from 'clsx';
 import { useState } from 'react';
-import { CHEONGAN_EXPLANATIONS, JIJI_EXPLANATIONS, SIPSIN_EXPLANATIONS, PILLAR_EXPLANATIONS, DAEUN_EXPLANATION, DAEUN_DIRECTION_EXPLANATION, SAJU_PALJA_EXPLANATION } from '../../../shared/lib/saju/SajuExplanations';
+import { CHEONGAN_EXPLANATIONS, JIJI_EXPLANATIONS, SIPSIN_EXPLANATIONS, PILLAR_EXPLANATIONS, DAEUN_EXPLANATION, DAEUN_DIRECTION_EXPLANATION, SAJU_PALJA_EXPLANATION } from '../../../shared/lib/saju/data/SajuExplanations';
 import { Pillar, SajuData } from '../model/types';
 import { IljuAnalysis } from './IljuAnalysis';
-import { NewYearFortuneAnalysis } from './NewYearFortuneAnalysis';
 import { OhaengAnalysis } from './OhaengAnalysis';
+import { TwelveStagesAnalysis } from './TwelveStagesAnalysis';
+import { TwelveSinsalAnalysis } from './TwelveSinsalAnalysis';
+import { GongmangAnalysis } from './GongmangAnalysis';
 import styles from './SajuCard.module.css';
 
 interface SajuCardProps {
@@ -111,7 +113,6 @@ const PillarView = ({ pillar, label }: { pillar: Pillar; label: string }) => {
 export const SajuCard = ({ data, className }: SajuCardProps) => {
   const [showOhaeng, setShowOhaeng] = useState(false);
   const [showIlju, setShowIlju] = useState(false);
-  const [showNewYear, setShowNewYear] = useState(false);
 
   // Calculate current age and default Daeun index
   const getCurrentAge = () => {
@@ -240,21 +241,10 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
       {/* Analysis Buttons */}
       <div className={styles.analysisButtons}>
         <button
-          className={clsx(styles.analysisButton, showNewYear && styles.active)}
-          onClick={() => {
-            setShowNewYear(!showNewYear);
-            setShowIlju(false);
-            setShowOhaeng(false);
-          }}
-        >
-          신년운세
-        </button>
-        <button
           className={clsx(styles.analysisButton, showIlju && styles.active)}
           onClick={() => {
             setShowIlju(!showIlju);
             setShowOhaeng(false);
-            setShowNewYear(false);
           }}
         >
           일주 분석
@@ -264,7 +254,6 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
           onClick={() => {
             setShowOhaeng(!showOhaeng);
             setShowIlju(false);
-            setShowNewYear(false);
           }}
         >
           오행 분석
@@ -272,9 +261,13 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
       </div>
 
       {/* Analysis Sections */}
-      {showNewYear && <NewYearFortuneAnalysis data={data} />}
       {showOhaeng && <OhaengAnalysis data={data} />}
       {showIlju && <IljuAnalysis data={data} />}
+
+      {/* 추가 분석 섹션 - 토정비결 전용 */}
+      <TwelveStagesAnalysis data={data} />
+      <TwelveSinsalAnalysis data={data} />
+      <GongmangAnalysis data={data} />
     </div>
   );
 };

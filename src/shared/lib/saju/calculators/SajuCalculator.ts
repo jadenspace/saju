@@ -1,8 +1,11 @@
 import { Lunar, Solar } from 'lunar-javascript';
-import { DaeunPeriod, Pillar, SajuData, Seun } from '../../../entities/saju/model/types';
-import { JIJANGGAN_MAP, JIJANGGAN_WEIGHTS } from './JijangganData';
+import { DaeunPeriod, Pillar, SajuData, Seun } from '../../../../entities/saju/model/types';
+import { JIJANGGAN_MAP, JIJANGGAN_WEIGHTS } from '../data/JijangganData';
 import { calculateSipsin, getOhaeng, getPolarity } from './TenGod';
 import { addMinutes, getKoreaHistoricalOffset, getLongitudeOffset } from './TimeCorrection';
+import { getTwelveStage } from '../data/TwelveStages';
+import { getTwelveSinsal } from '../data/TwelveSinsal';
+import { getGongmang, isGongmang } from '../data/Gongmang';
 
 export class SajuCalculator {
   static calculate(year: number, month: number, day: number, hour: number, minute: number, gender: 'male' | 'female' = 'male', unknownTime: boolean = false, useTrueSolarTime: boolean = true, applyDST: boolean = true, midnightMode: 'early' | 'late' = 'late'): SajuData {
@@ -104,6 +107,37 @@ export class SajuCalculator {
     const ohaengDistribution = this.calculateOhaengDistribution(pillars);
     const ohaengAnalysis = this.analyzeOhaeng(ohaengDistribution);
 
+    // Calculate Gongmang (Empty/Void)
+    const gongmangJi = getGongmang(dayGanZhi);
+    const affectedPillars: string[] = [];
+    if (gongmangJi) {
+      if (isGongmang(dayGanZhi, pillars[0].jiHan)) affectedPillars.push('년주');
+      if (isGongmang(dayGanZhi, pillars[1].jiHan)) affectedPillars.push('월주');
+      if (isGongmang(dayGanZhi, pillars[2].jiHan)) affectedPillars.push('일주');
+      if (!unknownTime && isGongmang(dayGanZhi, pillars[3].jiHan)) affectedPillars.push('시주');
+    }
+
+    // Calculate 12신살 Analysis
+    const yearJi = pillars[0].jiHan;
+    const dayJi = pillars[2].jiHan;
+    const pillarNames = ['년주', '월주', '일주', '시주'];
+
+    const yearBasedSinsal: Array<{ pillar: string; sinsal: string }> = [];
+    const dayBasedSinsal: Array<{ pillar: string; sinsal: string }> = [];
+
+    pillars.forEach((pillar, idx) => {
+      // 년지 기준 12신살
+      const yearSinsal = getTwelveSinsal(yearJi, pillar.jiHan);
+      if (yearSinsal && idx !== 0) { // 년주 자체는 제외
+        yearBasedSinsal.push({ pillar: pillarNames[idx], sinsal: yearSinsal });
+      }
+      // 일지 기준 12신살
+      const daySinsal = getTwelveSinsal(dayJi, pillar.jiHan);
+      if (daySinsal && idx !== 2) { // 일주 자체는 제외
+        dayBasedSinsal.push({ pillar: pillarNames[idx], sinsal: daySinsal });
+      }
+    });
+
     return {
       year: pillars[0],
       month: pillars[1],
@@ -121,6 +155,14 @@ export class SajuCalculator {
       daeunDirection,
       ohaengDistribution,
       ohaengAnalysis,
+      gongmang: gongmangJi ? {
+        dayBased: gongmangJi,
+        affectedPillars,
+      } : undefined,
+      twelveSinsalAnalysis: {
+        yearBased: yearBasedSinsal,
+        dayBased: dayBasedSinsal,
+      },
     };
   }
 
@@ -154,6 +196,7 @@ export class SajuCalculator {
       tenGodsJi: calculateSipsin(dayMaster, jiHan),
       jijanggan: jijangganKor,
       jijangganTenGods: jijangganHan.map(char => calculateSipsin(dayMaster, char)),
+      twelveStage: getTwelveStage(dayMaster, jiHan) || undefined,
     };
   }
 
