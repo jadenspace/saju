@@ -45,6 +45,9 @@ export const ResultPage = () => {
           <Button onClick={() => router.push('/')} variant="outline">
             다시 입력하기
           </Button>
+          <Button onClick={() => router.push('/fortune?' + searchParams.toString())}>
+            2026 신년운세
+          </Button>
         </div>
       </div>
     </main>

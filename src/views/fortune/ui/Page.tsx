@@ -48,6 +48,9 @@ export const FortunePage = () => {
                     <Button onClick={() => router.push('/')} variant="outline">
                         다시 입력하기
                     </Button>
+                    <Button onClick={() => router.push('/result?' + searchParams.toString())}>
+                        사주 결과 보기
+                    </Button>
                 </div>
             </div>
         </main>
