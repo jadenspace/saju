@@ -7,9 +7,9 @@ export const HomePage = () => {
     <main className={styles.main}>
       <div className={styles.content}>
         <h1 className={styles.title}>
-          <span className={styles.subtitle}>운명의 나침반</span>
+          <span className={styles.subtitle}>무료 사주와 오늘의 운세</span>
           <br />
-          사주 만세력
+          운명의 나침반
         </h1>
         <p className={styles.description}>
           당신의 생년월일시를 입력하여<br />
