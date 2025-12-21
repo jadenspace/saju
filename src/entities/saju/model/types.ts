@@ -9,6 +9,20 @@ export interface Pillar {
   tenGodsJi?: string;  // Sipsin for Earthly Branch
   jijanggan?: string[]; // Hidden Stems
   jijangganTenGods?: string[]; // Sipsin for Hidden Stems
+  twelveStage?: string; // 12운성 (장생, 목욕, 관대, 건록, 제왕, 쇠, 병, 사, 므, 절, 태, 양)
+}
+
+export interface Seun {
+  year: number;
+  ganZhi: string;
+  gan: string;
+  ji: string;
+  ganHan: string;
+  jiHan: string;
+  ganElement?: string;
+  jiElement?: string;
+  tenGodsGan?: string;
+  tenGodsJi?: string;
 }
 
 export interface DaeunPeriod {
@@ -21,6 +35,7 @@ export interface DaeunPeriod {
   jiElement?: string;
   startAge: number;
   endAge: number;
+  seun: Seun[];
 }
 
 export interface SajuData {
@@ -58,4 +73,83 @@ export interface SajuData {
     missing: string[]; // 없는 오행 (0개)
     interpretation: string; // 종합 해석
   };
+  // 공망 정보
+  gongmang?: {
+    yearBased: {
+      gongmangJi: [string, string]; // 년주 기준 공망 지지
+      affectedPillars: Array<{
+        pillar: string;
+        haegong?: { isHaegong: boolean; reason: string | null };
+      }>;
+    };
+    dayBased: {
+      gongmangJi: [string, string]; // 일주 기준 공망 지지
+      affectedPillars: Array<{
+        pillar: string;
+        haegong?: { isHaegong: boolean; reason: string | null };
+      }>;
+    };
+  };
+  // 12신살 분석
+  twelveSinsalAnalysis?: {
+    yearBased: Array<{ pillar: string; sinsal: string }>; // 년지 기준
+    dayBased: Array<{ pillar: string; sinsal: string }>;  // 일지 기준
+  };
+}
+export interface NewYearFortune {
+  year: number;
+  gan: string;
+  ji: string;
+  yearSummary: {
+    score: number;
+    summaryText: string; // "Core Summary"
+    reason: string[];    // "Why (Bullets)"
+  };
+  yearNature: string;    // "Nature of the Year"
+  fortuneAreas: {
+    money: FortuneAreaBase;
+    relationship: FortuneAreaBase;
+    career: FortuneAreaBase;
+    selfGrowth: FortuneAreaBase;
+  };
+  keyMonths?: {
+    month: number;
+    theme: string;
+    advice: string;
+  }[];
+  fortuneGuide: {
+    do: string[];
+    dont: string[];
+    keywords: string[];
+  };
+  expertMeta: {
+    fortuneType: string;
+    warningLevel: 'low' | 'medium' | 'high';
+    recommendedActivities: string[];
+  };
+  analysisTags: {
+    dominantTengod: string;
+    supportTengod: string;
+    event?: string;
+    palace?: string;
+    ohaengExcess?: string;
+    ohaengLack?: string;
+    quality: 'stable' | 'volatile' | 'mixed';
+    pace: 'fast' | 'slow' | 'mixed';
+    theme: string;
+    guideType: 'push' | 'manage' | 'defense' | 'reset';
+  };
+  // 행운 정보
+  luckyInfo?: {
+    color: string;
+    direction: string;
+    number: string;
+  };
+}
+
+export interface FortuneAreaBase {
+  score: number;
+  pros: string;
+  cons: string;
+  strategy: string;
 }

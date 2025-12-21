@@ -1,0 +1,280 @@
+.manseuryeok {
+    width: 100%;
+    padding: 1.25rem;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1.5rem;
+    margin-bottom: 2rem;
+    color: var(--foreground);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Tooltip styles */
+.tooltipContainer {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    cursor: help;
+}
+
+.tooltip {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    bottom: 110%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.5rem 0.75rem;
+    background: rgba(0, 0, 0, 0.95);
+    color: #fff;
+    border-radius: 0.5rem;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    z-index: 1000;
+    pointer-events: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tooltipContainer:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+
+.headerPill {
+    width: 100%;
+    padding: 0.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 2rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.headerLabel {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--primary);
+    opacity: 0.9;
+}
+
+.headerGanZhi {
+    font-size: 0.7rem;
+    color: var(--foreground);
+    opacity: 0.4;
+}
+
+.sipsin {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--foreground);
+    opacity: 0.8;
+    height: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sipsin.ilgan {
+    color: var(--primary);
+    opacity: 1;
+    font-weight: 700;
+}
+
+.characterContainer {
+    width: 100%;
+    aspect-ratio: 1 / 1.1;
+    max-width: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 1rem;
+    font-size: 1.8rem;
+    font-weight: bold;
+    font-family: "Noto Serif KR", serif;
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+    transition: transform 0.2s ease;
+}
+
+.characterContainer:hover {
+    transform: scale(1.05);
+}
+
+.jijangganSection {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.5rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    min-height: 4.5rem;
+    /* Ensure consistent height for 3 rows */
+    justify-content: center;
+    /* Center content vertically if less than 3 */
+}
+
+.jijangganRow {
+    display: flex;
+    justify-content: center;
+    gap: 0.4rem;
+    font-size: 0.7rem;
+    color: var(--foreground);
+    opacity: 0.5;
+}
+
+.jijangganChar {
+    color: var(--foreground);
+    opacity: 0.9;
+    font-weight: 500;
+}
+
+.twelveStage {
+    font-size: 0.8rem;
+    color: var(--primary);
+    background: rgba(var(--primary-rgb), 0.1);
+    padding: 0.2rem 0.6rem;
+    border-radius: 1rem;
+    margin-top: 0.2rem;
+}
+
+.sinsalContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    align-items: center;
+    margin-top: 0.4rem;
+    min-height: 2rem;
+    /* Reserve space for at least 2 lines of sinsal/gongmang to reduce layout shift */
+}
+
+.sinsalItem {
+    font-size: 0.75rem;
+    color: #f87171;
+    background: rgba(248, 113, 113, 0.1);
+    padding: 0.1rem 0.5rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+}
+
+.gongmangContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.25rem;
+    width: 100%;
+    min-height: 1.6rem;
+    margin-top: 0.2rem;
+}
+
+.gongmangTag {
+    font-size: 0.7rem;
+    color: #f59e0b;
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    padding: 0.1rem 0.5rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+}
+
+.gongmangTag.haegong {
+    color: #22c55e;
+    background: rgba(34, 197, 94, 0.1);
+    border-color: rgba(34, 197, 94, 0.3);
+    text-decoration: line-through;
+    opacity: 0.7;
+}
+
+/* Element Colors (Vibrant for Dark Mode) */
+.wood {
+    background-color: #4ade80;
+    border: 1px solid #22c55e;
+}
+
+.fire {
+    background-color: #f87171;
+    border: 1px solid #ef4444;
+}
+
+.earth {
+    background-color: #fbbf24;
+    border: 1px solid #f59e0b;
+}
+
+.metal {
+    background-color: #94a3b8;
+    border: 1px solid #64748b;
+}
+
+.water {
+    background-color: #1e293b;
+    border: 1px solid #0f172a;
+}
+
+.unknown {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--foreground);
+    opacity: 0.5;
+}
+
+@media (max-width: 480px) {
+    .manseuryeok {
+        padding: 1rem;
+    }
+
+    .grid {
+        gap: 0.4rem;
+    }
+
+    .headerPill {
+        padding: 0.4rem;
+    }
+
+    .headerLabel {
+        font-size: 0.65rem;
+    }
+
+    .headerGanZhi {
+        font-size: 0.6rem;
+    }
+
+    .characterContainer {
+        font-size: 1.4rem;
+        border-radius: 0.75rem;
+    }
+
+    .sipsin {
+        font-size: 0.7rem;
+    }
+
+    .jijangganRow {
+        font-size: 0.65rem;
+        gap: 0.2rem;
+    }
+
+    .twelveStage {
+        font-size: 0.7rem;
+        padding: 0.15rem 0.4rem;
+    }
+}

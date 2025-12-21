@@ -1,9 +1,14 @@
 import clsx from 'clsx';
-import { useState } from 'react';
-import { CHEONGAN_EXPLANATIONS, JIJI_EXPLANATIONS, SIPSIN_EXPLANATIONS, PILLAR_EXPLANATIONS, DAEUN_EXPLANATION, DAEUN_DIRECTION_EXPLANATION, SAJU_PALJA_EXPLANATION } from '../../../shared/lib/saju/SajuExplanations';
+import { useState, useMemo } from 'react';
+import { DAEUN_EXPLANATION, DAEUN_DIRECTION_EXPLANATION, SAJU_PALJA_EXPLANATION } from '../../../shared/lib/saju/data/SajuExplanations';
 import { Pillar, SajuData } from '../model/types';
+import { SajuCalculator } from '../../../shared/lib/saju/calculators/SajuCalculator';
+import { ManseuryeokSection } from './ManseuryeokSection';
 import { IljuAnalysis } from './IljuAnalysis';
 import { OhaengAnalysis } from './OhaengAnalysis';
+import { TwelveStagesAnalysis } from './TwelveStagesAnalysis';
+import { TwelveSinsalAnalysis } from './TwelveSinsalAnalysis';
+import { GongmangAnalysis } from './GongmangAnalysis';
 import styles from './SajuCard.module.css';
 
 interface SajuCardProps {
@@ -11,105 +16,41 @@ interface SajuCardProps {
   className?: string;
 }
 
-const PillarView = ({ pillar, label }: { pillar: Pillar; label: string }) => {
-  // Check if pillar has meaningful values (not just placeholder "?")
-  const hasValue = pillar.ganHan !== '?' && pillar.jiHan !== '?';
-
-  return (
-    <div className={styles.pillar}>
-      <div className={styles.tooltipContainer}>
-        <div className={styles.label}>{label}</div>
-        <div className={styles.tooltip}>
-          {(PILLAR_EXPLANATIONS[label] || '').split('\n').map((line, i, arr) => (
-            <span key={i}>
-              {line}
-              {i < arr.length - 1 && <br />}
-            </span>
-          ))}
-        </div>
-      </div>
-      <div className={styles.characterBox}>
-        {/* Always render sipsin area for consistent spacing */}
-        {pillar.tenGodsGan && (
-          <div className={styles.tooltipContainer}>
-            <div className={styles.sipsin}>
-              {pillar.tenGodsGan}
-            </div>
-            <div className={styles.tooltip}>
-              {`${pillar.tenGodsGan} - ${SIPSIN_EXPLANATIONS[pillar.tenGodsGan] || ''}`.split('\n').map((line, i, arr) => (
-                <span key={i}>
-                  {line}
-                  {i < arr.length - 1 && <br />}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
-        {!pillar.tenGodsGan && (
-          <div className={styles.sipsin}></div>
-        )}
-        <div className={hasValue ? styles.tooltipContainer : ''}>
-          <div className={clsx(styles.characterContainer, styles[pillar.ganElement || 'unknown'])}>
-            <div className={styles.character}>{pillar.ganHan}</div>
-          </div>
-          {hasValue && <div className={styles.tooltip}>{CHEONGAN_EXPLANATIONS[pillar.ganHan] || ''}</div>}
-        </div>
-        <div className={styles.korean}>{pillar.gan}</div>
-      </div>
-      <div className={styles.characterBox}>
-        {/* Always render sipsin area for consistent spacing */}
-        {pillar.tenGodsJi && (
-          <div className={styles.tooltipContainer}>
-            <div className={styles.sipsin}>
-              {pillar.tenGodsJi}
-            </div>
-            <div className={styles.tooltip}>
-              {`${pillar.tenGodsJi} - ${SIPSIN_EXPLANATIONS[pillar.tenGodsJi] || ''}`.split('\n').map((line, i, arr) => (
-                <span key={i}>
-                  {line}
-                  {i < arr.length - 1 && <br />}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
-        {!pillar.tenGodsJi && (
-          <div className={styles.sipsin}></div>
-        )}
-        <div className={hasValue ? styles.tooltipContainer : ''}>
-          <div className={clsx(styles.characterContainer, styles[pillar.jiElement || 'unknown'])}>
-            <div className={styles.character}>{pillar.jiHan}</div>
-          </div>
-          {hasValue && <div className={styles.tooltip}>{JIJI_EXPLANATIONS[pillar.jiHan] || ''}</div>}
-        </div>
-        <div className={styles.korean}>{pillar.ji}</div>
-        {pillar.jijanggan && pillar.jijanggan.length > 0 && (
-          <div className={styles.jijanggan}>
-            {pillar.jijanggan.map((char, i) => (
-              <div key={i} className={styles.tooltipContainer}>
-                <span className={styles.jijangganChar}>{char}</span>
-                <div className={styles.tooltip}>
-                  {(pillar.jijangganTenGods?.[i] && SIPSIN_EXPLANATIONS[pillar.jijangganTenGods[i]]
-                    ? `${pillar.jijangganTenGods[i]} - ${SIPSIN_EXPLANATIONS[pillar.jijangganTenGods[i]]}`
-                    : pillar.jijangganTenGods?.[i] || '').split('\n').map((line, j, arr) => (
-                      <span key={j}>
-                        {line}
-                        {j < arr.length - 1 && <br />}
-                      </span>
-                    ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
+// PillarView is now replaced by ManseuryeokSection for the primary view, 
+// but we keep it simplified if we want to use it elsewhere. 
+// For this overhaul, we will focus on the main grid.
 
 export const SajuCard = ({ data, className }: SajuCardProps) => {
   const [showOhaeng, setShowOhaeng] = useState(false);
-  const [showIlju, setShowIlju] = useState(false);
+  const [showIlju, setShowIlju] = useState(true);
+  const [showTwelveStages, setShowTwelveStages] = useState(false);
+  const [showTwelveSinsal, setShowTwelveSinsal] = useState(false);
+  const [showGongmang, setShowGongmang] = useState(false);
+
+  // Calculate current age and default Daeun index
+  const getCurrentAge = () => {
+    const birthDate = new Date(data.birthDate);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear() + 1; // Korean age
+    return age;
+  };
+
+  const defaultDaeunIndex = data.daeun.findIndex(
+    period => getCurrentAge() >= period.startAge && getCurrentAge() <= period.endAge
+  );
+
+  const [selectedDaeunIndex, setSelectedDaeunIndex] = useState<number | null>(
+    defaultDaeunIndex !== -1 ? defaultDaeunIndex : null
+  );
+
+  // 선택된 세운 년도 (기본값: 현재 년도)
+  const currentYear = new Date().getFullYear();
+  const [selectedSeunYear, setSelectedSeunYear] = useState<number>(currentYear);
+
+  // 월운 계산
+  const monthlyFortune = useMemo(() => {
+    return SajuCalculator.calculateMonthlyFortune(selectedSeunYear, data.day.ganHan);
+  }, [selectedSeunYear, data.day.ganHan]);
 
   return (
     <div className={clsx(styles.card, className)}>
@@ -129,12 +70,8 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
           {data.birthDate} {data.birthTime} {data.useTrueSolarTime ? '(-30)' : ''} {data.gender === 'male' ? '남' : '여'}
         </p>
       </div>
-      <div className={styles.pillarsContainer}>
-        <PillarView pillar={data.hour} label="시주" />
-        <PillarView pillar={data.day} label="일주" />
-        <PillarView pillar={data.month} label="월주" />
-        <PillarView pillar={data.year} label="년주" />
-      </div>
+
+      <ManseuryeokSection data={data} />
 
       {/* Daeun Section */}
       <div className={styles.daeunSection}>
@@ -151,11 +88,17 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
             </div>
           </div>
           <div className={styles.tooltipContainer}>
-            <span className={styles.daeunDirection}>
-              {data.daeunDirection === 'forward' ? '순행 ▶' : '역행 ◀'}
-            </span>
+            <div className={styles.daeunInfoPill}>
+              <span className={styles.daeunDirectionBadge}>
+                {data.daeunDirection === 'forward' ? '순행(順行)' : '역행(逆行)'}
+              </span>
+              <span className={styles.daeunSuBadge}>
+                대운수 <span className={styles.highlight}>{data.daeun[0].startAge}</span>
+              </span>
+            </div>
             <div className={styles.tooltip}>
-              {DAEUN_DIRECTION_EXPLANATION.split('\n').map((line, i, arr) => (
+              <div className={styles.tooltipTitle}>대운 정보</div>
+              {`${DAEUN_DIRECTION_EXPLANATION} \n\n * 대운수(${data.daeun[0].startAge}): 10년마다 바뀌는 대운이 시작되는 나이입니다.`.split('\n').map((line, i, arr) => (
                 <span key={i}>
                   {line}
                   {i < arr.length - 1 && <br />}
@@ -166,8 +109,13 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
         </div>
         <div className={styles.daeunContainer}>
           {data.daeun.map((period, index) => (
-            <div key={index} className={styles.daeunPeriod}>
+            <div
+              key={index}
+              className={clsx(styles.daeunPeriod, selectedDaeunIndex === index && styles.active)}
+              onClick={() => setSelectedDaeunIndex(selectedDaeunIndex === index ? null : index)}
+            >
               <div className={styles.daeunAge}>{period.startAge}-{period.endAge}세</div>
+              <div className={styles.daeunYears}>({period.seun[0].year} ~ {period.seun[9].year})</div>
               <div className={styles.daeunGanZhi}>
                 <span className={styles.daeunHan}>
                   <span className={clsx(styles[period.ganElement || ''])}>{period.ganHan}</span>
@@ -178,33 +126,125 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
             </div>
           ))}
         </div>
+
+        {/* Seun Section */}
+        {selectedDaeunIndex !== null && (
+          <div className={styles.seunSection}>
+            <div className={styles.seunHeader}>
+              <h4>세운 (歲運) - {data.daeun[selectedDaeunIndex].startAge}세 ~ {data.daeun[selectedDaeunIndex].endAge}세</h4>
+            </div>
+            <div className={styles.seunGrid}>
+              {data.daeun[selectedDaeunIndex].seun.map((yearFortune, idx) => {
+                const isSelected = yearFortune.year === selectedSeunYear;
+                const birthYear = new Date(data.birthDate).getFullYear();
+                const age = yearFortune.year - birthYear + 1; // Korean age
+
+                return (
+                  <div
+                    key={idx}
+                    className={clsx(styles.seunItem, isSelected && styles.active)}
+                    onClick={() => setSelectedSeunYear(yearFortune.year)}
+                  >
+                    <div className={styles.seunAge}>{age}세</div>
+                    <div className={styles.seunYear}>{yearFortune.year}년</div>
+                    <div className={styles.seunGanZhi}>
+                      <span className={styles.seunHan}>
+                        <span className={clsx(styles[yearFortune.ganElement || ''])}>{yearFortune.ganHan}</span>
+                        <span className={clsx(styles[yearFortune.jiElement || ''])}>{yearFortune.jiHan}</span>
+                      </span>
+                      <span className={styles.seunKor}>{yearFortune.gan}{yearFortune.ji}</span>
+                    </div>
+                    <div className={styles.seunSipsin}>
+                      <span className={styles.sipsinMini}>{yearFortune.tenGodsGan}</span>
+                      <span className={styles.sipsinMini}>{yearFortune.tenGodsJi}</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Wolun (Monthly Fortune) Section */}
+        {selectedDaeunIndex !== null && (
+          <div className={styles.wolunSection}>
+            <div className={styles.wolunHeader}>
+              <h4>월운 (月運) - {selectedSeunYear}년</h4>
+            </div>
+            <div className={styles.wolunGrid}>
+              {/* 1~12월 순서로 표시 (절기 기준 재배열) */}
+              {[11, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((idx) => {
+                const monthFortune = monthlyFortune[idx];
+                const displayMonth = idx === 11 ? 1 : idx + 2; // 축월=1월, 인월=2월, ...
+                const currentJieqiMonth = SajuCalculator.getCurrentJieqiMonth();
+                const isCurrentMonth = selectedSeunYear === currentYear && monthFortune.month === currentJieqiMonth;
+
+                return (
+                  <div
+                    key={monthFortune.month}
+                    className={clsx(styles.wolunItem, isCurrentMonth && styles.active)}
+                  >
+                    <div className={styles.wolunMonth}>{displayMonth}월</div>
+                    <div className={styles.wolunSolar}>{monthFortune.monthName}</div>
+                    <div className={styles.wolunGanZhi}>
+                      <span className={styles.wolunHan}>
+                        <span className={clsx(styles[monthFortune.ganElement || ''])}>{monthFortune.ganHan}</span>
+                        <span className={clsx(styles[monthFortune.jiElement || ''])}>{monthFortune.jiHan}</span>
+                      </span>
+                      <span className={styles.wolunKor}>{monthFortune.gan}{monthFortune.ji}</span>
+                    </div>
+                    <div className={styles.wolunSipsin}>
+                      <span className={styles.sipsinMini}>{monthFortune.tenGodsGan}</span>
+                      <span className={styles.sipsinMini}>{monthFortune.tenGodsJi}</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Analysis Buttons */}
       <div className={styles.analysisButtons}>
         <button
           className={clsx(styles.analysisButton, showIlju && styles.active)}
-          onClick={() => {
-            setShowIlju(!showIlju);
-            setShowOhaeng(false);
-          }}
+          onClick={() => { setShowIlju(!showIlju); setShowOhaeng(false); setShowTwelveStages(false); setShowTwelveSinsal(false); setShowGongmang(false); }}
         >
           일주 분석
         </button>
         <button
           className={clsx(styles.analysisButton, showOhaeng && styles.active)}
-          onClick={() => {
-            setShowOhaeng(!showOhaeng);
-            setShowIlju(false);
-          }}
+          onClick={() => { setShowOhaeng(!showOhaeng); setShowIlju(false); setShowTwelveStages(false); setShowTwelveSinsal(false); setShowGongmang(false); }}
         >
           오행 분석
+        </button>
+        <button
+          className={clsx(styles.analysisButton, showTwelveStages && styles.active)}
+          onClick={() => { setShowTwelveStages(!showTwelveStages); setShowIlju(false); setShowOhaeng(false); setShowTwelveSinsal(false); setShowGongmang(false); }}
+        >
+          12운성
+        </button>
+        <button
+          className={clsx(styles.analysisButton, showTwelveSinsal && styles.active)}
+          onClick={() => { setShowTwelveSinsal(!showTwelveSinsal); setShowIlju(false); setShowOhaeng(false); setShowTwelveStages(false); setShowGongmang(false); }}
+        >
+          12신살
+        </button>
+        <button
+          className={clsx(styles.analysisButton, showGongmang && styles.active)}
+          onClick={() => { setShowGongmang(!showGongmang); setShowIlju(false); setShowOhaeng(false); setShowTwelveStages(false); setShowTwelveSinsal(false); }}
+        >
+          공망
         </button>
       </div>
 
       {/* Analysis Sections */}
       {showOhaeng && <OhaengAnalysis data={data} />}
       {showIlju && <IljuAnalysis data={data} />}
+      {showTwelveStages && <TwelveStagesAnalysis data={data} />}
+      {showTwelveSinsal && <TwelveSinsalAnalysis data={data} />}
+      {showGongmang && <GongmangAnalysis data={data} />}
     </div>
   );
 };

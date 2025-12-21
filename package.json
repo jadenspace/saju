@@ -11,9 +11,10 @@
   "dependencies": {
     "@next/third-parties": "^16.0.7",
     "clsx": "^2.1.1",
+    "es-hangul": "^2.3.8",
     "korean-lunar-calendar": "^0.3.6",
     "lunar-javascript": "^1.7.7",
-    "next": "16.0.7",
+    "next": "16.0.10",
     "react": "19.2.1",
     "react-dom": "19.2.1"
   },

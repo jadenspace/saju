@@ -1,0 +1,125 @@
+.container {
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1.5rem;
+    color: var(--foreground);
+}
+
+.title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: var(--primary);
+    border-left: 4px solid var(--primary);
+    padding-left: 0.75rem;
+}
+
+.subtitle {
+    font-size: 0.85rem;
+    color: var(--foreground);
+    opacity: 0.6;
+    margin-top: -1rem;
+    margin-bottom: 1.5rem;
+    padding-left: 0.75rem;
+}
+
+.section {
+    margin-bottom: 1.5rem;
+}
+
+.section:last-child {
+    margin-bottom: 0;
+}
+
+.sectionTitle {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--primary);
+    margin-bottom: 1rem;
+}
+
+.sinsalList {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.sinsalItem {
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    transition: all 0.2s;
+}
+
+.sinsalItem:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.sinsalItem.major {
+    border-left: 3px solid #f59e0b;
+}
+
+.itemHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.pillarName {
+    font-size: 0.8rem;
+    color: var(--foreground);
+    opacity: 0.7;
+}
+
+.majorBadge {
+    font-size: 0.7rem;
+    padding: 0.15rem 0.4rem;
+    background: rgba(245, 158, 11, 0.2);
+    color: #f59e0b;
+    border-radius: 0.25rem;
+}
+
+.sinsalInfo {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.sinsalName {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--foreground);
+}
+
+.sinsalHanja {
+    font-size: 0.85rem;
+    color: var(--foreground);
+    opacity: 0.5;
+}
+
+.meaning {
+    font-size: 0.85rem;
+    color: var(--foreground);
+    opacity: 0.8;
+    margin: 0 0 0.5rem 0;
+}
+
+.description {
+    font-size: 0.8rem;
+    color: var(--foreground);
+    opacity: 0.6;
+    line-height: 1.5;
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .sinsalList {
+        grid-template-columns: 1fr;
+    }
+}

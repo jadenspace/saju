@@ -7,9 +7,9 @@ export const HomePage = () => {
     <main className={styles.main}>
       <div className={styles.content}>
         <h1 className={styles.title}>
-          <span className={styles.subtitle}>운명의 나침반</span>
+          <span className={styles.subtitle}>무료 사주와 오늘의 운세</span>
           <br />
-          사주 만세력
+          운명의 나침반
         </h1>
         <p className={styles.description}>
           당신의 생년월일시를 입력하여<br />
@@ -17,7 +17,23 @@ export const HomePage = () => {
         </p>
         <SajuForm />
 
-        <div style={{ marginTop: '2rem', textAlign: 'center' }}>
+        <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+
+          <Link
+            href="/guide"
+            style={{
+              display: 'inline-block',
+              padding: '0.75rem 1.5rem',
+              background: 'rgba(255,255,255,0.1)',
+              borderRadius: '0.75rem',
+              color: 'white',
+              textDecoration: 'none',
+              fontSize: '0.9rem',
+              border: '1px solid rgba(255,255,255,0.2)'
+            }}
+          >
+            📖 사주 명리학 가이드
+          </Link>
           <Link
             href="/search"
             style={{

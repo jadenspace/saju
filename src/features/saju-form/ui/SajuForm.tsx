@@ -88,7 +88,7 @@ export const SajuForm = () => {
     if (error) setError('');
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent, destination: 'fortune' | 'result') => {
     e.preventDefault();
     setLoading(true);
     setError('');
@@ -193,11 +193,11 @@ export const SajuForm = () => {
       midnightMode: formData.midnightMode,
     });
 
-    router.push(`/result?${params.toString()}`);
+    router.push(`/${destination}?${params.toString()}`);
   };
 
   return (
-    <form className={styles.form} onSubmit={handleSubmit}>
+    <form className={styles.form} onSubmit={(e) => e.preventDefault()}>
       {/* Settings Toggle */}
       <div className={styles.settingsToggle}>
         <button
@@ -429,9 +429,27 @@ export const SajuForm = () => {
         </div>
       )}
 
-      <Button type="submit" disabled={loading} className={styles.submitButton}>
-        {loading ? '분석 중...' : '만세력 확인하기'}
-      </Button>
+      <div className={styles.buttonGroup}>
+        <Button
+          type="button"
+          disabled={loading}
+          className={styles.primaryButton}
+          onClick={(e: React.MouseEvent) => {
+            alert("준비중입니다.");
+            // handleSubmit(e as unknown as React.FormEvent, 'fortune')
+          }}
+        >
+          {loading ? '분석 중...' : '2026 신년운세'}
+        </Button>
+        <Button
+          type="button"
+          disabled={loading}
+          className={styles.secondaryButton}
+          onClick={(e: React.MouseEvent) => handleSubmit(e as unknown as React.FormEvent, 'result')}
+        >
+          {loading ? '분석 중...' : '사주 결과보기'}
+        </Button>
+      </div>
     </form>
   );
 };

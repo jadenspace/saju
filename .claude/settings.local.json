@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(npm run build:*)",
+      "Bash(node -e:*)",
+      "Bash(npx ts-node:*)",
+      "Bash(npx tsx:*)",
+      "Bash(timeout 15 npx tsx:*)",
+      "Bash(./node_modules/.bin/tsx:*)",
+      "Bash(npm exec:*)"
+    ]
+  }
+}

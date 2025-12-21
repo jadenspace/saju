@@ -1,9 +1,11 @@
 .container {
+  margin-top: 1.5rem;
   padding: 1.5rem;
-  background: rgba(255, 255, 255, 0.02);
-  border-radius: 0.75rem;
-  border: 1px solid var(--border);
-  margin-top: 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1.5rem;
+  color: var(--foreground);
 }
 
 .header {
