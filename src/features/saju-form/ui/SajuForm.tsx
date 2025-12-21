@@ -434,7 +434,10 @@ export const SajuForm = () => {
           type="button"
           disabled={loading}
           className={styles.primaryButton}
-          onClick={(e: React.MouseEvent) => handleSubmit(e as unknown as React.FormEvent, 'fortune')}
+          onClick={(e: React.MouseEvent) => {
+            alert("준비중입니다.");
+            // handleSubmit(e as unknown as React.FormEvent, 'fortune')
+          }}
         >
           {loading ? '분석 중...' : '2026 신년운세'}
         </Button>
