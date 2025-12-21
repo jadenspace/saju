@@ -75,8 +75,20 @@ export interface SajuData {
   };
   // 공망 정보
   gongmang?: {
-    dayBased: [string, string]; // 일주 기준 공망 지지
-    affectedPillars: string[]; // 공망에 해당하는 주 (년주/월주/일주/시주)
+    yearBased: {
+      gongmangJi: [string, string]; // 년주 기준 공망 지지
+      affectedPillars: Array<{
+        pillar: string;
+        haegong?: { isHaegong: boolean; reason: string | null };
+      }>;
+    };
+    dayBased: {
+      gongmangJi: [string, string]; // 일주 기준 공망 지지
+      affectedPillars: Array<{
+        pillar: string;
+        haegong?: { isHaegong: boolean; reason: string | null };
+      }>;
+    };
   };
   // 12신살 분석
   twelveSinsalAnalysis?: {

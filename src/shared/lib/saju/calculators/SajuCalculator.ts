@@ -5,7 +5,7 @@ import { calculateSipsin, getOhaeng, getPolarity } from './TenGod';
 import { addMinutes, getKoreaHistoricalOffset, getLongitudeOffset } from './TimeCorrection';
 import { getTwelveStage } from '../data/TwelveStages';
 import { getTwelveSinsal } from '../data/TwelveSinsal';
-import { getGongmang, isGongmang } from '../data/Gongmang';
+import { getGongmang, isGongmang, checkHaegong } from '../data/Gongmang';
 
 export class SajuCalculator {
   static calculate(year: number, month: number, day: number, hour: number, minute: number, gender: 'male' | 'female' = 'male', unknownTime: boolean = false, useTrueSolarTime: boolean = true, applyDST: boolean = true, midnightMode: 'early' | 'late' = 'late'): SajuData {
@@ -108,13 +108,38 @@ export class SajuCalculator {
     const ohaengAnalysis = this.analyzeOhaeng(ohaengDistribution);
 
     // Calculate Gongmang (Empty/Void)
-    const gongmangJi = getGongmang(dayGanZhi);
-    const affectedPillars: string[] = [];
-    if (gongmangJi) {
-      if (isGongmang(dayGanZhi, pillars[0].jiHan)) affectedPillars.push('년주');
-      if (isGongmang(dayGanZhi, pillars[1].jiHan)) affectedPillars.push('월주');
-      if (isGongmang(dayGanZhi, pillars[2].jiHan)) affectedPillars.push('일주');
-      if (!unknownTime && isGongmang(dayGanZhi, pillars[3].jiHan)) affectedPillars.push('시주');
+    // 모든 지지 수집 (해공 체크용)
+    const allJi = [pillars[0].jiHan, pillars[1].jiHan, pillars[2].jiHan];
+    if (!unknownTime) allJi.push(pillars[3].jiHan);
+
+    // 년공망: 년주 기준으로 월지/일지/시지 확인 (년지 자체는 제외)
+    const yearGongmangJi = getGongmang(yearGanZhi);
+    const yearBasedAffected: Array<{ pillar: string; haegong?: { isHaegong: boolean; reason: string | null } }> = [];
+    if (yearGongmangJi) {
+      if (isGongmang(yearGanZhi, pillars[1].jiHan)) {
+        yearBasedAffected.push({ pillar: '월주', haegong: checkHaegong(pillars[1].jiHan, allJi) });
+      }
+      if (isGongmang(yearGanZhi, pillars[2].jiHan)) {
+        yearBasedAffected.push({ pillar: '일주', haegong: checkHaegong(pillars[2].jiHan, allJi) });
+      }
+      if (!unknownTime && isGongmang(yearGanZhi, pillars[3].jiHan)) {
+        yearBasedAffected.push({ pillar: '시주', haegong: checkHaegong(pillars[3].jiHan, allJi) });
+      }
+    }
+
+    // 일공망: 일주 기준으로 년지/월지/시지 확인 (일지 자체는 제외)
+    const dayGongmangJi = getGongmang(dayGanZhi);
+    const dayBasedAffected: Array<{ pillar: string; haegong?: { isHaegong: boolean; reason: string | null } }> = [];
+    if (dayGongmangJi) {
+      if (isGongmang(dayGanZhi, pillars[0].jiHan)) {
+        dayBasedAffected.push({ pillar: '년주', haegong: checkHaegong(pillars[0].jiHan, allJi) });
+      }
+      if (isGongmang(dayGanZhi, pillars[1].jiHan)) {
+        dayBasedAffected.push({ pillar: '월주', haegong: checkHaegong(pillars[1].jiHan, allJi) });
+      }
+      if (!unknownTime && isGongmang(dayGanZhi, pillars[3].jiHan)) {
+        dayBasedAffected.push({ pillar: '시주', haegong: checkHaegong(pillars[3].jiHan, allJi) });
+      }
     }
 
     // Calculate 12신살 Analysis
@@ -155,9 +180,15 @@ export class SajuCalculator {
       daeunDirection,
       ohaengDistribution,
       ohaengAnalysis,
-      gongmang: gongmangJi ? {
-        dayBased: gongmangJi,
-        affectedPillars,
+      gongmang: (yearGongmangJi || dayGongmangJi) ? {
+        yearBased: {
+          gongmangJi: yearGongmangJi || ['', ''],
+          affectedPillars: yearBasedAffected,
+        },
+        dayBased: {
+          gongmangJi: dayGongmangJi || ['', ''],
+          affectedPillars: dayBasedAffected,
+        },
       } : undefined,
       twelveSinsalAnalysis: {
         yearBased: yearBasedSinsal,

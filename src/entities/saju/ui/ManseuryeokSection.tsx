@@ -126,7 +126,11 @@ export const ManseuryeokSection = ({ data }: ManseuryeokSectionProps) => {
     };
 
     const checkGongmang = (pillarLabel: string) => {
-        return data.gongmang?.affectedPillars.includes(pillarLabel) || false;
+        if (!data.gongmang) return false;
+        // 일공망 기준 (원칙적 기준)으로만 체크 - 해공되지 않은 경우만 표시
+        const dayBasedMatch = data.gongmang.dayBased.affectedPillars.find(p => p.pillar === pillarLabel);
+        if (dayBasedMatch && !dayBasedMatch.haegong?.isHaegong) return true;
+        return false;
     };
 
     return (
