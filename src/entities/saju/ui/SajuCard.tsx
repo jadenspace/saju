@@ -1,7 +1,8 @@
 import clsx from 'clsx';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { DAEUN_EXPLANATION, DAEUN_DIRECTION_EXPLANATION, SAJU_PALJA_EXPLANATION } from '../../../shared/lib/saju/data/SajuExplanations';
 import { Pillar, SajuData } from '../model/types';
+import { SajuCalculator } from '../../../shared/lib/saju/calculators/SajuCalculator';
 import { ManseuryeokSection } from './ManseuryeokSection';
 import { IljuAnalysis } from './IljuAnalysis';
 import { OhaengAnalysis } from './OhaengAnalysis';
@@ -41,6 +42,15 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
   const [selectedDaeunIndex, setSelectedDaeunIndex] = useState<number | null>(
     defaultDaeunIndex !== -1 ? defaultDaeunIndex : null
   );
+
+  // 선택된 세운 년도 (기본값: 현재 년도)
+  const currentYear = new Date().getFullYear();
+  const [selectedSeunYear, setSelectedSeunYear] = useState<number>(currentYear);
+
+  // 월운 계산
+  const monthlyFortune = useMemo(() => {
+    return SajuCalculator.calculateMonthlyFortune(selectedSeunYear, data.day.ganHan);
+  }, [selectedSeunYear, data.day.ganHan]);
 
   return (
     <div className={clsx(styles.card, className)}>
@@ -125,12 +135,16 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
             </div>
             <div className={styles.seunGrid}>
               {data.daeun[selectedDaeunIndex].seun.map((yearFortune, idx) => {
-                const isCurrentYear = yearFortune.year === new Date().getFullYear();
+                const isSelected = yearFortune.year === selectedSeunYear;
                 const birthYear = new Date(data.birthDate).getFullYear();
                 const age = yearFortune.year - birthYear + 1; // Korean age
 
                 return (
-                  <div key={idx} className={clsx(styles.seunItem, isCurrentYear && styles.active)}>
+                  <div
+                    key={idx}
+                    className={clsx(styles.seunItem, isSelected && styles.active)}
+                    onClick={() => setSelectedSeunYear(yearFortune.year)}
+                  >
                     <div className={styles.seunAge}>{age}세</div>
                     <div className={styles.seunYear}>{yearFortune.year}년</div>
                     <div className={styles.seunGanZhi}>
@@ -143,6 +157,45 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
                     <div className={styles.seunSipsin}>
                       <span className={styles.sipsinMini}>{yearFortune.tenGodsGan}</span>
                       <span className={styles.sipsinMini}>{yearFortune.tenGodsJi}</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Wolun (Monthly Fortune) Section */}
+        {selectedDaeunIndex !== null && (
+          <div className={styles.wolunSection}>
+            <div className={styles.wolunHeader}>
+              <h4>월운 (月運) - {selectedSeunYear}년</h4>
+            </div>
+            <div className={styles.wolunGrid}>
+              {/* 1~12월 순서로 표시 (절기 기준 재배열) */}
+              {[11, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((idx) => {
+                const monthFortune = monthlyFortune[idx];
+                const displayMonth = idx === 11 ? 1 : idx + 2; // 축월=1월, 인월=2월, ...
+                const currentJieqiMonth = SajuCalculator.getCurrentJieqiMonth();
+                const isCurrentMonth = selectedSeunYear === currentYear && monthFortune.month === currentJieqiMonth;
+
+                return (
+                  <div
+                    key={monthFortune.month}
+                    className={clsx(styles.wolunItem, isCurrentMonth && styles.active)}
+                  >
+                    <div className={styles.wolunMonth}>{displayMonth}월</div>
+                    <div className={styles.wolunSolar}>{monthFortune.monthName}</div>
+                    <div className={styles.wolunGanZhi}>
+                      <span className={styles.wolunHan}>
+                        <span className={clsx(styles[monthFortune.ganElement || ''])}>{monthFortune.ganHan}</span>
+                        <span className={clsx(styles[monthFortune.jiElement || ''])}>{monthFortune.jiHan}</span>
+                      </span>
+                      <span className={styles.wolunKor}>{monthFortune.gan}{monthFortune.ji}</span>
+                    </div>
+                    <div className={styles.wolunSipsin}>
+                      <span className={styles.sipsinMini}>{monthFortune.tenGodsGan}</span>
+                      <span className={styles.sipsinMini}>{monthFortune.tenGodsJi}</span>
                     </div>
                   </div>
                 );

@@ -536,4 +536,107 @@ export class SajuCalculator {
     };
     return map[han] || han;
   }
+
+  /**
+   * 월운 계산 (년상기월법)
+   * @param year 년도
+   * @param dayMaster 일간 (십신 계산용)
+   * @returns 12개월의 월운 배열 (절기 기준)
+   */
+  static calculateMonthlyFortune(year: number, dayMaster: string): Array<{
+    month: number;
+    monthName: string;
+    solarMonth: string;
+    ganZhi: string;
+    gan: string;
+    ji: string;
+    ganHan: string;
+    jiHan: string;
+    ganElement: string;
+    jiElement: string;
+    tenGodsGan: string;
+    tenGodsJi: string;
+  }> {
+    // 년간에 따른 월간 시작 (년상기월법)
+    // 갑기년: 병인월, 을경년: 무인월, 병신년: 경인월, 정임년: 임인월, 무계년: 갑인월
+    const YEAR_GAN_TO_MONTH_START: Record<string, number> = {
+      '甲': 2, '己': 2,  // 병(丙)부터 시작 (천간 인덱스 2)
+      '乙': 4, '庚': 4,  // 무(戊)부터 시작 (천간 인덱스 4)
+      '丙': 6, '辛': 6,  // 경(庚)부터 시작 (천간 인덱스 6)
+      '丁': 8, '壬': 8,  // 임(壬)부터 시작 (천간 인덱스 8)
+      '戊': 0, '癸': 0   // 갑(甲)부터 시작 (천간 인덱스 0)
+    };
+
+    const CHEONGAN = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'];
+    // 월지: 인월(1월)부터 시작하여 12달
+    const MONTH_JIJI = ['寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥', '子', '丑'];
+    // 월 이름 (절기 기준)
+    const MONTH_NAMES = ['인월', '묘월', '진월', '사월', '오월', '미월', '신월', '유월', '술월', '해월', '자월', '축월'];
+    // 대략적인 양력 월 (절기 기준)
+    const SOLAR_MONTHS = ['2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월', '1월'];
+
+    // 해당 년도의 년간 가져오기 (입춘 이후 기준)
+    const solar = Solar.fromYmdHms(year, 3, 1, 12, 0, 0);
+    const lunar = solar.getLunar();
+    const yearGanZhi = lunar.getYearInGanZhiByLiChun();
+    const yearGan = yearGanZhi.charAt(0);
+
+    const monthStartIndex = YEAR_GAN_TO_MONTH_START[yearGan] || 0;
+    const result: Array<{
+      month: number;
+      monthName: string;
+      solarMonth: string;
+      ganZhi: string;
+      gan: string;
+      ji: string;
+      ganHan: string;
+      jiHan: string;
+      ganElement: string;
+      jiElement: string;
+      tenGodsGan: string;
+      tenGodsJi: string;
+    }> = [];
+
+    for (let i = 0; i < 12; i++) {
+      const month = i + 1;
+      const ganIndex = (monthStartIndex + i) % 10;
+      const ganHan = CHEONGAN[ganIndex];
+      const jiHan = MONTH_JIJI[i];
+
+      result.push({
+        month,
+        monthName: MONTH_NAMES[i],
+        solarMonth: SOLAR_MONTHS[i],
+        ganZhi: ganHan + jiHan,
+        gan: this.convertHanToKoreanGan(ganHan),
+        ji: this.convertHanToKoreanJi(jiHan),
+        ganHan,
+        jiHan,
+        ganElement: getOhaeng(ganHan) || '',
+        jiElement: getOhaeng(jiHan) || '',
+        tenGodsGan: calculateSipsin(dayMaster, ganHan),
+        tenGodsJi: calculateSipsin(dayMaster, jiHan),
+      });
+    }
+
+    return result;
+  }
+
+  /**
+   * 현재 절기 월 계산
+   * @returns 현재 절기 월 (1=인월, 2=묘월, ... 12=축월)
+   */
+  static getCurrentJieqiMonth(): number {
+    const now = new Date();
+    const solar = Solar.fromYmdHms(now.getFullYear(), now.getMonth() + 1, now.getDate(), 12, 0, 0);
+    const lunar = solar.getLunar();
+    const monthZhi = lunar.getMonthInGanZhiExact().charAt(1);
+
+    const JIJI_TO_MONTH: Record<string, number> = {
+      '寅': 1, '卯': 2, '辰': 3, '巳': 4, '午': 5, '未': 6,
+      '申': 7, '酉': 8, '戌': 9, '亥': 10, '子': 11, '丑': 12
+    };
+
+    return JIJI_TO_MONTH[monthZhi] || 1;
+  }
 }
