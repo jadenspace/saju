@@ -36,13 +36,13 @@ const PillarColumn = ({
     label,
     isIlju = false,
     sinsals = [],
-    isGongmang = false
+    gongmangs = []
 }: {
     pillar: Pillar;
     label: string;
     isIlju?: boolean;
     sinsals?: string[];
-    isGongmang?: boolean;
+    gongmangs?: Array<{ type: '년' | '일'; isHaegong: boolean; reason?: string | null }>;
 }) => {
     return (
         <div className={styles.column}>
@@ -103,11 +103,19 @@ const PillarColumn = ({
             </div>
 
             <div className={styles.gongmangContainer}>
-                {isGongmang && (
-                    <Tooltip content={GONGMANG_MEANING[label.replace('주', '지')] || '해당 주가 비어있음을 뜻합니다.'}>
-                        <div className={styles.gongmangTag}>공망</div>
-                    </Tooltip>
-                )}
+                {gongmangs.map((g, i) => {
+                    const meaning = GONGMANG_MEANING[label.replace('주', '지')] || '해당 주가 비어있음을 뜻합니다.';
+                    const tooltipContent = g.isHaegong
+                        ? `${meaning}\n\n※ ${g.reason}으로 해공됨`
+                        : meaning;
+                    return (
+                        <Tooltip key={i} content={tooltipContent}>
+                            <div className={clsx(styles.gongmangTag, g.isHaegong && styles.haegong)}>
+                                [{g.type}]공망
+                            </div>
+                        </Tooltip>
+                    );
+                })}
             </div>
         </div>
     );
@@ -125,12 +133,31 @@ export const ManseuryeokSection = ({ data }: ManseuryeokSectionProps) => {
         return Array.from(new Set(sinsals));
     };
 
-    const checkGongmang = (pillarLabel: string) => {
-        if (!data.gongmang) return false;
-        // 일공망 기준 (원칙적 기준)으로만 체크 - 해공되지 않은 경우만 표시
+    const getGongmangs = (pillarLabel: string): Array<{ type: '년' | '일'; isHaegong: boolean; reason?: string | null }> => {
+        if (!data.gongmang) return [];
+        const result: Array<{ type: '년' | '일'; isHaegong: boolean; reason?: string | null }> = [];
+
+        // 년공망 체크
+        const yearBasedMatch = data.gongmang.yearBased.affectedPillars.find(p => p.pillar === pillarLabel);
+        if (yearBasedMatch) {
+            result.push({
+                type: '년',
+                isHaegong: yearBasedMatch.haegong?.isHaegong || false,
+                reason: yearBasedMatch.haegong?.reason
+            });
+        }
+
+        // 일공망 체크
         const dayBasedMatch = data.gongmang.dayBased.affectedPillars.find(p => p.pillar === pillarLabel);
-        if (dayBasedMatch && !dayBasedMatch.haegong?.isHaegong) return true;
-        return false;
+        if (dayBasedMatch) {
+            result.push({
+                type: '일',
+                isHaegong: dayBasedMatch.haegong?.isHaegong || false,
+                reason: dayBasedMatch.haegong?.reason
+            });
+        }
+
+        return result;
     };
 
     return (
@@ -140,26 +167,26 @@ export const ManseuryeokSection = ({ data }: ManseuryeokSectionProps) => {
                     pillar={data.hour}
                     label="시주"
                     sinsals={getSinsal('시주')}
-                    isGongmang={checkGongmang('시주')}
+                    gongmangs={getGongmangs('시주')}
                 />
                 <PillarColumn
                     pillar={data.day}
                     label="일주"
                     isIlju
                     sinsals={getSinsal('일주')}
-                    isGongmang={checkGongmang('일주')}
+                    gongmangs={getGongmangs('일주')}
                 />
                 <PillarColumn
                     pillar={data.month}
                     label="월주"
                     sinsals={getSinsal('월주')}
-                    isGongmang={checkGongmang('월주')}
+                    gongmangs={getGongmangs('월주')}
                 />
                 <PillarColumn
                     pillar={data.year}
                     label="년주"
                     sinsals={getSinsal('년주')}
-                    isGongmang={checkGongmang('년주')}
+                    gongmangs={getGongmangs('년주')}
                 />
             </div>
         </div>

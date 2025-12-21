@@ -315,7 +315,8 @@ export class SajuCalculator {
         jiElement: getOhaeng(jiHan) || '',
         startAge: startAge + i * 10,
         endAge: startAge + i * 10 + 9, // 10-year period: start + 9 years
-        seun: this.generateSeunSequence(birthYear + startAge + i * 10, dayMaster),
+        // 한국 나이 기준: N세가 되는 해 = birthYear + N - 1
+        seun: this.generateSeunSequence(birthYear + startAge - 1 + i * 10, dayMaster),
       });
     }
 
