@@ -327,7 +327,41 @@ export class SajuCalculator {
 
     for (let i = 0; i < 10; i++) {
       const year = startYear + i;
-      const solar = Solar.fromYmdHms(year, 1, 1, 12, 0, 0);
+
+      // 정확한 입춘 날짜를 찾아 그 해의 간지를 계산 (기존 코드 패턴 유지)
+      // Solar.fromYmd(year, 1, 1) to get a base lunar object for the year
+      const yearLunar = Solar.fromYmd(year, 1, 1).getLunar();
+      const jieqiTable = (yearLunar as any).getJieQiTable();
+      const ipchunData = jieqiTable['立春'];
+
+      if (!ipchunData) {
+        // Fallback or error handling if 입춘 is not found
+        console.error(`Could not find Ipchun for year ${year}`);
+        // If Ipchun not found, use March 1st as a last resort fallback,
+        // although this case should ideally not happen for valid years.
+        const solar = Solar.fromYmdHms(year, 3, 1, 12, 0, 0);
+        const lunar = solar.getLunar();
+        const ganZhi = lunar.getYearInGanZhiByLiChun();
+        seunSequence.push({
+          year,
+          ganZhi,
+          ganHan: ganZhi.charAt(0),
+          jiHan: ganZhi.charAt(1),
+          gan: this.convertHanToKoreanGan(ganZhi.charAt(0)),
+          ji: this.convertHanToKoreanJi(ganZhi.charAt(1)),
+          ganElement: getOhaeng(ganZhi.charAt(0)) || '',
+          jiElement: getOhaeng(ganZhi.charAt(1)) || '',
+          tenGodsGan: calculateSipsin(dayMaster, ganZhi.charAt(0)),
+          tenGodsJi: calculateSipsin(dayMaster, ganZhi.charAt(1)),
+        });
+        continue;
+      }
+
+      // Access date parts using the internal _p property, consistent with calculateDaeunStartAge
+      const ipchunDateParts = (ipchunData as any)._p;
+
+      // 입춘 당일의 정오를 기준으로 Solar 객체 생성
+      const solar = Solar.fromYmdHms(ipchunDateParts.year, ipchunDateParts.month, ipchunDateParts.day, 12, 0, 0);
       const lunar = solar.getLunar();
       const ganZhi = lunar.getYearInGanZhiByLiChun();
 
