@@ -329,8 +329,7 @@ export class SajuCalculator {
       const year = startYear + i;
 
       // 정확한 입춘 날짜를 찾아 그 해의 간지를 계산 (기존 코드 패턴 유지)
-      // Solar.fromYmd(year, 1, 1) to get a base lunar object for the year
-      const yearLunar = Solar.fromYmd(year, 1, 1).getLunar();
+      const yearLunar = Solar.fromYmdHms(year, 1, 1, 12, 0, 0).getLunar();
       const jieqiTable = (yearLunar as any).getJieQiTable();
       const ipchunData = jieqiTable['立春'];
 

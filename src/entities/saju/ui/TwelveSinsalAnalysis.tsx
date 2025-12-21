@@ -50,7 +50,7 @@ export const TwelveSinsalAnalysis = ({ data }: Props) => {
 
     return (
         <div className={styles.container}>
-            <h3 className={styles.title}>12신살 분석</h3>
+            <h3 className={styles.title}>12신살 분석 (十二神煞)</h3>
             <p className={styles.subtitle}>
                 사주 내 지지들 간의 신살 관계
             </p>

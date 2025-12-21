@@ -23,7 +23,7 @@ export const TwelveStagesAnalysis = ({ data }: Props) => {
 
     return (
         <div className={styles.container}>
-            <h3 className={styles.title}>12운성 분석</h3>
+            <h3 className={styles.title}>12운성 분석 (十二運星)</h3>
             <p className={styles.subtitle}>
                 일간({data.day.gan})이 각 지지를 만났을 때의 에너지 상태
             </p>

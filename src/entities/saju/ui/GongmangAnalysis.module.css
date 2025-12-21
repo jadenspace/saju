@@ -115,8 +115,6 @@
 
 .affectedItem.haegong .pillarName {
     color: #22c55e;
-    text-decoration: line-through;
-    opacity: 0.7;
 }
 
 .haegongBadge {
@@ -138,6 +136,11 @@
     font-size: 0.8rem;
     color: var(--foreground);
     opacity: 0.7;
+}
+
+.affectedItem.haegong .pillarMeaning {
+    text-decoration: line-through;
+    opacity: 0.5;
 }
 
 .haegongReason {

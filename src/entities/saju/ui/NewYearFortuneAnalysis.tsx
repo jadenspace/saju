@@ -23,7 +23,6 @@ export const NewYearFortuneAnalysis = ({ data }: Props) => {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h3>{fortune.year}년 신년운세</h3>
         <p className={styles.subtitle}>병오년(丙午年) 붉은 말의 해</p>
       </div>
 

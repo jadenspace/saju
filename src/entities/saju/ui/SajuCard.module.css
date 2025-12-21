@@ -285,9 +285,6 @@
 }
 
 .analysisButton {
-  flex: 1;
-  min-width: 100px;
-  /* Ensure buttons don't get too small */
   padding: 0.75rem 1rem;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--border);
@@ -297,6 +294,19 @@
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
+}
+
+/* 첫 줄 2개 버튼 (50% 너비) */
+.analysisButton:nth-child(1),
+.analysisButton:nth-child(2) {
+  flex: 0 0 calc(50% - 0.5rem);
+}
+
+/* 둘째 줄 3개 버튼 (33.33% 너비) */
+.analysisButton:nth-child(3),
+.analysisButton:nth-child(4),
+.analysisButton:nth-child(5) {
+  flex: 0 0 calc(33.333% - 0.67rem);
 }
 
 .analysisButton:hover {

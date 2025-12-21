@@ -21,7 +21,7 @@ interface SajuCardProps {
 
 export const SajuCard = ({ data, className }: SajuCardProps) => {
   const [showOhaeng, setShowOhaeng] = useState(false);
-  const [showIlju, setShowIlju] = useState(false);
+  const [showIlju, setShowIlju] = useState(true);
   const [showTwelveStages, setShowTwelveStages] = useState(false);
   const [showTwelveSinsal, setShowTwelveSinsal] = useState(false);
   const [showGongmang, setShowGongmang] = useState(false);

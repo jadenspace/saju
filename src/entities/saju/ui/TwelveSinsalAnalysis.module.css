@@ -1,23 +1,29 @@
 .container {
-    margin-top: 2rem;
+    margin-top: 1.5rem;
     padding: 1.5rem;
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid var(--border);
-    border-radius: 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1.5rem;
+    color: var(--foreground);
 }
 
 .title {
     font-size: 1.1rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-    color: var(--foreground);
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: var(--primary);
+    border-left: 4px solid var(--primary);
+    padding-left: 0.75rem;
 }
 
 .subtitle {
     font-size: 0.85rem;
     color: var(--foreground);
     opacity: 0.6;
+    margin-top: -1rem;
     margin-bottom: 1.5rem;
+    padding-left: 0.75rem;
 }
 
 .section {
