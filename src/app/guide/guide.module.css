@@ -1,0 +1,261 @@
+.main {
+    min-height: 100vh;
+    padding: 4rem 1rem;
+    background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
+    color: white;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.backLink {
+    display: inline-block;
+    color: var(--primary);
+    text-decoration: none;
+    margin-bottom: 2rem;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+
+.backLink:hover {
+    opacity: 1;
+}
+
+.title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: var(--primary);
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    opacity: 0.7;
+    margin-bottom: 2rem;
+}
+
+.description {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    opacity: 0.9;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 1rem;
+    border-left: 4px solid var(--primary);
+}
+
+.section {
+    margin-bottom: 3rem;
+}
+
+.sectionTitle {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.sectionTitle::before {
+    content: "";
+    width: 4px;
+    height: 1.5rem;
+    background: var(--primary);
+    border-radius: 2px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    transition: all 0.2s ease;
+}
+
+.card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--primary);
+    transform: translateY(-2px);
+}
+
+.cardLink {
+    text-decoration: none;
+    color: inherit;
+}
+
+.cardTitle {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: var(--primary);
+}
+
+.cardHanja {
+    font-size: 0.9rem;
+    opacity: 0.6;
+    margin-bottom: 0.75rem;
+}
+
+.cardDescription {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    line-height: 1.6;
+}
+
+.itemList {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.item {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+}
+
+.itemHeader {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.itemIcon {
+    width: 48px;
+    height: 48px;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    font-family: "Noto Serif KR", serif;
+    color: white;
+}
+
+.itemTitle {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: var(--primary);
+}
+
+.itemHanja {
+    font-size: 0.85rem;
+    opacity: 0.6;
+}
+
+.itemDescription {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    opacity: 0.85;
+    white-space: pre-line;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.table th,
+.table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.table th {
+    color: var(--primary);
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.table tr:hover td {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+/* Element Colors */
+.wood { background: #4ade80; }
+.fire { background: #f87171; }
+.earth { background: #fbbf24; }
+.metal { background: #94a3b8; }
+.water { background: #1e293b; border: 1px solid #334155; }
+
+.strong { color: #4ade80; }
+.medium { color: #fbbf24; }
+.weak { color: #f87171; }
+
+.tag {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 1rem;
+    font-size: 0.8rem;
+    margin-right: 0.5rem;
+}
+
+.tag.positive {
+    background: rgba(74, 222, 128, 0.2);
+    color: #4ade80;
+}
+
+.tag.negative {
+    background: rgba(248, 113, 113, 0.2);
+    color: #f87171;
+}
+
+.tag.neutral {
+    background: rgba(251, 191, 36, 0.2);
+    color: #fbbf24;
+}
+
+.navLinks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.navLink {
+    padding: 0.6rem 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem;
+    color: white;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.navLink:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--primary);
+}
+
+@media (max-width: 600px) {
+    .main {
+        padding: 2rem 1rem;
+    }
+
+    .title {
+        font-size: 1.8rem;
+    }
+
+    .grid {
+        grid-template-columns: 1fr;
+    }
+}

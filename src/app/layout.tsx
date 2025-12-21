@@ -26,10 +26,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID as string} />
-      <GoogleAdSense />
+    <html lang="ko">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
+        <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID as string} />
+        <GoogleAdSense />
         <main style={{ overflowX: "hidden", flex: 1 }}>
           {children}
         </main>
