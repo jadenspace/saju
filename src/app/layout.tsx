@@ -1,6 +1,6 @@
 import { GoogleAdSense } from "@/shared/lib/google/GoogleAdSense";
 import { Footer } from "@/shared/ui/Footer";
-import { GoogleTagManager } from "@next/third-parties/google";
+import { GoogleAnalytics, GoogleTagManager } from "@next/third-parties/google";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -29,11 +29,12 @@ export default function RootLayout({
     <html lang="ko">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID as string} />
-        <GoogleAdSense />
+        <GoogleAdSense pid={process.env.NEXT_PUBLIC_GOOGLE_ADSENSE_PID as string} />
         <main style={{ overflowX: "hidden", flex: 1 }}>
           {children}
         </main>
         <Footer />
+        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS as string} />
       </body>
     </html>
   );
