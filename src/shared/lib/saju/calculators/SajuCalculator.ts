@@ -151,14 +151,14 @@ export class SajuCalculator {
     const dayBasedSinsal: Array<{ pillar: string; sinsal: string }> = [];
 
     pillars.forEach((pillar, idx) => {
-      // 년지 기준 12신살
+      // 년지 기준 12신살 (년주 자체도 포함)
       const yearSinsal = getTwelveSinsal(yearJi, pillar.jiHan);
-      if (yearSinsal && idx !== 0) { // 년주 자체는 제외
+      if (yearSinsal) {
         yearBasedSinsal.push({ pillar: pillarNames[idx], sinsal: yearSinsal });
       }
-      // 일지 기준 12신살
+      // 일지 기준 12신살 (일주 자체도 포함)
       const daySinsal = getTwelveSinsal(dayJi, pillar.jiHan);
-      if (daySinsal && idx !== 2) { // 일주 자체는 제외
+      if (daySinsal) {
         dayBasedSinsal.push({ pillar: pillarNames[idx], sinsal: daySinsal });
       }
     });
