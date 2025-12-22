@@ -29,7 +29,7 @@ export default function RootLayout({
     <html lang="ko">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID as string} />
-        <GoogleAdSense />
+        <GoogleAdSense pid={process.env.NEXT_PUBLIC_GOOGLE_ADSENSE_PID as string} />
         <main style={{ overflowX: "hidden", flex: 1 }}>
           {children}
         </main>

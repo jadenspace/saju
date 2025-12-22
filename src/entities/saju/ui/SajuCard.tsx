@@ -49,8 +49,8 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
 
   // 월운 계산
   const monthlyFortune = useMemo(() => {
-    return SajuCalculator.calculateMonthlyFortune(selectedSeunYear, data.day.ganHan);
-  }, [selectedSeunYear, data.day.ganHan]);
+    return SajuCalculator.calculateMonthlyFortune(selectedSeunYear, data.day.ganHan, data.year.jiHan, data.day.jiHan);
+  }, [selectedSeunYear, data.day.ganHan, data.year.jiHan, data.day.jiHan]);
 
   return (
     <div className={clsx(styles.card, className)}>
@@ -123,6 +123,26 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
                 </span>
                 <span className={styles.daeunKor}>{period.gan}{period.ji}</span>
               </div>
+              {/* 십신 */}
+              <div className={styles.daeunSipsin}>
+                <span className={styles.sipsinMini}>{period.tenGodsGan}</span>
+                <span className={styles.sipsinMini}>{period.tenGodsJi}</span>
+              </div>
+              {/* 12운성 */}
+              {period.twelveStage && (
+                <div className={styles.daeunTwelveStage}>
+                  <span className={styles.twelveStageTag}>{period.twelveStage}</span>
+                </div>
+              )}
+              {/* 12신살 */}
+              {period.sinsal && (
+                <div className={styles.daeunSinsal}>
+                  {period.sinsal.yearBased && <span className={styles.sinsalTag}>{period.sinsal.yearBased}</span>}
+                  {period.sinsal.dayBased && period.sinsal.dayBased !== period.sinsal.yearBased && (
+                    <span className={styles.sinsalTag}>{period.sinsal.dayBased}</span>
+                  )}
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -158,6 +178,21 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
                       <span className={styles.sipsinMini}>{yearFortune.tenGodsGan}</span>
                       <span className={styles.sipsinMini}>{yearFortune.tenGodsJi}</span>
                     </div>
+                    {/* 12운성 */}
+                    {yearFortune.twelveStage && (
+                      <div className={styles.seunTwelveStage}>
+                        <span className={styles.twelveStageTagSmall}>{yearFortune.twelveStage}</span>
+                      </div>
+                    )}
+                    {/* 12신살 */}
+                    {yearFortune.sinsal && (
+                      <div className={styles.seunSinsal}>
+                        {yearFortune.sinsal.yearBased && <span className={styles.sinsalTagSmall}>{yearFortune.sinsal.yearBased}</span>}
+                        {yearFortune.sinsal.dayBased && yearFortune.sinsal.dayBased !== yearFortune.sinsal.yearBased && (
+                          <span className={styles.sinsalTagSmall}>{yearFortune.sinsal.dayBased}</span>
+                        )}
+                      </div>
+                    )}
                   </div>
                 );
               })}
@@ -197,6 +232,21 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
                       <span className={styles.sipsinMini}>{monthFortune.tenGodsGan}</span>
                       <span className={styles.sipsinMini}>{monthFortune.tenGodsJi}</span>
                     </div>
+                    {/* 12운성 */}
+                    {monthFortune.twelveStage && (
+                      <div className={styles.wolunTwelveStage}>
+                        <span className={styles.twelveStageTagSmall}>{monthFortune.twelveStage}</span>
+                      </div>
+                    )}
+                    {/* 12신살 */}
+                    {monthFortune.sinsal && (
+                      <div className={styles.wolunSinsal}>
+                        {monthFortune.sinsal.yearBased && <span className={styles.sinsalTagSmall}>{monthFortune.sinsal.yearBased}</span>}
+                        {monthFortune.sinsal.dayBased && monthFortune.sinsal.dayBased !== monthFortune.sinsal.yearBased && (
+                          <span className={styles.sinsalTagSmall}>{monthFortune.sinsal.dayBased}</span>
+                        )}
+                      </div>
+                    )}
                   </div>
                 );
               })}
