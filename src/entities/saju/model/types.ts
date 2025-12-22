@@ -23,6 +23,11 @@ export interface Seun {
   jiElement?: string;
   tenGodsGan?: string;
   tenGodsJi?: string;
+  twelveStage?: string; // 12운성 (일간 기준)
+  sinsal?: {
+    yearBased?: string; // 년지 기준 12신살
+    dayBased?: string;  // 일지 기준 12신살
+  };
 }
 
 export interface DaeunPeriod {
@@ -35,6 +40,13 @@ export interface DaeunPeriod {
   jiElement?: string;
   startAge: number;
   endAge: number;
+  tenGodsGan?: string; // 십신 (천간)
+  tenGodsJi?: string;  // 십신 (지지)
+  twelveStage?: string; // 12운성 (일간 기준)
+  sinsal?: {
+    yearBased?: string; // 년지 기준 12신살
+    dayBased?: string;  // 일지 기준 12신살
+  };
   seun: Seun[];
 }
 

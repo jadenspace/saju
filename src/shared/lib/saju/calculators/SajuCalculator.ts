@@ -91,10 +91,12 @@ export class SajuCalculator {
 
     // Calculate Daeun
     const yearGan = yearGanZhi.charAt(0);
+    const yearJiHan = yearGanZhi.charAt(1);
+    const dayJiHan = dayGanZhi.charAt(1);
     const daeunDirection = this.getDaeunDirection(yearGan, gender);
     const daeunStartAge = this.calculateDaeunStartAge(lunar, daeunDirection, solar);
     const birthYear = baseTime.year;
-    const daeun = this.generateDaeunSequence(monthGanZhi, daeunDirection, daeunStartAge, dayMaster, birthYear);
+    const daeun = this.generateDaeunSequence(monthGanZhi, daeunDirection, daeunStartAge, dayMaster, birthYear, yearJiHan, dayJiHan);
 
     // Calculate Ohaeng distribution
     const pillars = [
@@ -284,7 +286,7 @@ export class SajuCalculator {
     return Math.max(1, Math.floor(closestJieDays / 3));
   }
 
-  private static generateDaeunSequence(monthGanZhi: string, direction: 'forward' | 'backward', startAge: number, dayMaster: string, birthYear: number): DaeunPeriod[] {
+  private static generateDaeunSequence(monthGanZhi: string, direction: 'forward' | 'backward', startAge: number, dayMaster: string, birthYear: number, yearJi: string, dayJi: string): DaeunPeriod[] {
     const gans = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'];
     const jis = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'];
 
@@ -305,6 +307,13 @@ export class SajuCalculator {
       const jiHan = jis[jiIndex];
       const ganZhi = ganHan + jiHan;
 
+      // 12운성 계산 (일간 기준)
+      const twelveStage = getTwelveStage(dayMaster, jiHan) || undefined;
+
+      // 12신살 계산 (년지/일지 기준)
+      const yearBasedSinsal = getTwelveSinsal(yearJi, jiHan);
+      const dayBasedSinsal = getTwelveSinsal(dayJi, jiHan);
+
       daeunPeriods.push({
         ganZhi,
         ganHan,
@@ -315,15 +324,22 @@ export class SajuCalculator {
         jiElement: getOhaeng(jiHan) || '',
         startAge: startAge + i * 10,
         endAge: startAge + i * 10 + 9, // 10-year period: start + 9 years
+        tenGodsGan: calculateSipsin(dayMaster, ganHan),
+        tenGodsJi: calculateSipsin(dayMaster, jiHan),
+        twelveStage,
+        sinsal: (yearBasedSinsal || dayBasedSinsal) ? {
+          yearBased: yearBasedSinsal || undefined,
+          dayBased: dayBasedSinsal || undefined,
+        } : undefined,
         // 한국 나이 기준: N세가 되는 해 = birthYear + N - 1
-        seun: this.generateSeunSequence(birthYear + startAge - 1 + i * 10, dayMaster),
+        seun: this.generateSeunSequence(birthYear + startAge - 1 + i * 10, dayMaster, yearJi, dayJi),
       });
     }
 
     return daeunPeriods;
   }
 
-  private static generateSeunSequence(startYear: number, dayMaster: string): Seun[] {
+  private static generateSeunSequence(startYear: number, dayMaster: string, yearJi: string, dayJi: string): Seun[] {
     const seunSequence: Seun[] = [];
 
     for (let i = 0; i < 10; i++) {
@@ -342,17 +358,31 @@ export class SajuCalculator {
         const solar = Solar.fromYmdHms(year, 3, 1, 12, 0, 0);
         const lunar = solar.getLunar();
         const ganZhi = lunar.getYearInGanZhiByLiChun();
+        const ganHan = ganZhi.charAt(0);
+        const jiHan = ganZhi.charAt(1);
+
+        // 12운성 계산
+        const twelveStage = getTwelveStage(dayMaster, jiHan) || undefined;
+        // 12신살 계산
+        const yearBasedSinsal = getTwelveSinsal(yearJi, jiHan);
+        const dayBasedSinsal = getTwelveSinsal(dayJi, jiHan);
+
         seunSequence.push({
           year,
           ganZhi,
-          ganHan: ganZhi.charAt(0),
-          jiHan: ganZhi.charAt(1),
-          gan: this.convertHanToKoreanGan(ganZhi.charAt(0)),
-          ji: this.convertHanToKoreanJi(ganZhi.charAt(1)),
-          ganElement: getOhaeng(ganZhi.charAt(0)) || '',
-          jiElement: getOhaeng(ganZhi.charAt(1)) || '',
-          tenGodsGan: calculateSipsin(dayMaster, ganZhi.charAt(0)),
-          tenGodsJi: calculateSipsin(dayMaster, ganZhi.charAt(1)),
+          ganHan,
+          jiHan,
+          gan: this.convertHanToKoreanGan(ganHan),
+          ji: this.convertHanToKoreanJi(jiHan),
+          ganElement: getOhaeng(ganHan) || '',
+          jiElement: getOhaeng(jiHan) || '',
+          tenGodsGan: calculateSipsin(dayMaster, ganHan),
+          tenGodsJi: calculateSipsin(dayMaster, jiHan),
+          twelveStage,
+          sinsal: (yearBasedSinsal || dayBasedSinsal) ? {
+            yearBased: yearBasedSinsal || undefined,
+            dayBased: dayBasedSinsal || undefined,
+          } : undefined,
         });
         continue;
       }
@@ -368,6 +398,13 @@ export class SajuCalculator {
       const ganHan = ganZhi.charAt(0);
       const jiHan = ganZhi.charAt(1);
 
+      // 12운성 계산 (일간 기준)
+      const twelveStage = getTwelveStage(dayMaster, jiHan) || undefined;
+
+      // 12신살 계산 (년지/일지 기준)
+      const yearBasedSinsal = getTwelveSinsal(yearJi, jiHan);
+      const dayBasedSinsal = getTwelveSinsal(dayJi, jiHan);
+
       seunSequence.push({
         year,
         ganZhi,
@@ -379,6 +416,11 @@ export class SajuCalculator {
         jiElement: getOhaeng(jiHan) || '',
         tenGodsGan: calculateSipsin(dayMaster, ganHan),
         tenGodsJi: calculateSipsin(dayMaster, jiHan),
+        twelveStage,
+        sinsal: (yearBasedSinsal || dayBasedSinsal) ? {
+          yearBased: yearBasedSinsal || undefined,
+          dayBased: dayBasedSinsal || undefined,
+        } : undefined,
       });
     }
 
@@ -541,9 +583,11 @@ export class SajuCalculator {
    * 월운 계산 (년상기월법)
    * @param year 년도
    * @param dayMaster 일간 (십신 계산용)
+   * @param yearJi 년지 (12신살 계산용)
+   * @param dayJi 일지 (12신살 계산용)
    * @returns 12개월의 월운 배열 (절기 기준)
    */
-  static calculateMonthlyFortune(year: number, dayMaster: string): Array<{
+  static calculateMonthlyFortune(year: number, dayMaster: string, yearJi?: string, dayJi?: string): Array<{
     month: number;
     monthName: string;
     solarMonth: string;
@@ -556,6 +600,11 @@ export class SajuCalculator {
     jiElement: string;
     tenGodsGan: string;
     tenGodsJi: string;
+    twelveStage?: string;
+    sinsal?: {
+      yearBased?: string;
+      dayBased?: string;
+    };
   }> {
     // 년간에 따른 월간 시작 (년상기월법)
     // 갑기년: 병인월, 을경년: 무인월, 병신년: 경인월, 정임년: 임인월, 무계년: 갑인월
@@ -595,6 +644,11 @@ export class SajuCalculator {
       jiElement: string;
       tenGodsGan: string;
       tenGodsJi: string;
+      twelveStage?: string;
+      sinsal?: {
+        yearBased?: string;
+        dayBased?: string;
+      };
     }> = [];
 
     for (let i = 0; i < 12; i++) {
@@ -602,6 +656,13 @@ export class SajuCalculator {
       const ganIndex = (monthStartIndex + i) % 10;
       const ganHan = CHEONGAN[ganIndex];
       const jiHan = MONTH_JIJI[i];
+
+      // 12운성 계산 (일간 기준)
+      const twelveStage = getTwelveStage(dayMaster, jiHan) || undefined;
+
+      // 12신살 계산 (년지/일지 기준)
+      const yearBasedSinsal = yearJi ? getTwelveSinsal(yearJi, jiHan) : null;
+      const dayBasedSinsal = dayJi ? getTwelveSinsal(dayJi, jiHan) : null;
 
       result.push({
         month,
@@ -616,6 +677,11 @@ export class SajuCalculator {
         jiElement: getOhaeng(jiHan) || '',
         tenGodsGan: calculateSipsin(dayMaster, ganHan),
         tenGodsJi: calculateSipsin(dayMaster, jiHan),
+        twelveStage,
+        sinsal: (yearBasedSinsal || dayBasedSinsal) ? {
+          yearBased: yearBasedSinsal || undefined,
+          dayBased: dayBasedSinsal || undefined,
+        } : undefined,
       });
     }
 
