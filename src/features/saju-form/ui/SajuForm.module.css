@@ -340,18 +340,15 @@
   height: 3.5rem;
   font-size: 1.05rem;
   font-weight: 600;
-  background: var(--glass-bg) !important;
-  color: var(--foreground) !important;
-  border: 1px solid var(--glass-border) !important;
-  box-shadow: var(--shadow-sm);
-  backdrop-filter: blur(var(--glass-blur));
+  background: var(--accent-gradient) !important;
+  color: #18181b !important;
+  border: 1px solid rgba(212, 212, 216, 0.4) !important;
+  box-shadow: var(--shadow-sm), 0 0 20px rgba(255, 255, 255, 0.1);
 }
 
 .secondaryButton:hover {
-  background: var(--secondary-hover) !important;
-  border-color: var(--accent) !important;
   transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-md), 0 0 25px rgba(255, 255, 255, 0.15);
 }
 
 /* Tablet and mobile optimization */
@@ -384,6 +381,10 @@
   .submitButton {
     height: 3.25rem;
     font-size: 1rem;
+  }
+
+  .buttonGroup {
+    flex-direction: column;
   }
 
   .tooltipContent {

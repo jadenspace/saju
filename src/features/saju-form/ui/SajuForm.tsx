@@ -24,7 +24,7 @@ export const SajuForm = () => {
     applyDST: true,
     midnightMode: 'late' as 'early' | 'late',
   });
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<'fortune' | 'result' | null>(null);
   const [error, setError] = useState<string>('');
   const [showSettings, setShowSettings] = useState(false);
 
@@ -90,13 +90,13 @@ export const SajuForm = () => {
 
   const handleSubmit = (e: React.FormEvent, destination: 'fortune' | 'result') => {
     e.preventDefault();
-    setLoading(true);
+    setLoading(destination);
     setError('');
 
     // Check Date format (YYYYMMDD)
     if (formData.birthDate.length !== 8) {
       setError('생년월일 8자리를 정확히 입력해주세요. (예: 19901225)');
-      setLoading(false);
+      setLoading(null);
       return;
     }
 
@@ -106,7 +106,7 @@ export const SajuForm = () => {
 
     if (month < 1 || month > 12 || day < 1 || day > 31) {
       setError('유효하지 않은 날짜입니다.');
-      setLoading(false);
+      setLoading(null);
       return;
     }
 
@@ -117,7 +117,7 @@ export const SajuForm = () => {
     if (!formData.unknownTime) {
       if (formData.birthTime.length !== 4) {
         setError('출생시간 4자리를 정확히 입력해주세요. (예: 1430)');
-        setLoading(false);
+        setLoading(null);
         return;
       }
       hour = String(parseInt(formData.birthTime.substring(0, 2)));
@@ -125,7 +125,7 @@ export const SajuForm = () => {
 
       if (parseInt(hour) < 0 || parseInt(hour) > 23 || parseInt(minute) < 0 || parseInt(minute) > 59) {
         setError('유효하지 않은 시간입니다.');
-        setLoading(false);
+        setLoading(null);
         return;
       }
     }
@@ -158,14 +158,14 @@ export const SajuForm = () => {
 
         if (formData.isLeapMonth && !resultLunar.intercalation) {
           setError(`${year}년 ${month}월에는 윤달이 없습니다.`);
-          setLoading(false);
+          setLoading(null);
           return;
         }
 
         // Additional check: Ensure dates match exactly (catches invalid days like Feb 30)
         if (resultLunar.year !== year || resultLunar.month !== month || resultLunar.day !== day) {
           setError('유효하지 않은 음력 날짜입니다.');
-          setLoading(false);
+          setLoading(null);
           return;
         }
 
@@ -174,7 +174,7 @@ export const SajuForm = () => {
         finalDay = String(solarDate.day);
       } catch (err) {
         setError('유효하지 않은 음력 날짜입니다. 윤달 여부와 날짜를 확인해주세요.');
-        setLoading(false);
+        setLoading(null);
         return;
       }
     }
@@ -432,22 +432,22 @@ export const SajuForm = () => {
       <div className={styles.buttonGroup}>
         <Button
           type="button"
-          disabled={loading}
+          disabled={loading !== null}
           className={styles.primaryButton}
           onClick={(e: React.MouseEvent) => {
             alert("준비중입니다.");
             // handleSubmit(e as unknown as React.FormEvent, 'fortune')
           }}
         >
-          {loading ? '분석 중...' : '2026 신년운세'}
+          {loading === 'fortune' ? '분석 중...' : '2026 신년운세'}
         </Button>
         <Button
           type="button"
-          disabled={loading}
+          disabled={loading !== null}
           className={styles.secondaryButton}
           onClick={(e: React.MouseEvent) => handleSubmit(e as unknown as React.FormEvent, 'result')}
         >
-          {loading ? '분석 중...' : '사주 결과보기'}
+          {loading === 'result' ? '분석 중...' : '사주 결과보기'}
         </Button>
       </div>
     </form>

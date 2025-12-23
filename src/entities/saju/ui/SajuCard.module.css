@@ -226,11 +226,8 @@
 /* Seun Section Decorator */
 .seunSection {
   margin-top: 1.5rem;
-  padding: 1.5rem;
-  background: rgba(255, 255, 255, 0.01);
-  border: 1px solid rgba(var(--primary-rgb), 0.2);
-  border-radius: 0.75rem;
-  animation: slideDown 0.3s ease-out;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
 }
 
 @keyframes slideDown {
@@ -568,10 +565,29 @@
 
 .water {
   color: #4b5563;
-  text-shadow: 0 0 8px rgba(75, 85, 99, 0.5), 0 0 2px rgba(255, 255, 255, 0.2);
+  text-shadow: 0 0 10px rgba(75, 85, 99, 0.3);
 }
 
 @media (max-width: 600px) {
+  .card {
+    padding: 1rem;
+    border-radius: var(--radius-lg);
+  }
+
+  .header {
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+  }
+
+  .header h2 {
+    font-size: 1.25rem;
+  }
+
+  .daeunSection {
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+  }
+
   .daeunContainer {
     grid-template-columns: repeat(2, 1fr);
     gap: 0.5rem;
@@ -587,5 +603,7 @@
 
   .analysisButtons {
     gap: 0.5rem;
+    margin-top: 1.25rem;
+    padding-top: 1rem;
   }
 }
