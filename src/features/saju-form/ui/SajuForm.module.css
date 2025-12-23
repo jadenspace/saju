@@ -7,11 +7,23 @@
   max-width: 460px;
   margin: 0 auto;
   padding: 2.5rem;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--border);
-  border-radius: 1.5rem;
-  backdrop-filter: blur(20px);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  backdrop-filter: blur(var(--glass-blur));
+  box-shadow: var(--shadow-lg);
+}
+
+.form::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--primary), transparent);
+  opacity: 0.4;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
 }
 
 .inputGroup {
@@ -116,11 +128,12 @@
   left: 0;
   z-index: 100;
   padding: 1.5rem;
-  background: rgba(20, 20, 30, 0.98);
-  border: 1px solid var(--border);
-  border-radius: 1rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  background: var(--secondary);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
   animation: slideDown 0.2s ease-out;
+  backdrop-filter: blur(var(--glass-blur));
 }
 
 .closeButton {
@@ -177,10 +190,10 @@
 
 .radioGroup {
   display: flex;
-  gap: 1rem;
+  gap: 0.5rem;
   padding: 0.375rem;
   background: var(--secondary);
-  border-radius: 0.75rem;
+  border-radius: var(--radius-md);
   border: 1px solid var(--border);
 }
 
@@ -193,16 +206,23 @@
   cursor: pointer;
   font-size: 0.9rem;
   padding: 0.75rem;
-  border-radius: 0.5rem;
-  transition: background 0.2s;
+  border-radius: var(--radius-sm);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  color: var(--foreground-muted);
 }
 
 .radioLabel:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(139, 92, 246, 0.1);
+  color: var(--foreground);
+}
+
+.radioLabel:has(input:checked) {
+  background: rgba(139, 92, 246, 0.2);
+  color: var(--accent-light);
 }
 
 .radioLabel input {
-  accent-color: var(--primary);
+  accent-color: var(--accent);
 }
 
 .labelWithTooltip {
@@ -312,7 +332,7 @@
   height: 3.5rem;
   font-size: 1.05rem;
   font-weight: 600;
-  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2);
+  box-shadow: var(--shadow-glow);
 }
 
 .secondaryButton {
@@ -320,15 +340,18 @@
   height: 3.5rem;
   font-size: 1.05rem;
   font-weight: 600;
-  background: #fff !important;
-  color: #000 !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  background: var(--glass-bg) !important;
+  color: var(--foreground) !important;
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(var(--glass-blur));
 }
 
 .secondaryButton:hover {
-  background: #fff !important;
-  transform: translateY(-1px);
+  background: var(--secondary-hover) !important;
+  border-color: var(--accent) !important;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 /* Tablet and mobile optimization */

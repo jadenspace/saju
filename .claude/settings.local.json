@@ -8,7 +8,8 @@
       "Bash(npx tsx:*)",
       "Bash(timeout 15 npx tsx:*)",
       "Bash(./node_modules/.bin/tsx:*)",
-      "Bash(npm exec:*)"
+      "Bash(npm exec:*)",
+      "Bash(find:*)"
     ]
   }
 }

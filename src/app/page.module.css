@@ -1,63 +1,64 @@
 .page {
-  --background: #fafafa;
-  --foreground: #fff;
-
-  --text-primary: #000;
-  --text-secondary: #666;
-
-  --button-primary-hover: #383838;
-  --button-secondary-hover: #f2f2f2;
-  --button-secondary-border: #ebebeb;
-
   display: flex;
   min-height: 100vh;
   align-items: center;
   justify-content: center;
-  font-family: var(--font-geist-sans);
-  background-color: var(--background);
+  padding: 2rem;
+  background: var(--background);
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(139, 92, 246, 0.2) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 40% at 100% 100%, rgba(212, 165, 116, 0.15) 0%, transparent 40%),
+    radial-gradient(ellipse 40% 30% at 0% 80%, rgba(109, 40, 217, 0.15) 0%, transparent 40%);
+  background-attachment: fixed;
 }
 
 .main {
   display: flex;
-  min-height: 100vh;
   width: 100%;
   max-width: 800px;
   flex-direction: column;
-  align-items: flex-start;
-  justify-content: space-between;
-  background-color: var(--foreground);
-  padding: 120px 60px;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
 }
 
 .intro {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
-  gap: 24px;
+  align-items: center;
+  text-align: center;
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
 }
 
 .intro h1 {
-  max-width: 320px;
-  font-size: 40px;
-  font-weight: 600;
-  line-height: 48px;
-  letter-spacing: -2.4px;
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   text-wrap: balance;
-  color: var(--text-primary);
 }
 
 .intro p {
-  max-width: 440px;
-  font-size: 18px;
-  line-height: 32px;
+  max-width: 480px;
+  font-size: 1.125rem;
+  line-height: 1.7;
   text-wrap: balance;
-  color: var(--text-secondary);
+  color: var(--foreground-muted);
 }
 
 .intro a {
-  font-weight: 500;
-  color: var(--text-primary);
+  font-weight: 600;
+  color: var(--accent-light);
+  transition: color 0.2s ease;
+}
+
+.intro a:hover {
+  color: var(--primary);
 }
 
 .ctas {
@@ -65,77 +66,84 @@
   flex-direction: row;
   width: 100%;
   max-width: 440px;
-  gap: 16px;
-  font-size: 14px;
+  gap: 1rem;
+  font-size: 0.9375rem;
+  justify-content: center;
 }
 
 .ctas a {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 40px;
-  padding: 0 16px;
-  border-radius: 128px;
+  height: 3rem;
+  padding: 0 1.5rem;
+  border-radius: var(--radius-lg);
   border: 1px solid transparent;
-  transition: 0.2s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   width: fit-content;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 a.primary {
-  background: var(--text-primary);
-  color: var(--background);
-  gap: 8px;
+  background: var(--primary-gradient);
+  color: #1a1625;
+  gap: 0.5rem;
+  box-shadow: var(--shadow-glow);
+  border: 1px solid rgba(245, 217, 184, 0.3);
 }
 
 a.secondary {
-  border-color: var(--button-secondary-border);
+  background: var(--glass-bg);
+  border-color: var(--glass-border);
+  color: var(--foreground);
+  backdrop-filter: blur(var(--glass-blur));
 }
 
 /* Enable hover only on non-touch devices */
 @media (hover: hover) and (pointer: fine) {
   a.primary:hover {
-    background: var(--button-primary-hover);
-    border-color: transparent;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md), var(--shadow-glow);
   }
 
   a.secondary:hover {
-    background: var(--button-secondary-hover);
-    border-color: transparent;
+    background: var(--secondary-hover);
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
   }
 }
 
 @media (max-width: 600px) {
+  .page {
+    padding: 1rem;
+  }
+
   .main {
-    padding: 48px 24px;
+    padding: 2rem 1rem;
   }
 
   .intro {
-    gap: 16px;
+    gap: 1rem;
   }
 
   .intro h1 {
-    font-size: 32px;
-    line-height: 40px;
-    letter-spacing: -1.92px;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  .logo {
-    filter: invert();
+    font-size: 2rem;
+    line-height: 1.25;
   }
 
-  .page {
-    --background: #000;
-    --foreground: #000;
+  .intro p {
+    font-size: 1rem;
+  }
 
-    --text-primary: #ededed;
-    --text-secondary: #999;
+  .ctas {
+    flex-direction: column;
+    align-items: center;
+  }
 
-    --button-primary-hover: #ccc;
-    --button-secondary-hover: #1a1a1a;
-    --button-secondary-border: #1a1a1a;
+  .ctas a {
+    width: 100%;
+    max-width: 280px;
   }
 }
