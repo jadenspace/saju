@@ -139,14 +139,14 @@
 }
 
 .daeunPeriod:hover {
-  background: rgba(139, 92, 246, 0.08);
+  background: rgba(255, 255, 255, 0.05);
   border-color: var(--accent);
   transform: translateY(-2px);
   box-shadow: var(--shadow-sm);
 }
 
 .daeunPeriod.active {
-  background: linear-gradient(135deg, rgba(212, 165, 116, 0.15) 0%, rgba(139, 92, 246, 0.1) 100%);
+  background: linear-gradient(135deg, rgba(212, 165, 116, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
   border-color: var(--primary);
   box-shadow: 0 0 20px rgba(212, 165, 116, 0.2), var(--shadow-sm);
 }
@@ -207,20 +207,20 @@
 
 .twelveStageTag {
   font-size: 0.7rem;
-  color: #a78bfa;
-  background: rgba(167, 139, 250, 0.15);
+  color: #2dd4bf;
+  background: rgba(45, 212, 191, 0.15);
   padding: 0.15rem 0.4rem;
   border-radius: 0.25rem;
-  border: 1px solid rgba(167, 139, 250, 0.3);
+  border: 1px solid rgba(45, 212, 191, 0.3);
 }
 
 .sinsalTag {
   font-size: 0.65rem;
-  color: #f472b6;
-  background: rgba(244, 114, 182, 0.15);
+  color: #fbbf24;
+  background: rgba(251, 191, 36, 0.15);
   padding: 0.1rem 0.3rem;
   border-radius: 0.2rem;
-  border: 1px solid rgba(244, 114, 182, 0.3);
+  border: 1px solid rgba(251, 191, 36, 0.3);
 }
 
 /* Seun Section Decorator */
@@ -343,20 +343,20 @@
 
 .twelveStageTagSmall {
   font-size: 0.55rem;
-  color: #a78bfa;
-  background: rgba(167, 139, 250, 0.15);
+  color: #2dd4bf;
+  background: rgba(45, 212, 191, 0.15);
   padding: 0.1rem 0.25rem;
   border-radius: 0.15rem;
-  border: 1px solid rgba(167, 139, 250, 0.25);
+  border: 1px solid rgba(45, 212, 191, 0.25);
 }
 
 .sinsalTagSmall {
   font-size: 0.5rem;
-  color: #f472b6;
-  background: rgba(244, 114, 182, 0.15);
+  color: #fbbf24;
+  background: rgba(251, 191, 36, 0.15);
   padding: 0.08rem 0.2rem;
   border-radius: 0.15rem;
-  border: 1px solid rgba(244, 114, 182, 0.25);
+  border: 1px solid rgba(251, 191, 36, 0.25);
 }
 
 .sipsinMini {
@@ -498,7 +498,7 @@
 }
 
 .analysisButton:hover {
-  background: rgba(139, 92, 246, 0.1);
+  background: rgba(255, 255, 255, 0.05);
   border-color: var(--accent);
   transform: translateY(-2px);
   box-shadow: var(--shadow-sm);
@@ -567,8 +567,8 @@
 }
 
 .water {
-  color: #60a5fa;
-  text-shadow: 0 0 10px rgba(96, 165, 250, 0.3);
+  color: #4b5563;
+  text-shadow: 0 0 8px rgba(75, 85, 99, 0.5), 0 0 2px rgba(255, 255, 255, 0.2);
 }
 
 @media (max-width: 600px) {

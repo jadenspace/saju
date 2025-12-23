@@ -75,8 +75,8 @@
 .outline:hover:not(:disabled) {
   border-color: var(--accent);
   color: var(--accent-light);
-  background: rgba(139, 92, 246, 0.1);
-  box-shadow: 0 0 20px rgba(139, 92, 246, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.08);
 }
 
 /* Ghost variant */
@@ -94,14 +94,14 @@
 /* Accent variant */
 .accent {
   background: var(--accent-gradient);
-  color: #fff;
-  box-shadow: var(--shadow-sm), 0 0 20px rgba(139, 92, 246, 0.2);
-  border: 1px solid rgba(167, 139, 250, 0.3);
+  color: #18181b;
+  box-shadow: var(--shadow-sm), 0 0 20px rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(212, 212, 216, 0.3);
 }
 
 .accent:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: var(--shadow-md), 0 0 30px rgba(139, 92, 246, 0.3);
+  box-shadow: var(--shadow-md), 0 0 30px rgba(255, 255, 255, 0.15);
 }
 
 /* Sizes */

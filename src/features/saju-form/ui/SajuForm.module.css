@@ -212,12 +212,12 @@
 }
 
 .radioLabel:hover {
-  background: rgba(139, 92, 246, 0.1);
+  background: rgba(255, 255, 255, 0.05);
   color: var(--foreground);
 }
 
 .radioLabel:has(input:checked) {
-  background: rgba(139, 92, 246, 0.2);
+  background: rgba(255, 255, 255, 0.1);
   color: var(--accent-light);
 }
 
