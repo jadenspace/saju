@@ -1,11 +1,21 @@
 import { NewYearFortune, SajuData, FortuneAreaBase } from '../../../../entities/saju/model/types';
-import { calculateSipsin } from './TenGod';
+import { calculateSipsin, getOhaeng, Element } from './TenGod';
 import { josa } from 'es-hangul';
+import { SajuCalculator } from './SajuCalculator';
 
 // Local Constants for 2026 (Bing-Wu Year)
 const CURRENT_YEAR = 2026;
 const YEAR_GAN = '丙';
 const YEAR_JI = '午';
+
+// 오행 상생상극 맵
+const GENERATING_MAP: Record<Element, Element> = {
+  'wood': 'fire', 'fire': 'earth', 'earth': 'metal', 'metal': 'water', 'water': 'wood'
+};
+
+const CONTROLLING_MAP: Record<Element, Element> = {
+  'wood': 'earth', 'earth': 'water', 'water': 'fire', 'fire': 'metal', 'metal': 'wood'
+};
 
 /**
  * Event Detection Types
@@ -18,6 +28,17 @@ type PalaceType = '년' | '월' | '일' | '시';
  */
 export const calculateNewYearFortune = (sajuData: SajuData): NewYearFortune => {
   const dayMaster = sajuData.day.ganHan;
+
+  // 0. 용신/기신 확인
+  const yongshin = sajuData.yongshin;
+  const yongshinElement = yongshin ? getOhaengFromKorean(yongshin.primary) : null;
+  const gishinElements = yongshin?.gishin?.map(g => getOhaengFromKorean(g)) || [];
+
+  // 세운 오행 확인
+  const yearGanElement = getOhaeng(YEAR_GAN);
+  const yearJiElement = getOhaeng(YEAR_JI);
+  const isYongshinYear = yongshinElement && (yearGanElement === yongshinElement || yearJiElement === yongshinElement);
+  const isGishinYear = gishinElements.some(g => g === yearGanElement || g === yearJiElement);
 
   // 1. Dominant & Support Sipsin
   const dominantTengod = calculateSipsin(dayMaster, YEAR_JI); // Year Ji base
@@ -60,27 +81,31 @@ export const calculateNewYearFortune = (sajuData: SajuData): NewYearFortune => {
   const guideType: 'push' | 'manage' | 'defense' | 'reset' =
     event === '충' ? 'reset' : (['편재', '상관', '겁재'].includes(dominantTengod) ? 'push' : 'manage');
 
-  // 6. Detailed Interpretation Logic
-  const interpretation = getExpertInterpretation(dominantTengod, supportTengod, event, palace, ohaengExcess, ohaengLack, sajuData);
+  // 6. Detailed Interpretation Logic (용신/기신 정보 포함)
+  const interpretation = getExpertInterpretation(dominantTengod, supportTengod, event, palace, ohaengExcess, ohaengLack, sajuData, isYongshinYear, isGishinYear, yongshin);
 
   // 7. Key Months (주요 월) - 사용자 피드백에 따라 주요 월만 표시
   const keyMonths = calculateKeyMonths(sajuData, dominantTengod, event);
+  
+  // 7-1. All Months (전체 12개월 월운 분석)
+  const allMonths = calculateAllMonths(sajuData, isYongshinYear, isGishinYear, yongshin);
 
   // 8. Lucky Info (행운 정보) - 용신 오행 기반
-  const luckyInfo = calculateLuckyInfo(sajuData);
+  const luckyInfo = calculateLuckyInfo(sajuData, yongshin);
 
   return {
     year: CURRENT_YEAR,
     gan: YEAR_GAN,
     ji: YEAR_JI,
     yearSummary: {
-      score: calculateDynamicScore(dominantTengod, event, sajuData),
+      score: calculateDynamicScore(dominantTengod, event, sajuData, isYongshinYear, isGishinYear),
       summaryText: interpretation.summary,
       reason: interpretation.reasons
     },
     yearNature: `${pace === 'fast' ? '빠르고 ' : '차분하고 '}${quality === 'volatile' ? '변동성이 큰 ' : '안정적인 '}해`,
     fortuneAreas: interpretation.areas,
     keyMonths,
+    allMonths,
     fortuneGuide: interpretation.guide,
     expertMeta: {
       fortuneType: `${dominantTengod} 주도의 ${theme} 테마`,
@@ -113,22 +138,47 @@ function getExpertInterpretation(
   palace: PalaceType | undefined,
   excess: string | undefined,
   lack: string | undefined,
-  saju: SajuData
+  saju: SajuData,
+  isYongshinYear: boolean,
+  isGishinYear: boolean,
+  yongshin?: SajuData['yongshin']
 ) {
   // --- Summary & Reasons ---
-  const summary = `${josa(dominant, '이/가')} 주도하는 해로, 내면에 잠들어 있던 목표의식이 현실화되는 역동적인 해입니다.`;
+  let summary = '';
+  if (isYongshinYear && yongshin) {
+    summary = `${CURRENT_YEAR}년은 용신 ${yongshin.primary}이 들어오는 해로, 전반적으로 운세가 상승합니다. ${josa(dominant, '이/가')} 주도하는 해로, 내면에 잠들어 있던 목표의식이 현실화되는 역동적인 해입니다.`;
+  } else if (isGishinYear && yongshin) {
+    summary = `${CURRENT_YEAR}년은 기신 ${yongshin.gishin?.[0] || ''}이 강한 해로, 신중한 처신이 필요합니다. ${josa(dominant, '이/가')} 주도하는 해로, 변화에 대비하며 신중하게 나아가야 합니다.`;
+  } else {
+    summary = `${josa(dominant, '이/가')} 주도하는 해로, 내면에 잠들어 있던 목표의식이 현실화되는 역동적인 해입니다.`;
+  }
+
   const reasons = [
     `올해의 중심 기운인 ${josa(dominant, '이/가')} 사회적 활동의 방향성을 결정합니다.`,
     `천간의 ${josa(support, '은/는')} 당신의 생각과 의논되어 실질적인 행동을 이끌어내는 힘이 됩니다.`,
   ];
+  if (isYongshinYear && yongshin) {
+    reasons.push(`용신 ${yongshin.primary}이 들어와 사주 균형이 좋아지며 전반적인 운세가 상승합니다.`);
+  } else if (isGishinYear && yongshin) {
+    reasons.push(`기신이 강하게 작용하여 주의가 필요한 해입니다.`);
+  }
   if (event !== '없음') reasons.push(`${palace}궁에서 발생하는 ${event}의 작용이 환경적인 큰 변화를 불러옵니다.`);
   if (excess) reasons.push(`원국에 많은 ${josa(excess, '을/를')} 어떻게 다루느냐가 성패를 가르는 열쇠가 될 것입니다.`);
 
   // --- Area Interpretations (Smooth Sentences) ---
 
-  // 1. Money
+  // 1. Money (커리큘럼 6.2 공식 적용)
+  const moneyScore = calculateFortuneAreaScore(
+    dominant,
+    support,
+    '재성',
+    saju,
+    isYongshinYear,
+    isGishinYear,
+    yongshin
+  );
   const money = {
-    score: ['편재', '정재', '식신'].includes(dominant) ? 85 : 70,
+    score: moneyScore,
     pros: dominant === '식신' || dominant === '상관'
       ? "나의 전문 기술이나 창의적인 아이디어가 시장에서 인정받으며 실질적인 수익으로 연결될 가능성이 매우 높습니다."
       : `${dominant}의 영향으로 활동 범위가 넓어지며 새로운 수익원 창출에 유리한 흐름입니다.`,
@@ -140,9 +190,18 @@ function getExpertInterpretation(
       : "수익의 일정 부분을 반드시 안전 자산으로 묶어두어 운의 변동성에 대비하세요."
   };
 
-  // 2. Relationship
+  // 2. Relationship (커리큘럼 6.2 공식 적용)
+  const relationshipScore = calculateFortuneAreaScore(
+    dominant,
+    support,
+    saju.gender === 'male' ? '재성' : '관성',
+    saju,
+    isYongshinYear,
+    isGishinYear,
+    yongshin
+  );
   const relationship = {
-    score: ['관성', '비겁'].includes(dominant) ? 80 : 65,
+    score: relationshipScore,
     pros: event === '합'
       ? "주변 사람들과의 깊은 유대감이 형성되며, 나를 지지해주는 든든한 아군이나 귀한 인연을 만날 수 있는 운입니다."
       : "자신감이 고취되면서 호감 있는 상대에게 본인의 매력을 자연스럽게 어필하기 좋은 시기입니다.",
@@ -152,9 +211,18 @@ function getExpertInterpretation(
     strategy: "상대방의 입장을 먼저 헤아리는 다정함이 곧 나의 복으로 돌아오는 해임을 잊지 마세요."
   };
 
-  // 3. Career
+  // 3. Career (커리큘럼 6.2 공식 적용)
+  const careerScore = calculateFortuneAreaScore(
+    dominant,
+    support,
+    '관성',
+    saju,
+    isYongshinYear,
+    isGishinYear,
+    yongshin
+  );
   const career = {
-    score: ['관성', '인성'].includes(dominant) ? 90 : 75,
+    score: careerScore,
     pros: support.includes('관') || support.includes('인')
       ? "윗사람의 원조나 조직의 인정을 바탕으로 본인의 입지가 탄탄해지며 승진이나 합격의 기운이 강하게 따릅니다."
       : "실행력이 뛰어난 한 해로, 추진하던 프로젝트가 구체적인 성과물로 나타나 대중의 이목을 끌게 됩니다.",
@@ -195,12 +263,127 @@ function getExpertInterpretation(
 }
 
 
-function calculateDynamicScore(dominant: string, event: string, saju: SajuData): number {
+function calculateDynamicScore(
+  dominant: string,
+  event: string,
+  saju: SajuData,
+  isYongshinYear: boolean,
+  isGishinYear: boolean
+): number {
   let score = 75;
   if (['식신', '정재', '정관', '정인'].includes(dominant)) score += 10;
   if (event === '충') score -= 5;
   if (saju.ohaengAnalysis.missing.length === 0) score += 5; // Balanced chart
+  
+  // 용신/기신 반영
+  if (isYongshinYear) score += 10; // 용신 해는 운세 상승
+  if (isGishinYear) score -= 10; // 기신 해는 주의 필요
+  
   return Math.min(95, Math.max(45, score));
+}
+
+/**
+ * 세부 운세 점수 계산 (커리큘럼 6.2 공식)
+ * 세부운세 점수 = 기본점수(3점)
+ *              + 세운 오행이 해당 육친을 생하면 (+1)
+ *              + 세운 오행이 해당 육친이면 (+1)
+ *              + 세운 오행이 해당 육친을 극하면 (-1)
+ *              + 용신과 일치하면 (+1)
+ *              + 기신과 일치하면 (-1)
+ */
+function calculateFortuneAreaScore(
+  dominant: string,
+  support: string,
+  targetYukchin: '재성' | '관성' | '인성' | '식상' | '비겁',
+  saju: SajuData,
+  isYongshinYear: boolean,
+  isGishinYear: boolean,
+  yongshin?: SajuData['yongshin']
+): number {
+  const dayMaster = saju.day.ganHan;
+  let score = 3; // 기본 점수
+
+  // 세운 천간과 지지의 십성 확인
+  const yearGanSipsin = calculateSipsin(dayMaster, YEAR_GAN);
+  const yearJiSipsin = calculateSipsin(dayMaster, YEAR_JI);
+
+  // 세운 오행이 해당 육친을 생하는지 확인
+  const yearGanElement = getOhaeng(YEAR_GAN);
+  const yearJiElement = getOhaeng(YEAR_JI);
+
+  // 육친 오행 매핑
+  const yukchinToElement: Record<string, Element> = {
+    '비겁': getOhaeng(dayMaster) || 'wood',
+    '식상': GENERATING_MAP[getOhaeng(dayMaster) || 'wood'] || 'fire',
+    '재성': CONTROLLING_MAP[getOhaeng(dayMaster) || 'wood'] || 'earth',
+    '관성': Object.keys(CONTROLLING_MAP).find(
+      key => CONTROLLING_MAP[key as Element] === getOhaeng(dayMaster)
+    ) as Element || 'metal',
+    '인성': Object.keys(GENERATING_MAP).find(
+      key => GENERATING_MAP[key as Element] === getOhaeng(dayMaster)
+    ) as Element || 'water',
+  };
+
+  const targetElement = yukchinToElement[targetYukchin];
+  if (!targetElement) return score;
+
+  // 세운 오행이 해당 육친이면 (+1)
+  if (yearGanSipsin === targetYukchin || yearJiSipsin === targetYukchin) {
+    score += 1;
+  }
+
+  // 세운 오행이 해당 육친을 생하면 (+1)
+  if (yearGanElement && GENERATING_MAP[yearGanElement] === targetElement) {
+    score += 1;
+  }
+  if (yearJiElement && GENERATING_MAP[yearJiElement] === targetElement) {
+    score += 1;
+  }
+
+  // 세운 오행이 해당 육친을 극하면 (-1)
+  if (yearGanElement && CONTROLLING_MAP[yearGanElement] === targetElement) {
+    score -= 1;
+  }
+  if (yearJiElement && CONTROLLING_MAP[yearJiElement] === targetElement) {
+    score -= 1;
+  }
+
+  // 용신과 일치하면 (+1)
+  if (isYongshinYear && yongshin) {
+    const yongshinElement = getOhaengFromKorean(yongshin.primary);
+    if (yongshinElement === targetElement) {
+      score += 1;
+    }
+  }
+
+  // 기신과 일치하면 (-1)
+  if (isGishinYear && yongshin?.gishin) {
+    const gishinElements = yongshin.gishin.map(g => getOhaengFromKorean(g));
+    if (gishinElements.some(g => g === targetElement)) {
+      score -= 1;
+    }
+  }
+
+  // 점수를 1-5 스케일로 변환 (커리큘럼 8.2)
+  // 점수 범위를 1-5로 매핑 (대략적으로)
+  const normalizedScore = Math.min(5, Math.max(1, Math.round(score / 2) + 1));
+  
+  // 점수를 100점 만점으로 변환 (기존 코드와 호환)
+  return normalizedScore * 20;
+}
+
+/**
+ * 한글 오행명에서 Element로 변환
+ */
+function getOhaengFromKorean(korean: string): Element | null {
+  const map: Record<string, Element> = {
+    '목(木)': 'wood',
+    '화(火)': 'fire',
+    '토(土)': 'earth',
+    '금(金)': 'metal',
+    '수(水)': 'water',
+  };
+  return map[korean] || null;
 }
 
 /**
@@ -268,12 +451,118 @@ function isHarmony(ji1: string, ji2: string): boolean {
 }
 
 /**
- * 행운 정보 계산 - 부족한 오행 기반
+ * 전체 12개월 월운 분석 (커리큘럼 7단계)
+ * 월운 점수 = 기본 3점
+ *          + 월간지가 용신이면 (+1~2)
+ *          + 월간지가 기신이면 (-1~2)
+ *          + 원국/세운과 좋은 합이면 (+1)
+ *          + 원국/세운과 충이면 (-1)
  */
-function calculateLuckyInfo(saju: SajuData): { color: string; direction: string; number: string } {
-  // 부족한 오행을 보완하는 색상/방향/숫자
-  const lackElement = saju.ohaengAnalysis.missing[0] || saju.ohaengAnalysis.deficient[0] || '';
+function calculateAllMonths(
+  saju: SajuData,
+  isYongshinYear: boolean,
+  isGishinYear: boolean,
+  yongshin?: SajuData['yongshin']
+): Array<{
+  month: number;
+  gan: string;
+  ji: string;
+  score: number;
+  theme: string;
+  advice: string;
+}> {
+  const dayMaster = saju.day.ganHan;
+  const yearJi = saju.year.jiHan;
+  const dayJi = saju.day.jiHan;
 
+  // 월별 간지 조회
+  const monthlyData = SajuCalculator.calculateMonthlyFortune(CURRENT_YEAR, dayMaster, yearJi, dayJi);
+
+  const yongshinElement = yongshin ? getOhaengFromKorean(yongshin.primary) : null;
+  const gishinElements = yongshin?.gishin?.map(g => getOhaengFromKorean(g)) || [];
+
+  return monthlyData.map(monthData => {
+    let score = 3; // 기본 점수
+
+    const monthGanElement = getOhaeng(monthData.ganHan);
+    const monthJiElement = getOhaeng(monthData.jiHan);
+
+    // 월간지가 용신이면 (+1~2)
+    if (yongshinElement) {
+      if (monthGanElement === yongshinElement) score += 2;
+      if (monthJiElement === yongshinElement) score += 2;
+    }
+
+    // 월간지가 기신이면 (-1~2)
+    if (gishinElements.length > 0) {
+      if (monthGanElement && gishinElements.includes(monthGanElement)) score -= 2;
+      if (monthJiElement && gishinElements.includes(monthJiElement)) score -= 2;
+    }
+
+    // 원국/세운과 좋은 합이면 (+1)
+    // 세운 지지(午)와 월지의 합 관계 확인
+    if (isHarmony(YEAR_JI, monthData.jiHan)) {
+      score += 1;
+    }
+    // 일지와 월지의 합 관계 확인
+    if (isHarmony(dayJi, monthData.jiHan)) {
+      score += 1;
+    }
+
+    // 원국/세운과 충이면 (-1)
+    // 세운 지지(午)와 월지의 충 관계 확인
+    const chungPairs: Array<[string, string]> = [
+      ['子', '午'], ['午', '子'],
+      ['丑', '未'], ['未', '丑'],
+      ['寅', '申'], ['申', '寅'],
+      ['卯', '酉'], ['酉', '卯'],
+      ['辰', '戌'], ['戌', '辰'],
+      ['巳', '亥'], ['亥', '巳']
+    ];
+    if (chungPairs.some(([a, b]) => (a === YEAR_JI && b === monthData.jiHan) || (a === monthData.jiHan && b === YEAR_JI))) {
+      score -= 1;
+    }
+    // 일지와 월지의 충 관계 확인
+    if (chungPairs.some(([a, b]) => (a === dayJi && b === monthData.jiHan) || (a === monthData.jiHan && b === dayJi))) {
+      score -= 1;
+    }
+
+    // 점수를 1-5 스케일로 변환
+    const normalizedScore = Math.min(5, Math.max(1, Math.round(score / 2) + 1));
+
+    // 테마와 조언 결정
+    let theme = '';
+    let advice = '';
+
+    if (normalizedScore >= 4) {
+      theme = '좋은 달';
+      advice = '운세가 상승하는 시기입니다. 중요한 결정이나 새로운 시작에 좋습니다.';
+    } else if (normalizedScore >= 3) {
+      theme = '보통 달';
+      advice = '안정적인 시기입니다. 꾸준한 노력으로 발전할 수 있습니다.';
+    } else if (normalizedScore >= 2) {
+      theme = '주의 달';
+      advice = '신중한 처신이 필요한 시기입니다. 큰 결정은 피하는 것이 좋습니다.';
+    } else {
+      theme = '어려운 달';
+      advice = '운세가 불리한 시기입니다. 인내심을 갖고 조심스럽게 나아가세요.';
+    }
+
+    return {
+      month: monthData.month,
+      gan: monthData.ganHan,
+      ji: monthData.jiHan,
+      score: normalizedScore,
+      theme,
+      advice,
+    };
+  });
+}
+
+/**
+ * 행운 정보 계산 - 용신 오행 기반 (커리큘럼 개선)
+ */
+function calculateLuckyInfo(saju: SajuData, yongshin?: SajuData['yongshin']): { color: string; direction: string; number: string } {
   const elementInfo: Record<string, { color: string; direction: string; number: string }> = {
     '목(木)': { color: '청색, 녹색', direction: '동쪽', number: '3, 8' },
     '화(火)': { color: '적색, 분홍색', direction: '남쪽', number: '2, 7' },
@@ -282,7 +571,13 @@ function calculateLuckyInfo(saju: SajuData): { color: string; direction: string;
     '수(水)': { color: '흑색, 감색', direction: '북쪽', number: '1, 6' },
   };
 
-  // 부족한 오행이 있으면 해당 오행의 정보, 없으면 화(火) 기본값 (2026년 세운 오행)
+  // 용신이 있으면 용신 기반, 없으면 부족한 오행 기반
+  if (yongshin && yongshin.primary) {
+    return elementInfo[yongshin.primary] || { color: '적색, 오렌지색', direction: '남쪽', number: '2, 7' };
+  }
+
+  // 부족한 오행을 보완하는 색상/방향/숫자
+  const lackElement = saju.ohaengAnalysis.missing[0] || saju.ohaengAnalysis.deficient[0] || '';
   const info = elementInfo[lackElement] || { color: '적색, 오렌지색', direction: '남쪽', number: '2, 7' };
 
   return info;
