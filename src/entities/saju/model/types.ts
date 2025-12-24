@@ -107,6 +107,10 @@ export interface SajuData {
     yearBased: Array<{ pillar: string; sinsal: string }>; // 년지 기준
     dayBased: Array<{ pillar: string; sinsal: string }>;  // 일지 기준
   };
+  // 일간 강약 분석
+  ilganStrength?: IlganStrength;
+  // 용신 분석
+  yongshin?: Yongshin;
 }
 export interface NewYearFortune {
   year: number;
@@ -129,6 +133,14 @@ export interface NewYearFortune {
     theme: string;
     advice: string;
   }[];
+  allMonths?: Array<{
+    month: number;
+    gan: string;
+    ji: string;
+    score: number;
+    theme: string;
+    advice: string;
+  }>;
   fortuneGuide: {
     do: string[];
     dont: string[];
@@ -164,4 +176,22 @@ export interface FortuneAreaBase {
   pros: string;
   cons: string;
   strategy: string;
+}
+
+export interface IlganStrength {
+  strength: 'strong' | 'weak' | 'neutral';
+  score: number;
+  details: {
+    deukRyeong: number;  // 월령 득령 점수
+    tonggeun: number;    // 통근 점수
+    cheongan: number;    // 천간 생조 점수
+  };
+}
+
+export interface Yongshin {
+  primary: string;      // 주 용신 오행 (예: '목(木)')
+  secondary?: string;   // 보조 용신 오행
+  heeshin?: string[];   // 희신 오행 배열
+  gishin?: string[];    // 기신 오행 배열
+  type: '억부' | '조후' | '통관';
 }

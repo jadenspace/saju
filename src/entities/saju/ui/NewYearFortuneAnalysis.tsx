@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { SajuData, NewYearFortune } from '../model/types';
 import { calculateNewYearFortune } from '../../../shared/lib/saju/calculators/NewYearFortune';
+import { josa } from 'es-hangul';
 import styles from './NewYearFortuneAnalysis.module.css';
 import clsx from 'clsx';
 
@@ -54,6 +55,59 @@ export const NewYearFortuneAnalysis = ({ data }: Props) => {
         </div>
       </div>
 
+      {/* 용신 분석 섹션 */}
+      {data.yongshin && (
+        <div className={styles.yongshinSection}>
+          <h4 className={styles.sectionTitle}>🔮 용신 분석</h4>
+          <div className={styles.yongshinBox}>
+            <div className={styles.yongshinItem}>
+              <span className={styles.yongshinLabel}>주 용신</span>
+              <span className={styles.yongshinValue}>{data.yongshin.primary}</span>
+              <span className={styles.yongshinType}>({data.yongshin.type})</span>
+            </div>
+            {data.yongshin.secondary && (
+              <div className={styles.yongshinItem}>
+                <span className={styles.yongshinLabel}>보조 용신</span>
+                <span className={styles.yongshinValue}>{data.yongshin.secondary}</span>
+              </div>
+            )}
+            {data.yongshin.heeshin && data.yongshin.heeshin.length > 0 && (
+              <div className={styles.yongshinItem}>
+                <span className={styles.yongshinLabel}>희신</span>
+                <span className={styles.yongshinValue}>{data.yongshin.heeshin.join(', ')}</span>
+              </div>
+            )}
+            {data.yongshin.gishin && data.yongshin.gishin.length > 0 && (
+              <div className={styles.yongshinItem}>
+                <span className={styles.yongshinLabel}>기신</span>
+                <span className={styles.yongshinValue}>{data.yongshin.gishin.join(', ')}</span>
+              </div>
+            )}
+          </div>
+          <p className={styles.yongshinDescription}>
+            용신은 사주 균형에 가장 필요한 오행으로, 사주에 따라 정해지는 고정된 오행입니다. 당신의 용신은 {data.yongshin.primary}이며, 올해 세운에서 {josa(data.yongshin.primary, '이/가')} 들어오면 운세가 상승합니다.
+            {data.yongshin.heeshin && data.yongshin.heeshin.length > 0 && (
+              data.yongshin.heeshin.length === 1
+                ? ` 희신은 용신을 돕는 오행으로, 올해 세운에서 ${josa(data.yongshin.heeshin[0], '이/가')} 들어오면 용신의 힘이 강해집니다.`
+                : (() => {
+                    const allButLast = data.yongshin.heeshin.slice(0, -1).join(', ');
+                    const last = data.yongshin.heeshin[data.yongshin.heeshin.length - 1];
+                    return ` 희신은 용신을 돕는 오행으로, 올해 세운에서 ${allButLast}, ${josa(last, '이/가')} 들어오면 용신의 힘이 강해집니다.`;
+                  })()
+            )}
+            {data.yongshin.gishin && data.yongshin.gishin.length > 0 && (
+              data.yongshin.gishin.length === 1
+                ? ` 기신은 용신을 방해하는 오행으로, 올해 세운에서 ${josa(data.yongshin.gishin[0], '이/가')} 강하면 주의가 필요합니다.`
+                : (() => {
+                    const allButLast = data.yongshin.gishin.slice(0, -1).join(', ');
+                    const last = data.yongshin.gishin[data.yongshin.gishin.length - 1];
+                    return ` 기신은 용신을 방해하는 오행으로, 올해 세운에서 ${allButLast}, ${josa(last, '이/가')} 강하면 주의가 필요합니다.`;
+                  })()
+            )}
+          </p>
+        </div>
+      )}
+
       <div className={styles.areaGrid}>
         <ExpertAreaCard title="재물운" data={fortune.fortuneAreas.money} icon="💰" />
         <ExpertAreaCard title="애정·관계운" data={fortune.fortuneAreas.relationship} icon="❤️" />
@@ -61,10 +115,30 @@ export const NewYearFortuneAnalysis = ({ data }: Props) => {
         <ExpertAreaCard title="자기계발·내적 성찰" data={fortune.fortuneAreas.selfGrowth} icon="📚" />
       </div>
 
+      {/* 전체 월운 */}
+      {fortune.allMonths && fortune.allMonths.length > 0 && (
+        <div className={styles.allMonthsSection}>
+          <h4 className={styles.sectionTitle}>📅 전체 월운 (12개월)</h4>
+          <div className={styles.allMonthsGrid}>
+            {fortune.allMonths.map((m, idx) => (
+              <div key={idx} className={clsx(styles.monthCard, getMonthScoreClass(m.score))}>
+                <div className={styles.monthHeader}>
+                  <span className={styles.monthNumber}>{m.month}월</span>
+                  <span className={styles.monthGanji}>{m.gan}{m.ji}</span>
+                  <span className={styles.monthScore}>{'★'.repeat(m.score)}{'☆'.repeat(5 - m.score)}</span>
+                </div>
+                <span className={styles.monthTheme}>{m.theme}</span>
+                <p className={styles.monthAdvice}>{m.advice}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* 주요 월운 */}
       {fortune.keyMonths && fortune.keyMonths.length > 0 && (
         <div className={styles.keyMonthsSection}>
-          <h4 className={styles.sectionTitle}>📅 주요 월운</h4>
+          <h4 className={styles.sectionTitle}>⭐ 주요 월운</h4>
           <div className={styles.monthsGrid}>
             {fortune.keyMonths.map((m, idx) => (
               <div key={idx} className={styles.monthCard}>
@@ -140,4 +214,11 @@ const getScoreClass = (score: number) => {
   if (score >= 80) return styles.high;
   if (score >= 60) return styles.medium;
   return styles.low;
+};
+
+const getMonthScoreClass = (score: number) => {
+  if (score >= 4) return styles.monthHigh;
+  if (score >= 3) return styles.monthMedium;
+  if (score >= 2) return styles.monthLow;
+  return styles.monthVeryLow;
 };

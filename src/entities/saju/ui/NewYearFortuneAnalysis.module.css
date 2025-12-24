@@ -261,6 +261,111 @@
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
+/* 용신 분석 섹션 */
+.yongshinSection {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: linear-gradient(145deg, rgba(212, 175, 55, 0.08), rgba(212, 175, 55, 0.03));
+  border-radius: 12px;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.yongshinBox {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.yongshinItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.yongshinLabel {
+  font-size: 0.8rem;
+  color: #888;
+  font-weight: 600;
+}
+
+.yongshinValue {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.yongshinType {
+  font-size: 0.75rem;
+  color: #aaa;
+}
+
+.yongshinDescription {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #ddd;
+  margin-top: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+}
+
+/* 전체 월운 섹션 */
+.allMonthsSection {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.allMonthsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.monthHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.monthGanji {
+  font-size: 0.85rem;
+  color: #aaa;
+  font-weight: 600;
+}
+
+.monthScore {
+  font-size: 0.9rem;
+  color: var(--primary);
+  margin-left: auto;
+}
+
+.monthHigh {
+  border-left: 3px solid #51cf66;
+}
+
+.monthMedium {
+  border-left: 3px solid #ffd43b;
+}
+
+.monthLow {
+  border-left: 3px solid #ff8787;
+}
+
+.monthVeryLow {
+  border-left: 3px solid #c92a2a;
+}
+
 /* Key Months Section */
 .keyMonthsSection {
   margin-top: 2rem;
@@ -371,6 +476,14 @@
   }
 
   .monthsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .allMonthsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .yongshinBox {
     grid-template-columns: 1fr;
   }
 }

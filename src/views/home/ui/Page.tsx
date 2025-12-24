@@ -17,7 +17,7 @@ export const HomePage = () => {
         </p>
         <SajuForm />
 
-        <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+        <div style={{ margin: '2rem 0', display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
 
           <Link
             href="/guide"

@@ -6,6 +6,8 @@ import { addMinutes, getKoreaHistoricalOffset, getLongitudeOffset } from './Time
 import { getTwelveStage } from '../data/TwelveStages';
 import { getTwelveSinsal } from '../data/TwelveSinsal';
 import { getGongmang, isGongmang, checkHaegong } from '../data/Gongmang';
+import { calculateIlganStrength } from './IlganStrength';
+import { calculateYongshin } from './Yongshin';
 
 export class SajuCalculator {
   static calculate(year: number, month: number, day: number, hour: number, minute: number, gender: 'male' | 'female' = 'male', unknownTime: boolean = false, useTrueSolarTime: boolean = true, applyDST: boolean = true, midnightMode: 'early' | 'late' = 'late'): SajuData {
@@ -165,6 +167,31 @@ export class SajuCalculator {
       }
     });
 
+    // Calculate 일간 강약
+    const ilganStrength = calculateIlganStrength(dayMaster, pillars);
+
+    // Calculate 용신 (일간 강약이 계산된 후)
+    const sajuDataForYongshin: SajuData = {
+      year: pillars[0],
+      month: pillars[1],
+      day: pillars[2],
+      hour: unknownTime ? { gan: '?', ji: '?', ganHan: '?', jiHan: '?', ganElement: 'unknown', jiElement: 'unknown' } : pillars[3],
+      birthDate: `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`,
+      birthTime: unknownTime ? '시간 모름' : `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`,
+      gender,
+      solar: true,
+      unknownTime,
+      useTrueSolarTime,
+      applyDST,
+      midnightMode,
+      daeun,
+      daeunDirection,
+      ohaengDistribution,
+      ohaengAnalysis,
+      ilganStrength,
+    };
+    const yongshin = calculateYongshin(sajuDataForYongshin);
+
     return {
       year: pillars[0],
       month: pillars[1],
@@ -196,6 +223,8 @@ export class SajuCalculator {
         yearBased: yearBasedSinsal,
         dayBased: dayBasedSinsal,
       },
+      ilganStrength,
+      yongshin: yongshin ?? undefined,
     };
   }
 

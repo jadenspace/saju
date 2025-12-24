@@ -1,28 +1,72 @@
-:root {
-  --background: #0a0a0a;
-  --foreground: #ededed;
-  --primary: #d4af37;
-  /* Gold */
-  --primary-hover: #b5952f;
-  --secondary: #2a2a2a;
-  --accent: #8e44ad;
-  /* Mystical Purple */
-  --border: #333;
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+/* Pretendard 폰트 */
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css');
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  /* 다크 실버/글래스 테마 컬러 */
+  --background: #0a0a0c;
+  --background-secondary: #111114;
+  --foreground: #f4f4f5;
+  --foreground-muted: #a1a1aa;
+
+  /* 프라이머리 - 골든 그래디언트 */
+  --primary: #d4a574;
+  --primary-light: #f5d9b8;
+  --primary-dark: #a67c52;
+  --primary-hover: #e8c08e;
+  --primary-gradient: linear-gradient(135deg, #d4a574 0%, #f5d9b8 50%, #d4a574 100%);
+
+  /* 세컨더리 - 다크 그레이 */
+  --secondary: #18181b;
+  --secondary-light: #27272a;
+  --secondary-hover: #2d2d31;
+
+  /* 악센트 - 실버/글래스 */
+  --accent: #d4d4d8;
+  --accent-light: #e4e4e7;
+  --accent-dark: #a1a1aa;
+  --accent-gradient: linear-gradient(135deg, #a1a1aa 0%, #d4d4d8 50%, #e4e4e7 100%);
+
+  /* 추가 컬러 */
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --info: #3b82f6;
+
+  /* 테두리 & 그림자 */
+  --border: rgba(255, 255, 255, 0.1);
+  --border-light: rgba(255, 255, 255, 0.06);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 30px rgba(212, 165, 116, 0.3);
+
+  /* 글래스모피즘 */
+  --glass-bg: rgba(24, 24, 27, 0.8);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-blur: 12px;
+
+  /* 폰트 */
+  --font-sans: 'Pretendard Variable', var(--font-geist-sans), -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), 'SF Mono', Consolas, monospace;
+
+  /* 간격 & 크기 */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(255, 255, 255, 0.03) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 40% at 100% 100%, rgba(212, 165, 116, 0.08) 0%, transparent 40%),
+    radial-gradient(ellipse 40% 30% at 0% 80%, rgba(255, 255, 255, 0.02) 0%, transparent 40%);
+  font-family: var(--font-sans);
+  font-weight: 400;
+  line-height: 1.6;
+  letter-spacing: -0.02em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   margin: 0;
