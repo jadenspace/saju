@@ -64,6 +64,59 @@
   color: var(--primary);
 }
 
+.comparisonBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  width: 100%;
+  max-width: 500px;
+}
+
+.comparisonText {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #ddd;
+  text-align: center;
+}
+
+.trendUp {
+  color: #4ade80;
+  font-weight: 700;
+}
+
+.trendDown {
+  color: #f87171;
+  font-weight: 700;
+}
+
+.trendSame {
+  color: #94a3b8;
+  font-weight: 700;
+}
+
+.changeReasons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.changeReasonItem {
+  font-size: 0.75rem;
+  color: var(--primary);
+  background: rgba(212, 175, 55, 0.1);
+  padding: 0.3rem 0.7rem;
+  border-radius: 6px;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
 .summaryText {
   font-size: 1.2rem;
   font-weight: 700;
@@ -259,6 +312,183 @@
   border-radius: 6px;
   font-size: 0.95rem;
   border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* 별점 표시 스타일 */
+.starRating {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.stars {
+  color: var(--primary);
+  letter-spacing: -0.1em;
+}
+
+.starNumber {
+  font-size: 0.75rem;
+  color: #aaa;
+  margin-left: 0.25rem;
+}
+
+/* 카드 요약/집중 포인트 */
+.cardSummary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.summaryLabel {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.focusLabel {
+  font-size: 0.85rem;
+  color: var(--primary);
+  background: rgba(212, 175, 55, 0.1);
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+}
+
+/* 운의 작동 방식 섹션 */
+.mechanismSection {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: linear-gradient(145deg, rgba(100, 149, 237, 0.1), rgba(100, 149, 237, 0.03));
+  border-radius: 12px;
+  border: 1px solid rgba(100, 149, 237, 0.2);
+}
+
+.mechanismBox {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  padding: 1.25rem;
+}
+
+.mechanismDescription {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #fff;
+  text-align: center;
+  margin: 0 0 1.25rem 0;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mechanismGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.mechanismAdvantage,
+.mechanismRisk {
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.mechanismAdvantage {
+  background: rgba(81, 207, 102, 0.1);
+  border: 1px solid rgba(81, 207, 102, 0.2);
+}
+
+.mechanismRisk {
+  background: rgba(255, 135, 135, 0.1);
+  border: 1px solid rgba(255, 135, 135, 0.2);
+}
+
+.mechanismLabel {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.mechanismAdvantage .mechanismLabel {
+  color: #51cf66;
+}
+
+.mechanismRisk .mechanismLabel {
+  color: #ff8787;
+}
+
+.mechanismAdvantage ul,
+.mechanismRisk ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.mechanismAdvantage li,
+.mechanismRisk li {
+  font-size: 0.9rem;
+  color: #ddd;
+  margin-bottom: 0.5rem;
+  padding-left: 1rem;
+  position: relative;
+}
+
+.mechanismAdvantage li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: #51cf66;
+}
+
+.mechanismRisk li::before {
+  content: '!';
+  position: absolute;
+  left: 0;
+  color: #ff8787;
+}
+
+/* 실수 패턴 섹션 */
+.mistakeSection {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: linear-gradient(145deg, rgba(255, 107, 107, 0.08), rgba(255, 107, 107, 0.03));
+  border-radius: 12px;
+  border: 1px solid rgba(255, 107, 107, 0.2);
+}
+
+.mistakeBox {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  padding: 1.25rem;
+}
+
+.mistakeTitle {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #ff8787;
+  margin: 0 0 1rem 0;
+  text-align: center;
+}
+
+.mistakeList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 0.75rem;
+}
+
+.mistakeList li {
+  font-size: 0.9rem;
+  color: #ddd;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 135, 135, 0.05);
+  border-radius: 6px;
+  border-left: 3px solid rgba(255, 135, 135, 0.3);
 }
 
 /* 용신 분석 섹션 */
@@ -485,5 +715,18 @@
 
   .yongshinBox {
     grid-template-columns: 1fr;
+  }
+
+  .mechanismGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .mistakeList {
+    grid-template-columns: 1fr;
+  }
+
+  .cardSummary {
+    flex-direction: column;
+    gap: 0.5rem;
   }
 }
