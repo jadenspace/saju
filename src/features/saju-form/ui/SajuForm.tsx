@@ -455,8 +455,9 @@ export const SajuForm = () => {
           disabled={loading !== null}
           className={styles.secondaryButton}
           onClick={(e: React.MouseEvent) => handleSubmit(e as unknown as React.FormEvent, 'result')}
+          id="btn-saju-all"
         >
-          {loading === 'result' ? '분석 중...' : '사주 결과보기'}
+          {loading === 'result' ? '분석 중...' : '종합 사주'}
         </Button>
       </div>
     </form>
