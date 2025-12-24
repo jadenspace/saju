@@ -35,8 +35,8 @@ export const FortunePage = ({ sajuData, searchParams }: FortunePageProps) => {
                     <Button onClick={() => router.push('/')} variant="outline">
                         다시 입력하기
                     </Button>
-                    <Button onClick={() => router.push('/result?' + searchParamsString)}>
-                        사주 결과 보기
+                    <Button onClick={() => router.push('/result?' + searchParamsString)} id="btn-saju-all">
+                        종합 사주 보기
                     </Button>
                 </div>
             </div>

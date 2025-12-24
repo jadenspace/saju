@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 import { SajuData } from '../model/types';
+import { OHAENG_COLORS_BY_KEY } from '../../../shared/lib/saju/data/OhaengColors';
 import styles from './OhaengAnalysis.module.css';
 
 interface OhaengAnalysisProps {
@@ -7,11 +8,40 @@ interface OhaengAnalysisProps {
 }
 
 const ELEMENT_INFO = {
-  wood: { name: '목', hanja: '木', color: '#4ade80' },
-  fire: { name: '화', hanja: '火', color: '#f87171' },
-  earth: { name: '토', hanja: '土', color: '#fbbf24' },
-  metal: { name: '금', hanja: '金', color: '#94a3b8' },
-  water: { name: '수', hanja: '水', color: '#1e293b' },
+  wood: { 
+    name: '목', 
+    hanja: '木', 
+    color: '#4ade80'
+  },
+  fire: { 
+    name: '화', 
+    hanja: '火', 
+    color: '#f87171'
+  },
+  earth: { 
+    name: '토', 
+    hanja: '土', 
+    color: '#fbbf24'
+  },
+  metal: { 
+    name: '금', 
+    hanja: '金', 
+    color: '#94a3b8'
+  },
+  water: { 
+    name: '수', 
+    hanja: '水', 
+    color: '#1e293b'
+  },
+};
+
+// 오행 한글명 매핑
+const ELEMENT_KOREAN_MAP: Record<string, string> = {
+  wood: '목(木)',
+  fire: '화(火)',
+  earth: '토(土)',
+  metal: '금(金)',
+  water: '수(水)'
 };
 
 export const OhaengAnalysis = ({ data }: OhaengAnalysisProps) => {
@@ -81,6 +111,24 @@ export const OhaengAnalysis = ({ data }: OhaengAnalysisProps) => {
                 </div>
               </div>
               <p className={styles.elementDescription}>{description}</p>
+              <div className={styles.colorInfo}>
+                <div className={styles.colorSection}>
+                  <span className={styles.colorLabel}>오방색:</span>
+                  <span className={styles.obangColor}>
+                    {OHAENG_COLORS_BY_KEY[element]?.obangColor || ''}
+                  </span>
+                </div>
+                <div className={styles.colorSection}>
+                  <span className={styles.colorLabel}>실사용 색감:</span>
+                  <div className={styles.colorTags}>
+                    {OHAENG_COLORS_BY_KEY[element]?.practicalColors.map((color, index) => (
+                      <span key={index} className={styles.colorTag}>
+                        {color}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
           );
         })}

@@ -481,16 +481,17 @@
   backdrop-filter: blur(8px);
 }
 
-/* 첫 줄 2개 버튼 (50% 너비) */
+/* 첫 줄 3개 버튼 (33.33% 너비) */
 .analysisButton:nth-child(1),
-.analysisButton:nth-child(2) {
-  flex: 0 0 calc(50% - 0.5rem);
+.analysisButton:nth-child(2),
+.analysisButton:nth-child(3) {
+  flex: 0 0 calc(33.333% - 0.67rem);
 }
 
 /* 둘째 줄 3개 버튼 (33.33% 너비) */
-.analysisButton:nth-child(3),
 .analysisButton:nth-child(4),
-.analysisButton:nth-child(5) {
+.analysisButton:nth-child(5),
+.analysisButton:nth-child(6) {
   flex: 0 0 calc(33.333% - 0.67rem);
 }
 
