@@ -127,7 +127,6 @@ export interface NewYearFortune {
   yearSummary: {
     score: number;
     summaryText: string; // "Core Summary"
-    reason: string[];    // "Why (Bullets)"
     comparison?: YearComparison; // 작년 비교 정보
   };
   yearNature: string;    // "Nature of the Year"
@@ -172,12 +171,12 @@ export interface NewYearFortune {
     supportTengod: string;
     supportTengodFriendly?: string;   // 신규: 사용자 친화적 표현
     event?: string;
+    eventFriendly?: string;  // 신규: 이벤트 사용자 친화적 표현
     palace?: string;
     ohaengExcess?: string;
     ohaengLack?: string;
     quality: 'stable' | 'volatile' | 'mixed';
     pace: 'fast' | 'slow' | 'mixed';
-    theme: string;
     guideType: 'push' | 'manage' | 'defense' | 'reset';
   };
   // 행운 정보

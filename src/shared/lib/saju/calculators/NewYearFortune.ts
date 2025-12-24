@@ -17,16 +17,16 @@ const PREVIOUS_YEAR_JI = '巳';
  * 십성 → 사용자 친화적 표현 맵핑
  */
 const TENGOD_FRIENDLY_MAP: Record<string, { description: string; type: YearMechanism['type'] }> = {
-  '비견': { description: '자기 주도적 에너지가 강한', type: 'competitive-focused' },
-  '겁재': { description: '변화와 경쟁 의식이 활발한', type: 'competitive-focused' },
-  '식신': { description: '재능과 표현력이 빛나는', type: 'creative-focused' },
-  '상관': { description: '창의적 혁신이 강조되는', type: 'creative-focused' },
-  '편재': { description: '사업적 확장이 유리한', type: 'wealth-focused' },
-  '정재': { description: '안정적 재물 흐름의', type: 'wealth-focused' },
-  '편관': { description: '도전과 책임이 커지는', type: 'authority-focused' },
-  '정관': { description: '명예와 위상이 높아지는', type: 'authority-focused' },
-  '편인': { description: '분석과 통찰이 깊어지는', type: 'thinking-first' },
-  '정인': { description: '학습과 지원이 활성화되는', type: 'thinking-first' },
+  '비견': { description: '자기 주도적 에너지가 강한 시기', type: 'competitive-focused' },
+  '겁재': { description: '변화와 경쟁 의식이 활발한 시기', type: 'competitive-focused' },
+  '식신': { description: '재능과 표현력이 빛나는 시기', type: 'creative-focused' },
+  '상관': { description: '창의적 혁신이 강조되는 시기', type: 'creative-focused' },
+  '편재': { description: '사업적 확장이 유리한 시기', type: 'wealth-focused' },
+  '정재': { description: '안정적 재물 흐름의 시기', type: 'wealth-focused' },
+  '편관': { description: '도전과 책임이 커지는 시기', type: 'authority-focused' },
+  '정관': { description: '명예와 위상이 높아지는 시기', type: 'authority-focused' },
+  '편인': { description: '분석과 통찰이 깊어지는 시기', type: 'thinking-first' },
+  '정인': { description: '학습과 지원이 활성화되는 시기', type: 'thinking-first' },
 };
 
 /**
@@ -190,16 +190,6 @@ function josaEseo(_word: string): string {
   return '에서';
 }
 
-/**
- * 형용사형 어미로 끝나는지 확인하고 적절한 명사 추가
- */
-function addNounIfNeeded(text: string): string {
-  // "~는", "~은", "~는" 등으로 끝나는 경우 "것" 또는 "시기" 추가
-  if (text.endsWith('는') || text.endsWith('은') || text.endsWith('는')) {
-    return `${text} 시기`;
-  }
-  return text;
-}
 
 /**
  * 운의 작동 방식 계산
@@ -460,12 +450,15 @@ export const calculateNewYearFortune = (sajuData: SajuData): NewYearFortune => {
   }
 
   // 5. Theme & Guide Type
-  const themeMap: Record<string, string> = {
-    '비견': '독립', '겁재': '변화', '식신': '생산', '상관': '혁신',
-    '편재': '확장', '정재': '안정', '편관': '도전', '정관': '명예',
-    '편인': '통찰', '정인': '수렴'
+  // 이벤트를 사용자 친화적 표현으로 변환
+  const eventFriendlyMap: Record<EventType, string> = {
+    '충': '충돌',
+    '합': '협력',
+    '형': '압박',
+    '파': '분열',
+    '해': '해소',
+    '없음': '안정'
   };
-  const theme = themeMap[dominantTengod] || '균형';
   
   let guideType: 'push' | 'manage' | 'defense' | 'reset' = 'manage';
   switch (event) {
@@ -531,7 +524,6 @@ export const calculateNewYearFortune = (sajuData: SajuData): NewYearFortune => {
     yearSummary: {
       score: currentScore,
       summaryText: interpretation.summary,
-      reason: interpretation.reasons,
       comparison
     },
     yearNature: (() => {
@@ -549,7 +541,7 @@ export const calculateNewYearFortune = (sajuData: SajuData): NewYearFortune => {
     allMonths,
     fortuneGuide: interpretation.guide,
     expertMeta: {
-      fortuneType: `${dominantTengod} 주도의 ${theme} 테마`,
+      fortuneType: `${dominantTengod} 주도의 해`,
       fortuneTypeDescription: `${dominantFriendly} 해`,
       warningLevel: (() => {
         switch (event) {
@@ -573,12 +565,12 @@ export const calculateNewYearFortune = (sajuData: SajuData): NewYearFortune => {
       supportTengod,
       supportTengodFriendly: supportFriendly,
       event: event !== '없음' ? event : undefined,
+      eventFriendly: event !== '없음' ? eventFriendlyMap[event] : undefined,
       palace,
       ohaengExcess,
       ohaengLack,
       quality,
       pace,
-      theme,
       guideType
     },
     luckyInfo,
@@ -613,18 +605,6 @@ function getExpertInterpretation(
       summary = `${josa(dominant, '이/가')} 주도하는 해로, 내면에 잠들어 있던 목표의식이 현실화되는 역동적인 해입니다.`;
       break;
   }
-
-  const reasons = [
-    `올해의 중심 기운인 ${josa(dominant, '이/가')} 사회적 활동의 방향성을 결정합니다.`,
-    `천간의 ${josa(support, '은/는')} 당신의 생각과 의논되어 실질적인 행동을 이끌어내는 힘이 됩니다.`,
-  ];
-  if (isYongshinYear && yongshin) {
-    reasons.push(`용신 ${yongshin.primary}이 들어와 사주 균형이 좋아지며 전반적인 운세가 상승합니다.`);
-  } else if (isGishinYear && yongshin) {
-    reasons.push(`기신이 강하게 작용하여 주의가 필요한 해입니다.`);
-  }
-  if (event !== '없음') reasons.push(`${palace}궁에서 발생하는 ${event}의 작용이 환경적인 큰 변화를 불러옵니다.`);
-  if (excess) reasons.push(`원국에 많은 ${josa(excess, '을/를')} 어떻게 다루느냐가 성패를 가르는 열쇠가 될 것입니다.`);
 
   // --- Area Interpretations (Smooth Sentences) ---
 
@@ -665,7 +645,7 @@ function getExpertInterpretation(
       moneyPros = "나의 전문 기술이나 창의적인 아이디어가 시장에서 인정받으며 실질적인 수익으로 연결될 가능성이 매우 높습니다.";
       break;
     default:
-      moneyPros = `${TENGOD_FRIENDLY_MAP[dominant]?.description || dominant} 시기로, 활동 범위가 넓어지며 새로운 수익원 창출에 유리한 흐름입니다.`;
+      moneyPros = `${TENGOD_FRIENDLY_MAP[dominant]?.description || dominant}로, 활동 범위가 넓어지며 새로운 수익원 창출에 유리한 흐름입니다.`;
       break;
   }
 
@@ -874,11 +854,10 @@ function getExpertInterpretation(
   
   return {
     summary,
-    reasons,
     areas: { money, relationship, career, selfGrowth },
     guide: {
       do: [
-        `${dominantFriendly} 시기의 긍정적인 추진력 활용하기`,
+        `${dominantFriendly}의 긍정적인 추진력 활용하기`,
         (() => {
           switch (event) {
             case '충':
@@ -890,7 +869,7 @@ function getExpertInterpretation(
         "자신감을 바탕으로 능동적으로 제안하기"
       ],
       dont: [
-        `${dominantFriendly} 시기에 나타나는 부정적 고집 경계하기`,
+        `${dominantFriendly}에 나타나는 부정적 고집 경계하기`,
         "결과가 보이지 않는 일에 무리하게 집착하기",
         (() => {
           switch (lack) {
@@ -1082,9 +1061,7 @@ function analyzeYearComparison(
   if (prevData.dominantTengod !== currentData.dominantTengod) {
     const prevFriendly = TENGOD_FRIENDLY_MAP[prevData.dominantTengod]?.description || prevData.dominantTengod;
     const currentFriendly = TENGOD_FRIENDLY_MAP[currentData.dominantTengod]?.description || currentData.dominantTengod;
-    const prevText = addNounIfNeeded(prevFriendly);
-    const currentText = addNounIfNeeded(currentFriendly);
-    changeReasons.push(`${prevText}${josaEseo(prevText)} ${currentText}${josaRo(currentText)} 변화`);
+    changeReasons.push(`${prevFriendly}${josaEseo(prevFriendly)} ${currentFriendly}${josaRo(currentFriendly)} 변화`);
   }
 
   // 이벤트 변화

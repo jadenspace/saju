@@ -53,22 +53,22 @@ export const NewYearFortuneAnalysis = ({ data }: Props) => {
         <div className={styles.summaryBox}>
         <div className={styles.tagSection}>
             {/* 십성명 대신 사용자 친화적 표현 사용 */}
-            <span className={styles.tag}># {fortune.analysisTags.dominantTengodFriendly || fortune.analysisTags.theme}</span>
-            {fortune.analysisTags.event && (
-              <span className={styles.tag}># {fortune.analysisTags.event}의 변화</span>
+            <span className={styles.tag}># {fortune.analysisTags.dominantTengodFriendly}</span>
+            {fortune.analysisTags.eventFriendly && (
+              <span className={styles.tag}># {fortune.analysisTags.eventFriendly}의 변화</span>
             )}
-            <span className={styles.tag}># {fortune.analysisTags.theme}</span>
             {fortune.analysisTags.ohaengLack && (
               <span className={styles.tag}># {fortune.analysisTags.ohaengLack} 보완</span>
             )}
           </div>
-          <p className={styles.summaryText} dangerouslySetInnerHTML={{ __html: fortune.yearSummary.summaryText }} />
-          
-          <ul className={styles.reasonList}>
-            {fortune.yearSummary.reason.map((item: string, idx: number) => (
-              <li key={idx}>{item}</li>
+          <p className={styles.summaryText}>
+            {fortune.yearSummary.summaryText.split('<br />').map((line, idx, arr) => (
+              <span key={idx}>
+                {line}
+                {idx < arr.length - 1 && <br />}
+              </span>
             ))}
-          </ul>
+          </p>
         </div>
         {fortune.yearSummary.comparison && (
           <div className={styles.comparisonBox}>
