@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import { SajuData, NewYearFortune, FortuneAreaBase } from '../model/types';
 import { calculateNewYearFortune } from '../../../shared/lib/saju/calculators/NewYearFortune';
 import { josa } from 'es-hangul';
@@ -31,13 +31,9 @@ const StarRating = ({ score, showNumber = true }: { score: number; showNumber?: 
 
 export const NewYearFortuneAnalysis = ({ data }: Props) => {
   console.log("🚀 ~ NewYearFortuneAnalysis ~ data:", data)
-  const [fortune, setFortune] = useState<NewYearFortune | null>(null);
-  
-  useEffect(() => {
-    if (data) {
-      const result = calculateNewYearFortune(data);
-      setFortune(result);
-    }
+  const fortune = useMemo(() => {
+    if (!data) return null;
+    return calculateNewYearFortune(data);
   }, [data]);
 
   if (!fortune) return null;
