@@ -156,6 +156,60 @@ function calculateJohuYongshin(
 }
 
 /**
+ * 용신 우선순위 판단
+ * 억부용신과 조후용신 중 원국 형국을 분석하여 더 중요한 용신을 선택
+ */
+function determineYongshinPriority(
+  eokbu: { primary: string; type: '억부' } | null,
+  johu: { primary: string; type: '조후' } | null,
+  dayElement: Element,
+  ohaengAnalysis: { excess: string[]; deficient: string[]; missing: string[] },
+  ilganStrength: IlganStrength
+): { primary: { primary: string; type: '억부' | '조후' }; secondary: { primary: string; type: '억부' | '조후' } | null } | null {
+  // 둘 다 없으면 null 반환
+  if (!eokbu && !johu) {
+    return null;
+  }
+
+  // 조후만 있으면 조후 우선
+  if (!eokbu && johu) {
+    return { primary: johu, secondary: null };
+  }
+
+  // 억부만 있으면 억부 우선
+  if (eokbu && !johu) {
+    return { primary: eokbu, secondary: null };
+  }
+
+  // 둘 다 있을 때 우선순위 판단
+  if (eokbu && johu) {
+    const eokbuElement = KOREAN_TO_ELEMENT[eokbu.primary];
+    
+    // 억부용신의 오행이 원국에 과다하면 조후 우선
+    if (eokbuElement && ohaengAnalysis.excess.includes(eokbu.primary)) {
+      return { primary: johu, secondary: eokbu };
+    }
+
+    // 억부용신이 인성(일간을 생하는 오행)이고, 그 오행이 원국에 과다하면 조후 우선
+    if (ilganStrength.strength === 'weak' && eokbuElement) {
+      // 인성 확인: 일간을 생하는 오행
+      const inseongElement = Object.keys(GENERATING_MAP).find(
+        key => GENERATING_MAP[key as Element] === dayElement
+      ) as Element | undefined;
+      
+      if (inseongElement === eokbuElement && ohaengAnalysis.excess.includes(eokbu.primary)) {
+        return { primary: johu, secondary: eokbu };
+      }
+    }
+
+    // 그 외는 억부 우선
+    return { primary: eokbu, secondary: johu };
+  }
+
+  return null;
+}
+
+/**
  * 희신/기신/구신 선정
  * 용신을 돕는 오행 = 희신
  * 용신을 극하거나 방해하는 오행 = 기신
@@ -197,13 +251,17 @@ function calculateHeeshinGishin(
  * 억부용신과 조후용신 중 우선순위 결정
  */
 export function calculateYongshin(sajuData: SajuData): Yongshin | null {
-  if (!sajuData.ilganStrength) {
+  if (!sajuData.ilganStrength || !sajuData.ohaengAnalysis) {
     return null;
   }
 
   const dayMaster = sajuData.day.ganHan;
   const monthJi = sajuData.month.jiHan;
   const pillars = [sajuData.year, sajuData.month, sajuData.day, sajuData.hour];
+  const dayElement = getOhaeng(dayMaster);
+  if (!dayElement) {
+    return null;
+  }
 
   // 억부용신 계산
   const eokbu = calculateEokbuYongshin(dayMaster, sajuData.ilganStrength, pillars);
@@ -211,13 +269,20 @@ export function calculateYongshin(sajuData: SajuData): Yongshin | null {
   // 조후용신 계산
   const johu = calculateJohuYongshin(dayMaster, monthJi);
 
-  // 우선순위: 조후용신이 있으면 조후용신 우선, 없으면 억부용신
-  const primaryYongshin = johu || eokbu;
-  if (!primaryYongshin) {
+  // 우선순위 판단
+  const priority = determineYongshinPriority(
+    eokbu,
+    johu,
+    dayElement,
+    sajuData.ohaengAnalysis,
+    sajuData.ilganStrength
+  );
+
+  if (!priority) {
     return null;
   }
 
-  const yongshinElement = KOREAN_TO_ELEMENT[primaryYongshin.primary];
+  const yongshinElement = KOREAN_TO_ELEMENT[priority.primary.primary];
   if (!yongshinElement) {
     return null;
   }
@@ -225,10 +290,10 @@ export function calculateYongshin(sajuData: SajuData): Yongshin | null {
   const { heeshin, gishin } = calculateHeeshinGishin(yongshinElement);
 
   return {
-    primary: primaryYongshin.primary,
-    secondary: eokbu && johu && eokbu.primary !== johu.primary ? eokbu.primary : undefined,
+    primary: priority.primary.primary,
+    secondary: priority.secondary ? priority.secondary.primary : undefined,
     heeshin: heeshin.length > 0 ? heeshin : undefined,
     gishin: gishin.length > 0 ? gishin : undefined,
-    type: primaryYongshin.type,
+    type: priority.primary.type,
   };
 }
