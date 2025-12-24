@@ -37,7 +37,7 @@ export const calculateNewYearFortune = (sajuData: SajuData): NewYearFortune => {
   // 세운 오행 확인
   const yearGanElement = getOhaeng(YEAR_GAN);
   const yearJiElement = getOhaeng(YEAR_JI);
-  const isYongshinYear = yongshinElement && (yearGanElement === yongshinElement || yearJiElement === yongshinElement);
+  const isYongshinYear = Boolean(yongshinElement && (yearGanElement === yongshinElement || yearJiElement === yongshinElement));
   const isGishinYear = gishinElements.some(g => g === yearGanElement || g === yearJiElement);
 
   // 1. Dominant & Support Sipsin
@@ -327,8 +327,24 @@ function calculateFortuneAreaScore(
   const targetElement = yukchinToElement[targetYukchin];
   if (!targetElement) return score;
 
-  // 세운 오행이 해당 육친이면 (+1)
-  if (yearGanSipsin === targetYukchin || yearJiSipsin === targetYukchin) {
+  // 십성을 육친으로 변환하는 매핑
+  const sipsinToYukchin: Record<string, '재성' | '관성' | '인성' | '식상' | '비겁'> = {
+    '비견': '비겁',
+    '겁재': '비겁',
+    '식신': '식상',
+    '상관': '식상',
+    '편재': '재성',
+    '정재': '재성',
+    '편관': '관성',
+    '정관': '관성',
+    '편인': '인성',
+    '정인': '인성',
+  };
+
+  // 세운 십성이 해당 육친에 해당하면 (+1)
+  const yearGanYukchin = sipsinToYukchin[yearGanSipsin];
+  const yearJiYukchin = sipsinToYukchin[yearJiSipsin];
+  if (yearGanYukchin === targetYukchin || yearJiYukchin === targetYukchin) {
     score += 1;
   }
 

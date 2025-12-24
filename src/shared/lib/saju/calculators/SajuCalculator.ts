@@ -224,7 +224,7 @@ export class SajuCalculator {
         dayBased: dayBasedSinsal,
       },
       ilganStrength,
-      yongshin,
+      yongshin: yongshin ?? undefined,
     };
   }
 
