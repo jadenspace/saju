@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { SajuData, NewYearFortune } from '../model/types';
 import { calculateNewYearFortune } from '../../../shared/lib/saju/calculators/NewYearFortune';
+import { josa } from 'es-hangul';
 import styles from './NewYearFortuneAnalysis.module.css';
 import clsx from 'clsx';
 
@@ -84,8 +85,25 @@ export const NewYearFortuneAnalysis = ({ data }: Props) => {
             )}
           </div>
           <p className={styles.yongshinDescription}>
-            용신은 사주 균형에 가장 필요한 오행입니다. 올해 용신 {data.yongshin.primary}이 들어오면 운세가 상승하고,
-            {data.yongshin.gishin && data.yongshin.gishin.length > 0 && ` 기신 ${data.yongshin.gishin[0]}이 강하면 주의가 필요합니다.`}
+            용신은 사주 균형에 가장 필요한 오행으로, 사주에 따라 정해지는 고정된 오행입니다. 당신의 용신은 {data.yongshin.primary}이며, 올해 세운에서 {josa(data.yongshin.primary, '이/가')} 들어오면 운세가 상승합니다.
+            {data.yongshin.heeshin && data.yongshin.heeshin.length > 0 && (
+              data.yongshin.heeshin.length === 1
+                ? ` 희신은 용신을 돕는 오행으로, 올해 세운에서 ${josa(data.yongshin.heeshin[0], '이/가')} 들어오면 용신의 힘이 강해집니다.`
+                : (() => {
+                    const allButLast = data.yongshin.heeshin.slice(0, -1).join(', ');
+                    const last = data.yongshin.heeshin[data.yongshin.heeshin.length - 1];
+                    return ` 희신은 용신을 돕는 오행으로, 올해 세운에서 ${allButLast}, ${josa(last, '이/가')} 들어오면 용신의 힘이 강해집니다.`;
+                  })()
+            )}
+            {data.yongshin.gishin && data.yongshin.gishin.length > 0 && (
+              data.yongshin.gishin.length === 1
+                ? ` 기신은 용신을 방해하는 오행으로, 올해 세운에서 ${josa(data.yongshin.gishin[0], '이/가')} 강하면 주의가 필요합니다.`
+                : (() => {
+                    const allButLast = data.yongshin.gishin.slice(0, -1).join(', ');
+                    const last = data.yongshin.gishin[data.yongshin.gishin.length - 1];
+                    return ` 기신은 용신을 방해하는 오행으로, 올해 세운에서 ${allButLast}, ${josa(last, '이/가')} 강하면 주의가 필요합니다.`;
+                  })()
+            )}
           </p>
         </div>
       )}
