@@ -187,7 +187,52 @@
   line-height: 1.6;
   color: var(--foreground);
   opacity: 0.8;
-  margin: 0;
+  margin: 0 0 1rem 0;
+}
+
+.colorInfo {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.colorSection {
+  margin-bottom: 0.75rem;
+}
+
+.colorSection:last-child {
+  margin-bottom: 0;
+}
+
+.colorLabel {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--foreground);
+  opacity: 0.9;
+  margin-bottom: 0.5rem;
+}
+
+.obangColor {
+  font-size: 0.9rem;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.colorTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.colorTag {
+  padding: 0.3rem 0.8rem;
+  border-radius: 2rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--foreground);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .disclaimer {
@@ -222,6 +267,7 @@
 .water {
   background-color: #374151;
 }
+
 
 @media (max-width: 480px) {
   .container {
