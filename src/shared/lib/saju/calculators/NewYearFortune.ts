@@ -604,10 +604,10 @@ function getExpertInterpretation(
   let summary = '';
   switch (true) {
     case isYongshinYear && !!yongshin:
-      summary = `${CURRENT_YEAR}년은 용신 ${yongshin.primary}이 들어오는 해로, 전반적으로 운세가 상승합니다. ${josa(dominant, '이/가')} 주도하는 해로, 내면에 잠들어 있던 목표의식이 현실화되는 역동적인 해입니다.`;
+      summary = `${CURRENT_YEAR}년은 용신 ${yongshin.primary}이 들어오는 해로, 전반적으로 운세가 상승합니다. <br />${josa(dominant, '이/가')} 주도하는 해로, 내면에 잠들어 있던 목표의식이 현실화되는 역동적인 해입니다.`;
       break;
     case isGishinYear && !!yongshin:
-      summary = `${CURRENT_YEAR}년은 기신 ${yongshin.gishin?.[0] || ''}이 강한 해로, 신중한 처신이 필요합니다. ${josa(dominant, '이/가')} 주도하는 해로, 변화에 대비하며 신중하게 나아가야 합니다.`;
+      summary = `${CURRENT_YEAR}년은 기신 ${yongshin.gishin?.[0] || ''}이 강한 해로, 신중한 처신이 필요합니다. <br />${josa(dominant, '이/가')} 주도하는 해로, 변화에 대비하며 신중하게 나아가야 합니다.`;
       break;
     default:
       summary = `${josa(dominant, '이/가')} 주도하는 해로, 내면에 잠들어 있던 목표의식이 현실화되는 역동적인 해입니다.`;

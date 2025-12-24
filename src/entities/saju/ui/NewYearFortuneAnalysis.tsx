@@ -54,6 +54,26 @@ export const NewYearFortuneAnalysis = ({ data }: Props) => {
           <span className={styles.scoreLabel}>총운</span>
           <span className={styles.scoreValue}>{fortune.yearSummary.score}</span>
         </div>
+        <div className={styles.summaryBox}>
+        <div className={styles.tagSection}>
+            {/* 십성명 대신 사용자 친화적 표현 사용 */}
+            <span className={styles.tag}># {fortune.analysisTags.dominantTengodFriendly || fortune.analysisTags.theme}</span>
+            {fortune.analysisTags.event && (
+              <span className={styles.tag}># {fortune.analysisTags.event}의 변화</span>
+            )}
+            <span className={styles.tag}># {fortune.analysisTags.theme}</span>
+            {fortune.analysisTags.ohaengLack && (
+              <span className={styles.tag}># {fortune.analysisTags.ohaengLack} 보완</span>
+            )}
+          </div>
+          <p className={styles.summaryText} dangerouslySetInnerHTML={{ __html: fortune.yearSummary.summaryText }} />
+          
+          <ul className={styles.reasonList}>
+            {fortune.yearSummary.reason.map((item: string, idx: number) => (
+              <li key={idx}>{item}</li>
+            ))}
+          </ul>
+        </div>
         {fortune.yearSummary.comparison && (
           <div className={styles.comparisonBox}>
             <span className={styles.comparisonText}>
@@ -77,28 +97,6 @@ export const NewYearFortuneAnalysis = ({ data }: Props) => {
             )}
           </div>
         )}
-        <div className={styles.summaryBox}>
-          <p className={styles.summaryText}>"{fortune.yearSummary.summaryText}"</p>
-          <div className={styles.natureBadge}>
-            운의 성격: {fortune.yearNature}
-          </div>
-          <div className={styles.tagSection}>
-            {/* 십성명 대신 사용자 친화적 표현 사용 */}
-            <span className={styles.tag}># {fortune.analysisTags.dominantTengodFriendly || fortune.analysisTags.theme}</span>
-            {fortune.analysisTags.event && (
-              <span className={styles.tag}># {fortune.analysisTags.event}의 변화</span>
-            )}
-            <span className={styles.tag}># {fortune.analysisTags.theme}</span>
-            {fortune.analysisTags.ohaengLack && (
-              <span className={styles.tag}># {fortune.analysisTags.ohaengLack} 보완</span>
-            )}
-          </div>
-          <ul className={styles.reasonList}>
-            {fortune.yearSummary.reason.map((item: string, idx: number) => (
-              <li key={idx}>{item}</li>
-            ))}
-          </ul>
-        </div>
       </div>
 
       {/* 운의 작동 방식 섹션 (신규) */}
