@@ -32,9 +32,9 @@ export const ResultPage = ({ sajuData, searchParams }: ResultPageProps) => {
           <Button onClick={() => router.push('/')} variant="outline">
             다시 입력하기
           </Button>
-          {/* <Button onClick={() => router.push('/fortune?' + searchParamsString)}>
-            2026 신년운세
-          </Button> */}
+          <Button onClick={() => router.push('/fortune?' + searchParamsString)} id="btn-saju-2026">
+            2026 신년운세 보기
+          </Button>
         </div>
       </div>
     </main>

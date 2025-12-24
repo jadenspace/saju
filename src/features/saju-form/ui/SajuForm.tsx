@@ -447,6 +447,7 @@ export const SajuForm = () => {
             alert("준비중입니다.");
             // handleSubmit(e as unknown as React.FormEvent, 'fortune')
           }}
+          id="btn-saju-2026"
         >
           {loading === 'fortune' ? '분석 중...' : '2026 신년운세'}
         </Button>
