@@ -1,40 +1,27 @@
 'use client';
 
-import { useSearchParams, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { SajuCalculator } from '@/shared/lib/saju/calculators/SajuCalculator';
+import { useRouter } from 'next/navigation';
 import { SajuCard } from '@/entities/saju/ui/SajuCard';
 import { Button } from '@/shared/ui/Button';
 import { SajuData } from '@/entities/saju/model/types';
-import { Loading } from '@/shared/ui/Loading';
 import styles from './Page.module.css';
 
-export const ResultPage = () => {
-  const searchParams = useSearchParams();
+interface ResultPageProps {
+  sajuData: SajuData;
+  searchParams: { [key: string]: string | string[] | undefined };
+}
+
+export const ResultPage = ({ sajuData, searchParams }: ResultPageProps) => {
   const router = useRouter();
-  const [sajuData, setSajuData] = useState<SajuData | null>(null);
 
-  useEffect(() => {
-    const year = Number(searchParams.get('year'));
-    const month = Number(searchParams.get('month'));
-    const day = Number(searchParams.get('day'));
-    const hour = Number(searchParams.get('hour'));
-    const minute = Number(searchParams.get('minute'));
-    const gender = searchParams.get('gender') as 'male' | 'female';
-    const unknownTime = searchParams.get('unknownTime') === 'true';
-    const useTrueSolarTime = searchParams.get('useTrueSolarTime') !== 'false'; // default to true
-    const applyDST = searchParams.get('applyDST') !== 'false'; // default to true
-    const midnightMode = (searchParams.get('midnightMode') || 'late') as 'early' | 'late'; // default to 'late'
-
-    if (year && month && day) {
-      const data = SajuCalculator.calculate(year, month, day, hour, minute, gender, unknownTime, useTrueSolarTime, applyDST, midnightMode);
-      setSajuData(data);
-    }
-  }, [searchParams]);
-
-  if (!sajuData) {
-    return <Loading />;
-  }
+  const searchParamsString = new URLSearchParams(
+    Object.entries(searchParams).reduce((acc, [key, value]) => {
+      if (value !== undefined) {
+        acc[key] = Array.isArray(value) ? value[0] : value;
+      }
+      return acc;
+    }, {} as Record<string, string>)
+  ).toString();
 
   return (
     <main className={styles.main}>
@@ -45,7 +32,7 @@ export const ResultPage = () => {
           <Button onClick={() => router.push('/')} variant="outline">
             다시 입력하기
           </Button>
-          {/* <Button onClick={() => router.push('/fortune?' + searchParams.toString())}>
+          {/* <Button onClick={() => router.push('/fortune?' + searchParamsString)}>
             2026 신년운세
           </Button> */}
         </div>

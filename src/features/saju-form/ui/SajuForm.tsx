@@ -13,37 +13,46 @@ const STORAGE_KEY_MIDNIGHT_MODE = 'saju_midnightMode';
 
 export const SajuForm = () => {
   const router = useRouter();
-  const [formData, setFormData] = useState({
-    birthDate: '', // YYYYMMDD
-    birthTime: '', // HHMM
-    gender: 'male',
-    unknownTime: false,
-    isLunar: false,
-    isLeapMonth: false,
-    useTrueSolarTime: true,
-    applyDST: true,
-    midnightMode: 'late' as 'early' | 'late',
-  });
+  
+  // 로컬스토리지에서 초기값을 읽어오는 lazy initialization 함수
+  const getInitialFormData = () => {
+    if (typeof window === 'undefined') {
+      return {
+        birthDate: '', // YYYYMMDD
+        birthTime: '', // HHMM
+        gender: 'male',
+        unknownTime: false,
+        isLunar: false,
+        isLeapMonth: false,
+        useTrueSolarTime: true,
+        applyDST: true,
+        midnightMode: 'late' as 'early' | 'late',
+      };
+    }
+
+    const savedUseTrueSolarTime = localStorage.getItem(STORAGE_KEY_TRUE_SOLAR_TIME);
+    const savedMidnightMode = localStorage.getItem(STORAGE_KEY_MIDNIGHT_MODE);
+
+    return {
+      birthDate: '', // YYYYMMDD
+      birthTime: '', // HHMM
+      gender: 'male',
+      unknownTime: false,
+      isLunar: false,
+      isLeapMonth: false,
+      useTrueSolarTime: savedUseTrueSolarTime !== null ? savedUseTrueSolarTime === 'true' : true,
+      applyDST: true,
+      midnightMode: (savedMidnightMode as 'early' | 'late') || 'late',
+    };
+  };
+
+  const [formData, setFormData] = useState(getInitialFormData);
   const [loading, setLoading] = useState<'fortune' | 'result' | null>(null);
   const [error, setError] = useState<string>('');
   const [showSettings, setShowSettings] = useState(false);
 
   // 초기 마운트 여부 추적
   const isInitialMount = useRef(true);
-
-  // 로컬스토리지에서 설정 불러오기
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const savedUseTrueSolarTime = localStorage.getItem(STORAGE_KEY_TRUE_SOLAR_TIME);
-      const savedMidnightMode = localStorage.getItem(STORAGE_KEY_MIDNIGHT_MODE);
-
-      setFormData(prev => ({
-        ...prev,
-        useTrueSolarTime: savedUseTrueSolarTime !== null ? savedUseTrueSolarTime === 'true' : true,
-        midnightMode: (savedMidnightMode as 'early' | 'late') || 'late',
-      }));
-    }
-  }, []);
 
   // 설정 변경 시 로컬스토리지에 저장 (초기 마운트 시 제외)
   useEffect(() => {
@@ -434,7 +443,10 @@ export const SajuForm = () => {
           type="button"
           disabled={loading !== null}
           className={styles.primaryButton}
-          onClick={(e: React.MouseEvent) => handleSubmit(e as unknown as React.FormEvent, 'fortune')}
+          onClick={(e: React.MouseEvent) => {
+            alert("준비중입니다.");
+            // handleSubmit(e as unknown as React.FormEvent, 'fortune')
+          }}
         >
           {loading === 'fortune' ? '분석 중...' : '2026 신년운세'}
         </Button>
