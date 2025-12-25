@@ -11,27 +11,27 @@ const ELEMENT_INFO = {
   wood: { 
     name: '목', 
     hanja: '木', 
-    color: '#4ade80'
+    color: '#4ade80'  // 청/녹
   },
   fire: { 
     name: '화', 
     hanja: '火', 
-    color: '#f87171'
+    color: '#f87171'  // 적
   },
   earth: { 
     name: '토', 
     hanja: '土', 
-    color: '#fbbf24'
+    color: '#fbbf24'  // 황
   },
   metal: { 
     name: '금', 
     hanja: '金', 
-    color: '#94a3b8'
+    color: '#94a3b8'  // 백
   },
   water: { 
     name: '수', 
     hanja: '水', 
-    color: '#1e293b'
+    color: '#374151'  // 흑 (남색/어두운 회색)
   },
 };
 

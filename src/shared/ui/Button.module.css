@@ -19,7 +19,7 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
   transition: left 0.5s ease;
 }
 
@@ -39,9 +39,9 @@
 /* Variants */
 .primary {
   background: var(--primary-gradient);
-  color: #1a1625;
+  color: var(--secondary);
   box-shadow: var(--shadow-sm), 0 0 20px rgba(212, 165, 116, 0.2);
-  border: 1px solid rgba(245, 217, 184, 0.3);
+  border: 1px solid rgba(212, 165, 116, 0.3);
 }
 
 .primary:hover:not(:disabled) {
@@ -54,16 +54,16 @@
 }
 
 .secondary {
-  background: var(--glass-bg);
+  background: var(--card-bg);
   color: var(--foreground);
-  backdrop-filter: blur(var(--glass-blur));
-  border: 1px solid var(--glass-border);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
 }
 
 .secondary:hover:not(:disabled) {
   background: var(--secondary-hover);
   border-color: var(--accent);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-md);
 }
 
 .outline {
@@ -73,10 +73,10 @@
 }
 
 .outline:hover:not(:disabled) {
-  border-color: var(--accent);
-  color: var(--accent-light);
-  background: rgba(255, 255, 255, 0.05);
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.08);
+  border-color: var(--primary);
+  color: var(--primary);
+  background: rgba(212, 165, 116, 0.05);
+  box-shadow: var(--shadow-sm);
 }
 
 /* Ghost variant */
@@ -88,20 +88,20 @@
 
 .ghost:hover:not(:disabled) {
   color: var(--foreground);
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.05);
 }
 
 /* Accent variant */
 .accent {
   background: var(--accent-gradient);
-  color: #18181b;
-  box-shadow: var(--shadow-sm), 0 0 20px rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(212, 212, 216, 0.3);
+  color: var(--secondary);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(136, 136, 136, 0.3);
 }
 
 .accent:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: var(--shadow-md), 0 0 30px rgba(255, 255, 255, 0.15);
+  box-shadow: var(--shadow-md);
 }
 
 /* Sizes */

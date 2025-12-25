@@ -4,8 +4,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(12, 10, 29, 0.85);
-  backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -14,8 +14,8 @@
 }
 
 .alert {
-  background: var(--secondary);
-  border: 1px solid var(--glass-border);
+  background: var(--card-bg);
+  border: 1px solid var(--border);
   border-radius: var(--radius-xl);
   padding: 32px;
   max-width: 400px;
@@ -32,9 +32,9 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 1px;
+  height: 3px;
   background: linear-gradient(90deg, transparent, var(--primary), transparent);
-  opacity: 0.5;
+  opacity: 0.8;
 }
 
 .content {
@@ -48,7 +48,7 @@
 .icon {
   color: var(--success);
   animation: scaleIn 0.4s ease-out;
-  filter: drop-shadow(0 0 10px rgba(16, 185, 129, 0.4));
+  filter: drop-shadow(0 0 10px rgba(16, 185, 129, 0.3));
 }
 
 .message {
@@ -64,20 +64,20 @@
 .closeButton {
   width: 100%;
   padding: 14px 24px;
-  background: var(--accent-gradient);
-  color: #18181b;
-  border: 1px solid rgba(212, 212, 216, 0.3);
+  background: var(--primary-gradient);
+  color: var(--secondary);
+  border: 1px solid rgba(212, 165, 116, 0.3);
   border-radius: var(--radius-md);
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+  box-shadow: var(--shadow-glow);
 }
 
 .closeButton:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(255, 255, 255, 0.15);
+  box-shadow: var(--shadow-md), var(--shadow-glow);
 }
 
 .closeButton:active {

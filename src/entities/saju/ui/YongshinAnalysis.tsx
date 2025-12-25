@@ -8,11 +8,11 @@ interface YongshinAnalysisProps {
 }
 
 const ELEMENT_INFO = {
-  '목(木)': { name: '목', hanja: '木', color: '#4ade80' },
-  '화(火)': { name: '화', hanja: '火', color: '#f87171' },
-  '토(土)': { name: '토', hanja: '土', color: '#fbbf24' },
-  '금(金)': { name: '금', hanja: '金', color: '#94a3b8' },
-  '수(水)': { name: '수', hanja: '水', color: '#374151' },
+  '목(木)': { name: '목', hanja: '木', color: '#4ade80' },  // 청/녹
+  '화(火)': { name: '화', hanja: '火', color: '#f87171' },  // 적
+  '토(土)': { name: '토', hanja: '土', color: '#fbbf24' },  // 황
+  '금(金)': { name: '금', hanja: '金', color: '#94a3b8' },  // 백
+  '수(水)': { name: '수', hanja: '水', color: '#374151' },  // 흑 (남색/어두운 회색)
 };
 
 const TYPE_EXPLANATION: Record<string, string> = {

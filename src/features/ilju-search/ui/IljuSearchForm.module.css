@@ -7,11 +7,10 @@
     max-width: 500px;
     margin: 0 auto;
     padding: 2.5rem;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--border);
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
     border-radius: 1.5rem;
-    backdrop-filter: blur(20px);
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-md);
 }
 
 .inputGroup {
@@ -28,7 +27,7 @@
 
 .select {
     appearance: none;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--bg-light);
     border: 1px solid var(--border);
     border-radius: 0.75rem;
     padding: 0.875rem 1rem;
@@ -42,15 +41,14 @@
 
 .select:hover,
 .select:focus {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--bg-lighter);
     border-color: var(--primary);
     outline: none;
 }
 
 .select option {
-    background: #1a1b26;
-    /* Dark theme simple fallback */
-    color: white;
+    background: var(--card-bg);
+    color: var(--foreground);
 }
 
 .searchTypeGroup {
@@ -72,7 +70,7 @@
 }
 
 .searchTypeBtn:hover {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(0, 0, 0, 0.03);
 }
 
 .searchTypeBtn.active {
@@ -88,7 +86,7 @@
 
 .yearInput {
     flex: 1;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--bg-light);
     border: 1px solid var(--border);
     border-radius: 0.75rem;
     padding: 0.75rem;
@@ -102,18 +100,19 @@
     width: 100%;
     padding: 1rem;
     border-radius: 0.75rem;
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    background: var(--primary-gradient);
     border: none;
-    color: white;
+    color: var(--secondary);
     font-size: 1.1rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
+    box-shadow: var(--shadow-glow);
 }
 
 .submitButton:hover {
     transform: translateY(-1px);
-    filter: brightness(1.1);
+    box-shadow: var(--shadow-md), var(--shadow-glow);
 }
 
 .submitButton:disabled {
@@ -125,7 +124,7 @@
     margin-top: 2rem;
     max-height: 400px;
     overflow-y: auto;
-    background: rgba(0, 0, 0, 0.2);
+    background: var(--bg-light);
     border-radius: 1rem;
     padding: 1rem;
     border: 1px solid var(--border);
@@ -139,7 +138,6 @@
     border-bottom: 1px solid var(--border);
     font-size: 0.9rem;
     color: var(--foreground);
-    opacity: 0.8;
 }
 
 .resultsList {
@@ -149,17 +147,18 @@
 }
 
 .resultItem {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--card-bg);
     padding: 0.75rem;
     border-radius: 0.5rem;
     text-align: center;
     font-size: 0.95rem;
     color: var(--foreground);
     transition: background 0.2s;
+    border: 1px solid var(--border);
 }
 
 .resultItem:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--background);
 }
 
 .settingsSection {
@@ -167,9 +166,10 @@
     flex-direction: column;
     gap: 0.5rem;
     padding: 1rem;
-    background: rgba(0, 0, 0, 0.2);
+    background: var(--bg-light);
     border-radius: 0.75rem;
     margin-top: 0.5rem;
+    border: 1px solid var(--border);
 }
 
 .checkboxLabel {
@@ -183,6 +183,6 @@
 
 .helperText {
     font-size: 0.8rem;
-    opacity: 0.6;
+    color: var(--foreground-muted);
     margin-left: 1.5rem;
 }

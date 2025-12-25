@@ -1,11 +1,11 @@
 .container {
     margin-top: 1.5rem;
     padding: 1.5rem;
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
     border-radius: 1.5rem;
     color: var(--foreground);
+    box-shadow: var(--shadow-sm);
 }
 
 .title {
@@ -19,8 +19,7 @@
 
 .subtitle {
     font-size: 0.85rem;
-    color: var(--foreground);
-    opacity: 0.6;
+    color: var(--foreground-muted);
     margin-top: -1rem;
     margin-bottom: 1.5rem;
     padding-left: 0.75rem;
@@ -49,18 +48,18 @@
 
 .sinsalItem {
     padding: 1rem;
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--bg-light);
     border: 1px solid var(--border);
     border-radius: 0.75rem;
     transition: all 0.2s;
 }
 
 .sinsalItem:hover {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--bg-lighter);
 }
 
 .sinsalItem.major {
-    border-left: 3px solid #f59e0b;
+    border-left: 3px solid #d97706;
 }
 
 .itemHeader {
@@ -72,15 +71,14 @@
 
 .pillarName {
     font-size: 0.8rem;
-    color: var(--foreground);
-    opacity: 0.7;
+    color: var(--foreground-muted);
 }
 
 .majorBadge {
     font-size: 0.7rem;
     padding: 0.15rem 0.4rem;
-    background: rgba(245, 158, 11, 0.2);
-    color: #f59e0b;
+    background: rgba(217, 119, 6, 0.15);
+    color: #d97706;
     border-radius: 0.25rem;
 }
 
@@ -99,21 +97,18 @@
 
 .sinsalHanja {
     font-size: 0.85rem;
-    color: var(--foreground);
-    opacity: 0.5;
+    color: var(--foreground-muted);
 }
 
 .meaning {
     font-size: 0.85rem;
     color: var(--foreground);
-    opacity: 0.8;
     margin: 0 0 0.5rem 0;
 }
 
 .description {
     font-size: 0.8rem;
-    color: var(--foreground);
-    opacity: 0.6;
+    color: var(--foreground-muted);
     line-height: 1.5;
     margin: 0;
 }
