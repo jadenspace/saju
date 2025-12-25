@@ -13,40 +13,102 @@ const PREVIOUS_YEAR = 2025;
 const PREVIOUS_YEAR_GAN = '乙';
 const PREVIOUS_YEAR_JI = '巳';
 
+
+/**
+ * 병오년(丙午年) 특수성
+ * - 간지동(干支同): 천간 丙(화) + 지지 午(화) = 화기 극대화
+ * - 양인(羊刃): 丙 일간에게 午는 양인 → 과격, 사고수
+ * - 도화(桃花): 午는 寅午戌 삼합의 도화 → 이성운, 인기운
+ */
+const BINGWU_SPECIAL = {
+  // 간지동: 천간과 지지 모두 화(火)로 동일 오행
+  ganjiDong: true,
+  ganjiDongDescription: '천간 丙(화)과 지지 午(화)가 모두 화(火)로 동일하여 화기가 극대화되는 해',
+  
+  // 양인: 일간별 양인 지지 (羊刃은 일간의 제왕 지지)
+  // 丙 일간의 양인은 午
+  yangInDayMasters: ['丙'] as string[],
+  yangInWarning: '과격함, 사고수, 수술수에 주의가 필요합니다. 성급한 결정이나 무리한 행동을 삼가세요.',
+  
+  // 도화: 삼합별 도화 지지 (寅午戌 화국의 도화는 卯, 但 午도 도화 기질 있음)
+  // 午가 들어오면 寅午戌 삼합에 해당하는 사람들에게 이성운/인기운 상승
+  doHuaSamhap: ['寅', '午', '戌'] as string[],
+  doHuaDescription: '이성운과 인기운이 상승하는 시기입니다. 대인관계가 활발해지고 매력이 돋보입니다.'
+};
+
+/**
+ * 양인(羊刃) 체크 함수
+ * 일간이 丙일 때 세운 지지가 午이면 양인
+ */
+function checkYangIn(dayMaster: string): boolean {
+  return BINGWU_SPECIAL.yangInDayMasters.includes(dayMaster) && YEAR_JI === '午';
+}
+
+/**
+ * 도화(桃花) 체크 함수
+ * 원국에 寅, 午, 戌 중 하나라도 있으면 2026년에 도화 기질 발동
+ */
+function checkDoHua(branches: string[]): boolean {
+  return branches.some(ji => BINGWU_SPECIAL.doHuaSamhap.includes(ji));
+}
+
 /**
  * 십성 → 사용자 친화적 표현 맵핑
+ * 
+ * 타입 매핑 규칙 (검토 의견 반영):
+ * - thinking-first: 편인, 정인 (학습, 분석)
+ * - creative-focused: 식신, 상관 (표현, 창의)
+ * - wealth-focused: 편재, 정재 (재물, 사업)
+ * - authority-focused: 편관, 정관 (권위, 책임)
+ * - competitive-focused: 비견, 겁재 (경쟁, 자기주장)
+ * 
+ * 예약 타입 (현재 미사용):
+ * - action-first: 실행력 중시 (향후 확장용)
+ * - relationship-focused: 관계 중시 (향후 확장용)
  */
 const TENGOD_FRIENDLY_MAP: Record<string, { description: string; type: YearMechanism['type'] }> = {
+  // 비겁(比劫) - 경쟁과 자기주장
   '비견': { description: '자기 주도적 에너지가 강한 시기', type: 'competitive-focused' },
   '겁재': { description: '변화와 경쟁 의식이 활발한 시기', type: 'competitive-focused' },
+  // 식상(食傷) - 창의성과 표현력
   '식신': { description: '재능과 표현력이 빛나는 시기', type: 'creative-focused' },
   '상관': { description: '창의적 혁신이 강조되는 시기', type: 'creative-focused' },
+  // 재성(財星) - 재물과 사업
   '편재': { description: '사업적 확장이 유리한 시기', type: 'wealth-focused' },
   '정재': { description: '안정적 재물 흐름의 시기', type: 'wealth-focused' },
+  // 관성(官星) - 권위와 책임
   '편관': { description: '도전과 책임이 커지는 시기', type: 'authority-focused' },
   '정관': { description: '명예와 위상이 높아지는 시기', type: 'authority-focused' },
+  // 인성(印星) - 학습과 분석
   '편인': { description: '분석과 통찰이 깊어지는 시기', type: 'thinking-first' },
   '정인': { description: '학습과 지원이 활성화되는 시기', type: 'thinking-first' },
 };
 
 /**
  * 운의 작동 방식 상세 데이터
+ * 
+ * 현재 사용 중인 타입:
+ * - thinking-first: 편인, 정인
+ * - creative-focused: 식신, 상관
+ * - wealth-focused: 편재, 정재
+ * - authority-focused: 편관, 정관
+ * - competitive-focused: 비견, 겁재
+ * 
+ * 예약 타입 (향후 확장용으로 정의됨):
+ * - action-first: 현재 미사용 (필요시 특정 십성에 할당 가능)
+ * - relationship-focused: 현재 미사용 (필요시 특정 십성에 할당 가능)
  */
 const YEAR_MECHANISM_DATA: Record<YearMechanism['type'], Omit<YearMechanism, 'type'>> = {
+  // 현재 사용 중인 타입
   'thinking-first': {
     description: '감정보다 판단과 분석이 먼저 작동하는 해',
     advantage: ['분석력 향상', '기획력 강화', '지식 축적'],
     risk: ['결정 지연', '과도한 고민', '실행력 부족']
   },
-  'action-first': {
-    description: '생각보다 몸이 먼저 움직이는 해',
-    advantage: ['실행력 향상', '순발력 강화', '새로운 경험'],
-    risk: ['성급한 판단', '준비 부족', '충동적 행동']
-  },
-  'relationship-focused': {
-    description: '인간관계가 운의 핵심이 되는 해',
-    advantage: ['인맥 확장', '협력 기회', '소통 능력 향상'],
-    risk: ['타인 의존', '관계 피로', '경계 흐림']
+  'creative-focused': {
+    description: '창의성과 표현력이 빛나는 해',
+    advantage: ['아이디어 폭발', '재능 발휘', '예술적 감각'],
+    risk: ['현실 괴리', '수익 연결 어려움', '에너지 분산']
   },
   'wealth-focused': {
     description: '재물과 사업이 중심이 되는 해',
@@ -58,15 +120,21 @@ const YEAR_MECHANISM_DATA: Record<YearMechanism['type'], Omit<YearMechanism, 'ty
     advantage: ['리더십 발휘', '승진 기회', '사회적 인정'],
     risk: ['업무 과중', '스트레스 증가', '완벽주의']
   },
-  'creative-focused': {
-    description: '창의성과 표현력이 빛나는 해',
-    advantage: ['아이디어 폭발', '재능 발휘', '예술적 감각'],
-    risk: ['현실 괴리', '수익 연결 어려움', '에너지 분산']
-  },
   'competitive-focused': {
     description: '경쟁과 자기주장이 강해지는 해',
     advantage: ['추진력 향상', '자신감 상승', '독립심 강화'],
     risk: ['충돌 증가', '고립 위험', '과도한 경쟁심']
+  },
+  // 예약 타입 (향후 확장용)
+  'action-first': {
+    description: '생각보다 몸이 먼저 움직이는 해',
+    advantage: ['실행력 향상', '순발력 강화', '새로운 경험'],
+    risk: ['성급한 판단', '준비 부족', '충동적 행동']
+  },
+  'relationship-focused': {
+    description: '인간관계가 운의 핵심이 되는 해',
+    advantage: ['인맥 확장', '협력 기회', '소통 능력 향상'],
+    risk: ['타인 의존', '관계 피로', '경계 흐림']
   }
 };
 
@@ -160,9 +228,71 @@ const CONTROLLING_MAP: Record<Element, Element> = {
 };
 
 /**
+ * 형(刑)살 매핑 테이블 - 명리학적으로 정확한 형살 정의
+ */
+// 삼형(三刑) - 무례지형 (인사신)
+const SAMHYUNG_INSA_SIN: Array<[string, string]> = [
+  ['寅', '巳'], ['巳', '申'], ['申', '寅']
+];
+// 삼형(三刑) - 무은지형 (축술미)
+const SAMHYUNG_CHUK_SUL_MI: Array<[string, string]> = [
+  ['丑', '戌'], ['戌', '未'], ['未', '丑']
+];
+// 자묘형(子卯刑) - 무례지형
+const JAMYO_HYUNG: Array<[string, string]> = [
+  ['子', '卯'], ['卯', '子']
+];
+// 자형(自刑) - 스스로를 해치는 형
+const JAHYUNG_LIST: string[] = ['辰', '午', '酉', '亥'];
+
+/**
+ * 형살 관계 체크 함수
+ */
+function checkHyungsal(ji1: string, ji2: string): { isHyung: boolean; type: '삼형' | '자묘형' | '자형' | null } {
+  // 자형 체크 (같은 지지끼리)
+  if (ji1 === ji2 && JAHYUNG_LIST.includes(ji1)) {
+    return { isHyung: true, type: '자형' };
+  }
+  
+  // 인사신 삼형 체크
+  if (SAMHYUNG_INSA_SIN.some(([a, b]) => (a === ji1 && b === ji2) || (a === ji2 && b === ji1))) {
+    return { isHyung: true, type: '삼형' };
+  }
+  
+  // 축술미 삼형 체크
+  if (SAMHYUNG_CHUK_SUL_MI.some(([a, b]) => (a === ji1 && b === ji2) || (a === ji2 && b === ji1))) {
+    return { isHyung: true, type: '삼형' };
+  }
+  
+  // 자묘형 체크
+  if (JAMYO_HYUNG.some(([a, b]) => (a === ji1 && b === ji2) || (a === ji2 && b === ji1))) {
+    return { isHyung: true, type: '자묘형' };
+  }
+  
+  return { isHyung: false, type: null };
+}
+
+/**
+ * 육충(六冲) 관계 체크
+ */
+const CHUNG_PAIRS: Record<string, string> = {
+  '子': '午', '午': '子',
+  '丑': '未', '未': '丑',
+  '寅': '申', '申': '寅',
+  '卯': '酉', '酉': '卯',
+  '辰': '戌', '戌': '辰',
+  '巳': '亥', '亥': '巳'
+};
+
+function checkChung(ji1: string, ji2: string): boolean {
+  return CHUNG_PAIRS[ji1] === ji2;
+}
+
+/**
  * Event Detection Types
  */
 type EventType = '충' | '합' | '형' | '파' | '해' | '없음';
+type HyungType = '삼형' | '자묘형' | '자형' | null;
 type PalaceType = '년' | '월' | '일' | '시';
 
 /**
@@ -245,6 +375,9 @@ function calculateCommonMistake(dominantTengod: string, event: EventType): Commo
 
 /**
  * 건강운 계산
+ * 2026년 병오년 특수성 반영: 화극금(火克金), 화극수(火克水) 로직 적용
+ * 화(火)가 강하면 → 금(金)이 녹음 → 폐/대장/피부/호흡기 위험
+ * 화(火)가 강하면 → 수(水)가 말라감 → 신장/방광/생식기 위험
  */
 function calculateHealthFortune(
   saju: SajuData,
@@ -292,11 +425,15 @@ function calculateHealthFortune(
   const excessOhaeng = excessElement ? getOhaengFromKorean(excessElement) : null;
   
   const lackHealth = lackOhaeng ? HEALTH_BY_ELEMENT[lackOhaeng] : null;
-  const excessHealth = excessOhaeng ? HEALTH_BY_ELEMENT[excessOhaeng] : null;
   
   // 세운 오행 (화기)에 따른 추가 주의사항
   const yearElement = getOhaeng(YEAR_JI); // 午 = fire
-  const yearHealth = yearElement ? HEALTH_BY_ELEMENT[yearElement] : null;
+  
+  // 화극금/화극수 로직 적용 - 2026년 병오년 특수성
+  // 강한 화기로 인해 금(폐/대장/피부)과 수(신장/방광)가 위험
+  const metalHealth = HEALTH_BY_ELEMENT['metal']; // 금 - 폐, 대장, 피부
+  const waterHealth = HEALTH_BY_ELEMENT['water']; // 수 - 신장, 방광, 생식기
+  const fireHealth = HEALTH_BY_ELEMENT['fire'];   // 화 - 심장, 소장
   
   let pros = '2026년 병오년은 화기(火氣)가 강한 해로, 활력과 에너지가 상승합니다.';
   let cons = '';
@@ -322,24 +459,56 @@ function calculateHealthFortune(
       break;
   }
   
-  // 주의사항 조합
+  // 주의사항 조합 - 화극금/화극수 우선순위 적용
+  // 건강 경고 우선순위: 화극금(금 장부) > 화극수(수 장부) > 화 과잉(화 장부)
   const warnings: string[] = [];
-  if (yearHealth) warnings.push(yearHealth.warning);
-  if (excessHealth && excessOhaeng !== yearElement) warnings.push(excessHealth.warning);
-  if (lackHealth) warnings.push(`${lackElement} 부족으로 인한 ${lackHealth.warning}`);
   
+  // 1순위: 화극금 - 강한 불기운에 금(폐/대장/피부)이 녹음
+  if (metalHealth) {
+    warnings.push(`화극금(火克金): ${metalHealth.warning}`);
+  }
+  
+  // 2순위: 화극수 - 강한 불기운에 수(신장/방광)가 말라감
+  if (waterHealth) {
+    warnings.push(`화극수(火克水): ${waterHealth.warning}`);
+  }
+  
+  // 3순위: 화 과잉 - 심장/혈압 주의
+  if (fireHealth && excessOhaeng === 'fire') {
+    warnings.push(`화 과잉: ${fireHealth.warning}`);
+  }
+  
+  // 4순위: 부족한 오행에 따른 건강 정보
+  if (lackHealth && lackOhaeng !== 'metal' && lackOhaeng !== 'water') {
+    warnings.push(`${lackElement} 부족: ${lackHealth.warning}`);
+  }
+  
+  // 2026년 병오년 특화 경고 메시지
   cons = warnings.length > 0 
-    ? `특히 주의할 부분: ${warnings.slice(0, 2).join(', ')}`
+    ? `2026년은 강한 불기운으로 인해 폐와 대장(금), 신장과 방광(수)이 가장 취약해지는 시기입니다. 특히 주의할 부분: ${warnings.slice(0, 2).map(w => w.split(':')[1]?.trim() || w).join(', ')}`
     : '특별히 주의할 질환은 없으나, 무리하지 않는 것이 좋습니다.';
   
-  // 조언
+  // 조언 - 화극금/화극수 대비
   const advices: string[] = [];
-  if (yearHealth) advices.push(yearHealth.advice);
-  if (lackHealth) advices.push(lackHealth.advice);
+  
+  // 금 보강 조언 (폐/호흡기)
+  if (metalHealth) {
+    advices.push(metalHealth.advice);
+  }
+  
+  // 수 보강 조언 (신장/수분)
+  if (waterHealth) {
+    advices.push(waterHealth.advice);
+  }
+  
+  // 부족한 오행 조언
+  if (lackHealth && lackOhaeng !== 'metal' && lackOhaeng !== 'water') {
+    advices.push(lackHealth.advice);
+  }
   
   strategy = advices.length > 0 
-    ? advices[0] 
-    : '규칙적인 생활 습관과 적절한 운동으로 건강을 유지하세요.';
+    ? `${advices[0]} 올해는 특히 수분 섭취와 호흡기 관리에 신경 쓰세요.`
+    : '규칙적인 생활 습관과 적절한 운동으로 건강을 유지하세요. 수분 섭취를 충분히 하고 호흡기 건강에 주의하세요.';
   
   return {
     score: percentScore,
@@ -368,6 +537,11 @@ export const calculateNewYearFortune = (sajuData: SajuData): NewYearFortune => {
   const isYongshinYear = Boolean(yongshinElement && (yearGanElement === yongshinElement || yearJiElement === yongshinElement));
   const isGishinYear = gishinElements.some(g => g === yearGanElement || g === yearJiElement);
 
+  // 0-1. 병오년 특수성 체크
+  const allBranches = [sajuData.year.jiHan, sajuData.month.jiHan, sajuData.day.jiHan, sajuData.hour.jiHan];
+  const isYangInYear = checkYangIn(dayMaster); // 丙 일간이면 양인
+  const hasDoHua = checkDoHua(allBranches);    // 寅午戌 삼합에 속하면 도화
+
   // 1. Dominant & Support Sipsin
   const dominantTengod = calculateSipsin(dayMaster, YEAR_JI); // Year Ji base
   const supportTengod = calculateSipsin(dayMaster, YEAR_GAN);  // Year Gan base
@@ -382,40 +556,65 @@ export const calculateNewYearFortune = (sajuData: SajuData): NewYearFortune => {
 
   let event: EventType = '없음';
   let palace: PalaceType | undefined;
+  let hyungType: HyungType = null;
 
+  // 이벤트 우선순위: 충 > 형 > 합 > 파 > 해
+  // 각 우선순위별로 모든 지지를 순회하여, 높은 우선순위 이벤트가 먼저 감지되도록 함
+  // (예: 시지에 午가 있으면 월지의 丑午害보다 午午자형이 먼저 감지)
+  
+  // 1. 충(冲) 체크 - 자오충 (가장 높은 우선순위)
   for (const b of branches) {
-    let found = false;
-    switch (b.ji) {
-      case '子':
-        event = '충';
-        palace = b.type;
-        found = true;
-        break; // 자오충
-      case '戌':
-      case '寅':
-        event = '합';
-        palace = b.type;
-        found = true;
-        break; // 인오술 합
-      case '午':
+    if (checkChung(YEAR_JI, b.ji)) {
+      event = '충';
+      palace = b.type;
+      break;
+    }
+  }
+  
+  // 2. 형(刑) 체크 - 정확한 형살 매핑 사용
+  if (event === '없음') {
+    for (const b of branches) {
+      const hyungResult = checkHyungsal(YEAR_JI, b.ji);
+      if (hyungResult.isHyung) {
         event = '형';
         palace = b.type;
-        found = true;
-        break; // 오오형
-      case '卯':
+        hyungType = hyungResult.type;
+        break;
+      }
+    }
+  }
+  
+  // 3. 삼합 체크 - 인오술 화국
+  if (event === '없음') {
+    for (const b of branches) {
+      if (b.ji === '戌' || b.ji === '寅') {
+        event = '합';
+        palace = b.type;
+        break;
+      }
+    }
+  }
+  
+  // 4. 파(破) 체크 - 오묘파
+  if (event === '없음') {
+    for (const b of branches) {
+      if (b.ji === '卯') {
         event = '파';
         palace = b.type;
-        found = true;
-        break; // 오묘파
-      case '丑':
+        break;
+      }
+    }
+  }
+  
+  // 5. 해(害) 체크 - 축오해
+  if (event === '없음') {
+    for (const b of branches) {
+      if (b.ji === '丑') {
         event = '해';
         palace = b.type;
-        found = true;
-        break; // 축오해
-      default:
         break;
+      }
     }
-    if (found) break;
   }
 
   // 3. Ohaeng Excess/Lack
@@ -479,8 +678,8 @@ export const calculateNewYearFortune = (sajuData: SajuData): NewYearFortune => {
       break;
   }
 
-  // 6. Detailed Interpretation Logic (용신/기신 정보 포함)
-  const interpretation = getExpertInterpretation(dominantTengod, supportTengod, event, palace, ohaengExcess, ohaengLack, sajuData, isYongshinYear, isGishinYear, yongshin);
+  // 6. Detailed Interpretation Logic (용신/기신 정보 포함, 병오년 특수성 반영)
+  const interpretation = getExpertInterpretation(dominantTengod, supportTengod, event, palace, ohaengExcess, ohaengLack, sajuData, isYongshinYear, isGishinYear, yongshin, isYangInYear, hasDoHua);
 
   // 6-1. 운의 작동 방식 (신규)
   const yearMechanism = calculateYearMechanism(dominantTengod);
@@ -504,8 +703,8 @@ export const calculateNewYearFortune = (sajuData: SajuData): NewYearFortune => {
   const dominantFriendly = TENGOD_FRIENDLY_MAP[dominantTengod]?.description || dominantTengod;
   const supportFriendly = TENGOD_FRIENDLY_MAP[supportTengod]?.description || supportTengod;
 
-  // 10. 작년 점수 계산 및 비교 분석
-  const currentScore = calculateDynamicScore(dominantTengod, event, sajuData, isYongshinYear, isGishinYear);
+  // 10. 작년 점수 계산 및 비교 분석 (병오년 특수성 반영)
+  const currentScore = calculateDynamicScore(dominantTengod, event, sajuData, isYongshinYear, isGishinYear, isYangInYear);
   const previousYearData = calculatePreviousYearScore(sajuData);
   const currentYearData = {
     score: currentScore,
@@ -579,6 +778,7 @@ export const calculateNewYearFortune = (sajuData: SajuData): NewYearFortune => {
 
 /**
  * Detailed Interpretation Generator
+ * 병오년 특수성 (양인, 도화) 반영
  */
 function getExpertInterpretation(
   dominant: string,
@@ -590,19 +790,31 @@ function getExpertInterpretation(
   saju: SajuData,
   isYongshinYear: boolean,
   isGishinYear: boolean,
-  yongshin?: SajuData['yongshin']
+  yongshin?: SajuData['yongshin'],
+  isYangInYear?: boolean,
+  hasDoHua?: boolean
 ) {
   // --- Summary & Reasons ---
   let summary = '';
+  
+  // 병오년 특수성 문구 추가
+  let specialNote = '';
+  if (isYangInYear) {
+    specialNote += ' 올해는 양인(羊刃)이 작용하는 해로, 과격함과 충동성을 경계해야 합니다.';
+  }
+  if (hasDoHua) {
+    specialNote += ' 도화(桃花) 기운이 있어 이성운과 대인관계가 활발해집니다.';
+  }
+  
   switch (true) {
     case isYongshinYear && !!yongshin:
-      summary = `${CURRENT_YEAR}년은 용신 ${yongshin.primary}이 들어오는 해로, 전반적으로 운세가 상승합니다. <br />${josa(dominant, '이/가')} 주도하는 해로, 내면에 잠들어 있던 목표의식이 현실화되는 역동적인 해입니다.`;
+      summary = `${CURRENT_YEAR}년은 용신 ${yongshin.primary}이 들어오는 해로, 전반적으로 운세가 상승합니다. <br />${josa(dominant, '이/가')} 주도하는 해로, 내면에 잠들어 있던 목표의식이 현실화되는 역동적인 해입니다.${specialNote}`;
       break;
     case isGishinYear && !!yongshin:
-      summary = `${CURRENT_YEAR}년은 기신 ${yongshin.gishin?.[0] || ''}이 강한 해로, 신중한 처신이 필요합니다. <br />${josa(dominant, '이/가')} 주도하는 해로, 변화에 대비하며 신중하게 나아가야 합니다.`;
+      summary = `${CURRENT_YEAR}년은 기신 ${yongshin.gishin?.[0] || ''}이 강한 해로, 신중한 처신이 필요합니다. <br />${josa(dominant, '이/가')} 주도하는 해로, 변화에 대비하며 신중하게 나아가야 합니다.${specialNote}`;
       break;
     default:
-      summary = `${josa(dominant, '이/가')} 주도하는 해로, 내면에 잠들어 있던 목표의식이 현실화되는 역동적인 해입니다.`;
+      summary = `${josa(dominant, '이/가')} 주도하는 해로, 내면에 잠들어 있던 목표의식이 현실화되는 역동적인 해입니다.${specialNote}`;
       break;
   }
 
@@ -680,7 +892,8 @@ function getExpertInterpretation(
   };
 
   // 2. Relationship (커리큘럼 6.2 공식 적용)
-  const relationshipScore = calculateFortuneAreaScore(
+  // 여성 식상운 처리 개선 (검토 의견 반영)
+  let relationshipScore = calculateFortuneAreaScore(
     dominant,
     support,
     saju.gender === 'male' ? '재성' : '관성',
@@ -689,6 +902,42 @@ function getExpertInterpretation(
     isGishinYear,
     yongshin
   );
+  
+  // 여성 식상운(食傷運) 처리 - 식극관(食克官)으로 이별수 가능성
+  // 주도 십성이 식신/상관인 경우 여성에게 관계운에 영향
+  const isFemaleWithSiksang = saju.gender === 'female' && 
+    (dominant === '식신' || dominant === '상관');
+  
+  // 원국에 관성(편관/정관) 유무 체크
+  const hasSajuGwansung = (() => {
+    const dayMaster = saju.day.ganHan;
+    const allBranches = [saju.year.jiHan, saju.month.jiHan, saju.day.jiHan, saju.hour.jiHan];
+    const allStems = [saju.year.ganHan, saju.month.ganHan, saju.day.ganHan, saju.hour.ganHan];
+    
+    for (const stem of allStems) {
+      const sipsin = calculateSipsin(dayMaster, stem);
+      if (sipsin === '편관' || sipsin === '정관') return true;
+    }
+    for (const branch of allBranches) {
+      const sipsin = calculateSipsin(dayMaster, branch);
+      if (sipsin === '편관' || sipsin === '정관') return true;
+    }
+    return false;
+  })();
+  
+  let siksangWarning = '';
+  if (isFemaleWithSiksang) {
+    if (!hasSajuGwansung) {
+      // 원국에 관성 부재 + 식상운 = 남자 인연 더 멀어짐
+      relationshipScore -= 20; // -1점 (20점 기준)
+      siksangWarning = '올해 식상운이 강해 자기 표현은 활발해지나, 원국에 관성이 부족하여 이성 인연이 다소 멀어질 수 있습니다.';
+    } else {
+      // 원국에 관성 과다일 경우 오히려 균형
+      // 기본적으로는 소폭 감점
+      relationshipScore -= 10; // -0.5점 (20점 기준)
+      siksangWarning = '식상의 기운이 강해 자기 주장이 강해지는 시기입니다. 배우자나 파트너와의 소통에 각별한 배려가 필요합니다.';
+    }
+  }
   
   const relationshipNormalized = Math.min(5, Math.max(1, Math.round(relationshipScore / 20)));
   let relationshipSummary = '';
@@ -714,7 +963,12 @@ function getExpertInterpretation(
       relationshipPros = "주변 사람들과의 깊은 유대감이 형성되며, 나를 지지해주는 든든한 아군이나 귀한 인연을 만날 수 있는 운입니다.";
       break;
     default:
-      relationshipPros = "자신감이 고취되면서 호감 있는 상대에게 본인의 매력을 자연스럽게 어필하기 좋은 시기입니다.";
+      // 도화가 있으면 이성운/인기운 상승 언급
+      if (hasDoHua) {
+        relationshipPros = "도화(桃花) 기운으로 이성에게 매력적으로 보이는 시기입니다. 자신감을 갖고 적극적으로 다가가세요.";
+      } else {
+        relationshipPros = "자신감이 고취되면서 호감 있는 상대에게 본인의 매력을 자연스럽게 어필하기 좋은 시기입니다.";
+      }
       break;
   }
 
@@ -723,9 +977,18 @@ function getExpertInterpretation(
     case event === '충' && (palace === '일' || palace === '월'):
       relationshipCons = "가까운 지인이나 배우자와의 소통 과정에서 예기치 못한 오해가 발생하거나 날카로운 언쟁이 생길 수 있으니 주의하세요.";
       break;
+    case isFemaleWithSiksang && siksangWarning !== '':
+      relationshipCons = siksangWarning;
+      break;
     default:
       relationshipCons = "내 주장이 강해지는 해인 만큼, 타인의 조언을 간과하여 고립될 수 있는 점은 경계해야 합니다.";
       break;
+  }
+
+  // 여성 식상운일 경우 전략도 수정
+  let relationshipStrategy = "상대방의 입장을 먼저 헤아리는 다정함이 곧 나의 복으로 돌아오는 해임을 잊지 마세요.";
+  if (isFemaleWithSiksang) {
+    relationshipStrategy = "자기 표현도 중요하지만, 올해는 특히 상대방의 이야기를 경청하고 감정을 공유하는 것이 관계 유지의 핵심입니다.";
   }
 
   const relationship: FortuneAreaBase = {
@@ -734,7 +997,7 @@ function getExpertInterpretation(
     focus: relationshipFocus,
     pros: relationshipPros,
     cons: relationshipCons,
-    strategy: "상대방의 입장을 먼저 헤아리는 다정함이 곧 나의 복으로 돌아오는 해임을 잊지 마세요."
+    strategy: relationshipStrategy
   };
 
   // 3. Career (커리큘럼 6.2 공식 적용)
@@ -897,31 +1160,42 @@ function getExpertInterpretation(
 }
 
 
+/**
+ * 총운 점수 계산 (수정됨)
+ * - 기본 점수: 50점 (검토 의견 반영 - 75점에서 조정)
+ * - 십성 다자무자 원칙 적용: 기신해일 때 길신도 감점
+ * - 양인(羊刃) 반영: 丙 일간에게 午 세운은 양인으로 주의 필요
+ */
 function calculateDynamicScore(
   dominant: string,
   event: string,
   saju: SajuData,
   isYongshinYear: boolean,
-  isGishinYear: boolean
+  isGishinYear: boolean,
+  isYangInYear: boolean = false
 ): number {
-  let score = 75;
+  let score = 50; // 기본 점수 75점 → 50점으로 조정
   
   // 십성 길흉도 반영
-  switch (dominant) {
-    case '식신':
-    case '정재':
-    case '정관':
-    case '정인':
+  const isGilshin = ['식신', '정재', '정관', '정인'].includes(dominant);
+  
+  // 다자무자 원칙: 기신해일 때 길신도 점수 상승 억제
+  if (isGilshin) {
+    if (isGishinYear) {
+      // 기신해면 길신이라도 점수 상승 없음 또는 소폭 상승만
+      score += 0;
+    } else {
       score += 10;
-      break;
-    default:
-      break;
+    }
   }
   
   // 이벤트 반영
   switch (event) {
     case '충':
       score -= 5;
+      break;
+    case '형':
+      score -= 3;
       break;
     default:
       break;
@@ -935,13 +1209,18 @@ function calculateDynamicScore(
   // 용신/기신 반영
   switch (true) {
     case isYongshinYear:
-      score += 10; // 용신 해는 운세 상승
+      score += 15; // 용신 해는 운세 상승 (기본 점수가 낮아져서 상향 조정)
       break;
     case isGishinYear:
       score -= 10; // 기신 해는 주의 필요
       break;
     default:
       break;
+  }
+  
+  // 양인(羊刃) 반영 - 丙 일간의 경우 사고수, 과격함 주의
+  if (isYangInYear) {
+    score -= 5;
   }
   
   return Math.min(95, Math.max(45, score));
@@ -983,29 +1262,30 @@ function calculatePreviousYearScore(sajuData: SajuData): {
 
   let event: EventType = '없음';
   for (const b of branches) {
-    let found = false;
-    switch (b.ji) {
-      case '亥':
-        event = '충'; // 사해충
-        found = true;
-        break;
-      case '申':
-        event = '형'; // 사신형
-        found = true;
-        break;
-      case '酉':
-      case '丑':
-        event = '합'; // 사유축 합
-        found = true;
-        break;
-      case '寅':
-        event = '해'; // 사인해
-        found = true;
-        break;
-      default:
-        break;
+    // 충 체크 - 사해충
+    if (checkChung(PREVIOUS_YEAR_JI, b.ji)) {
+      event = '충';
+      break;
     }
-    if (found) break;
+    
+    // 형 체크 - 정확한 형살 매핑 사용 (인사신 삼형)
+    const hyungResult = checkHyungsal(PREVIOUS_YEAR_JI, b.ji);
+    if (hyungResult.isHyung) {
+      event = '형';
+      break;
+    }
+    
+    // 삼합 체크 - 사유축 금국
+    if (b.ji === '酉' || b.ji === '丑') {
+      event = '합';
+      break;
+    }
+    
+    // 해 체크 - 사인해
+    if (b.ji === '寅') {
+      event = '해';
+      break;
+    }
   }
 
   const score = calculateDynamicScore(dominantTengod, event, sajuData, isYongshinYear, isGishinYear);
@@ -1278,12 +1558,12 @@ function isHarmony(ji1: string, ji2: string): boolean {
 }
 
 /**
- * 전체 12개월 월운 분석 (커리큘럼 7단계)
+ * 전체 12개월 월운 분석 (커리큘럼 7단계, 검토 의견 반영)
  * 월운 점수 = 기본 3점
- *          + 월간지가 용신이면 (+1~2)
- *          + 월간지가 기신이면 (-1~2)
- *          + 원국/세운과 좋은 합이면 (+1)
- *          + 원국/세운과 충이면 (-1)
+ *          + 월간지가 용신이면 (+2)
+ *          + 월간지가 기신이면 (-2)
+ *          + 원국/세운과 좋은 합이면 (+2) (±1 → ±2로 강화)
+ *          + 원국/세운과 충이면 (-2) (±1 → ±2로 강화)
  */
 function calculateAllMonths(
   saju: SajuData,
@@ -1314,44 +1594,36 @@ function calculateAllMonths(
     const monthGanElement = getOhaeng(monthData.ganHan);
     const monthJiElement = getOhaeng(monthData.jiHan);
 
-    // 월간지가 용신이면 (+1~2)
+    // 월간지가 용신이면 (+2)
     if (yongshinElement) {
       if (monthGanElement === yongshinElement) score += 2;
       if (monthJiElement === yongshinElement) score += 2;
     }
 
-    // 월간지가 기신이면 (-1~2)
+    // 월간지가 기신이면 (-2)
     if (gishinElements.length > 0) {
       if (monthGanElement && gishinElements.includes(monthGanElement)) score -= 2;
       if (monthJiElement && gishinElements.includes(monthJiElement)) score -= 2;
     }
 
-    // 원국/세운과 좋은 합이면 (+1)
+    // 원국/세운과 좋은 합이면 (+2) - 검토 의견 반영하여 ±1 → ±2로 강화
     // 세운 지지(午)와 월지의 합 관계 확인
     if (isHarmony(YEAR_JI, monthData.jiHan)) {
-      score += 1;
+      score += 2; // 기존 +1 → +2
     }
     // 일지와 월지의 합 관계 확인
     if (isHarmony(dayJi, monthData.jiHan)) {
-      score += 1;
+      score += 2; // 기존 +1 → +2
     }
 
-    // 원국/세운과 충이면 (-1)
-    // 세운 지지(午)와 월지의 충 관계 확인
-    const chungPairs: Array<[string, string]> = [
-      ['子', '午'], ['午', '子'],
-      ['丑', '未'], ['未', '丑'],
-      ['寅', '申'], ['申', '寅'],
-      ['卯', '酉'], ['酉', '卯'],
-      ['辰', '戌'], ['戌', '辰'],
-      ['巳', '亥'], ['亥', '巳']
-    ];
-    if (chungPairs.some(([a, b]) => (a === YEAR_JI && b === monthData.jiHan) || (a === monthData.jiHan && b === YEAR_JI))) {
-      score -= 1;
+    // 원국/세운과 충이면 (-2) - 검토 의견 반영하여 ±1 → ±2로 강화
+    // 세운 지지(午)와 월지의 충 관계 확인 (子月은 子午충)
+    if (checkChung(YEAR_JI, monthData.jiHan)) {
+      score -= 2; // 기존 -1 → -2
     }
     // 일지와 월지의 충 관계 확인
-    if (chungPairs.some(([a, b]) => (a === dayJi && b === monthData.jiHan) || (a === monthData.jiHan && b === dayJi))) {
-      score -= 1;
+    if (checkChung(dayJi, monthData.jiHan)) {
+      score -= 2; // 기존 -1 → -2
     }
 
     // 점수를 1-5 스케일로 변환
