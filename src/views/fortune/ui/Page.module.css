@@ -1,48 +1,242 @@
 .main {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-    padding: 2rem;
-    background: var(--background);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 2rem 1rem;
+  background: var(--background);
 }
 
 .content {
-    width: 100%;
-    max-width: 800px;
+  width: 100%;
+  max-width: 800px;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 1rem;
 }
 
 .title {
-    font-size: 1.75rem;
-    font-weight: 700;
-    text-align: center;
-    margin-bottom: 0.5rem;
-    background: var(--primary-gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 0.5rem;
+}
+
+.year {
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: 1.5rem;
 }
 
 .subtitle {
+  color: var(--foreground-muted);
+  font-size: 0.9375rem;
+}
+
+/* Total Score Section */
+.totalSection {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-2xl);
+  padding: 2.5rem;
+  box-shadow: var(--shadow-xl);
+  position: relative;
+  overflow: hidden;
+}
+
+.totalSection::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--primary-gradient);
+}
+
+.totalCard {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+}
+
+.scoreCircle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: var(--primary-gradient);
+  color: var(--secondary);
+  box-shadow: var(--shadow-glow);
+  flex-shrink: 0;
+}
+
+.scoreLabel {
+  font-size: 0.75rem;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.scoreValue {
+  font-size: 2.5rem;
+  font-weight: 800;
+}
+
+.totalText {
+  flex: 1;
+}
+
+.totalOneLiner {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  color: var(--foreground);
+}
+
+.totalSummary {
+  font-size: 1.125rem;
+  color: var(--foreground-muted);
+  line-height: 1.6;
+}
+
+/* Yongshin Section */
+.yongshinSection {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-xl);
+  padding: 1.5rem;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.sectionHeader h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.sectionDesc {
+  font-size: 0.875rem;
+  color: var(--foreground-muted);
+  margin-top: 0.25rem;
+}
+
+.yongshinMain {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.yongshinGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+.evidenceToggle {
+  margin-top: 0.5rem;
+}
+
+.yongshinItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  padding: 1rem;
+  background: rgba(var(--primary-rgb), 0.05);
+  border-radius: var(--radius-lg);
+}
+
+.label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--foreground-muted);
+}
+
+.value {
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.value.primary {
+  color: var(--primary);
+}
+
+.high { color: #10b981; }
+.medium { color: var(--primary); }
+.low { color: #f59e0b; }
+
+/* Categories Section */
+.categoriesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Footer */
+.footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: 1rem;
+  padding-bottom: 2rem;
+}
+
+.disclaimer {
+  font-size: 0.8125rem;
+  color: var(--foreground-muted);
+  text-align: center;
+  line-height: 1.6;
+}
+
+@media (max-width: 600px) {
+  .totalSection {
+    padding: 1.5rem;
+  }
+
+  .totalCard {
+    flex-direction: column;
     text-align: center;
-    font-size: 0.95rem;
-    color: var(--foreground-muted);
-    margin-bottom: 2rem;
+    gap: 1.25rem;
+  }
+
+  .scoreCircle {
+    width: 100px;
+    height: 100px;
+  }
+
+  .scoreValue {
+    font-size: 2rem;
+  }
+  
+  .categoriesGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .totalOneLiner {
+    font-size: 1.25rem;
+  }
+
+  .yongshinGrid {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
-.actions {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    margin-top: 2rem;
-}
-
-@media (max-width: 768px) {
-    .main {
-        padding: 1rem;
-    }
-
-    .title {
-        font-size: 1.5rem;
-    }
-}

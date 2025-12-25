@@ -5,12 +5,14 @@ import styles from './Button.module.css';
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'outline';
   size?: 'sm' | 'md' | 'lg';
+  fullWidth?: boolean;
 }
 
 export const Button = ({ 
   className, 
   variant = 'primary', 
-  size = 'md', 
+  size = 'md',
+  fullWidth = false,
   children, 
   ...props 
 }: ButtonProps) => {
@@ -20,6 +22,7 @@ export const Button = ({
         styles.button,
         styles[variant],
         styles[size],
+        fullWidth && styles.fullWidth,
         className
       )}
       {...props}

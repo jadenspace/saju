@@ -112,103 +112,6 @@ export interface SajuData {
   // 용신 분석
   yongshin?: Yongshin;
 }
-export interface YearComparison {
-  previousScore: number;
-  currentScore: number;
-  scoreDiff: number;
-  trend: 'up' | 'down' | 'same';
-  changeReasons: string[]; // 주요 변화 요인 설명
-}
-
-export interface NewYearFortune {
-  year: number;
-  gan: string;
-  ji: string;
-  yearSummary: {
-    score: number;
-    summaryText: string; // "Core Summary"
-    comparison?: YearComparison; // 작년 비교 정보
-  };
-  yearNature: string;    // "Nature of the Year"
-  // 운의 작동 방식 (신규)
-  yearMechanism?: YearMechanism;
-  // 흔히 겪는 실수 패턴 (신규)
-  commonMistake?: CommonMistake;
-  fortuneAreas: {
-    money: FortuneAreaBase;
-    relationship: FortuneAreaBase;
-    career: FortuneAreaBase;
-    selfGrowth: FortuneAreaBase;
-    health: FortuneAreaBase;  // 건강운 추가
-  };
-  keyMonths?: {
-    month: number;
-    theme: string;
-    advice: string;
-  }[];
-  allMonths?: Array<{
-    month: number;
-    gan: string;
-    ji: string;
-    score: number;
-    theme: string;
-    advice: string;
-  }>;
-  fortuneGuide: {
-    do: string[];
-    dont: string[];
-    keywords: string[];
-  };
-  expertMeta: {
-    fortuneType: string;
-    fortuneTypeDescription?: string;  // 신규: 사용자 친화적 설명
-    warningLevel: 'low' | 'medium' | 'high';
-    recommendedActivities: string[];
-  };
-  analysisTags: {
-    dominantTengod: string;
-    dominantTengodFriendly?: string;  // 신규: 사용자 친화적 표현
-    supportTengod: string;
-    supportTengodFriendly?: string;   // 신규: 사용자 친화적 표현
-    event?: string;
-    eventFriendly?: string;  // 신규: 이벤트 사용자 친화적 표현
-    palace?: string;
-    ohaengExcess?: string;
-    ohaengLack?: string;
-    quality: 'stable' | 'volatile' | 'mixed';
-    pace: 'fast' | 'slow' | 'mixed';
-    guideType: 'push' | 'manage' | 'defense' | 'reset';
-  };
-  // 행운 정보
-  luckyInfo?: {
-    color: string;
-    direction: string;
-    number: string;
-  };
-}
-
-export interface FortuneAreaBase {
-  score: number;
-  summary?: string;     // 신규: 한 줄 요약 (예: "들어오지만 관리가 필요한 흐름")
-  focus?: string;       // 신규: 집중 포인트 (예: "지출 구조 개선")
-  pros: string;
-  cons: string;
-  strategy: string;
-}
-
-// 운의 작동 방식 (신규)
-export interface YearMechanism {
-  type: 'thinking-first' | 'action-first' | 'relationship-focused' | 'wealth-focused' | 'authority-focused' | 'creative-focused' | 'competitive-focused';
-  description: string;      // "감정보다 판단과 분석이 먼저 작동하는 해"
-  advantage: string[];      // ["분석력", "정리력", "기획"]
-  risk: string[];           // ["결정 지연", "고립"]
-}
-
-// 흔히 겪는 실수 패턴 (신규)
-export interface CommonMistake {
-  title: string;            // "생각만 하다 타이밍을 놓치기 쉬운 해"
-  situations: string[];     // 구체적인 상황들
-}
 
 export interface IlganStrength {
   strength: 'strong' | 'weak' | 'neutral';
@@ -220,10 +123,81 @@ export interface IlganStrength {
   };
 }
 
+export type YongshinConfidence = 'high' | 'medium' | 'low';
+
+export type YongshinEvidence = {
+  season: 'spring' | 'summer' | 'autumn' | 'winter';
+  ilganStrength: 'strong' | 'weak' | 'neutral';
+  roots: number; // 통근 지표
+  elementScores: Record<'wood' | 'fire' | 'earth' | 'metal' | 'water', number>;
+  imbalance: {
+    missing: string[];
+    deficient: string[];
+    excess: string[];
+  };
+  candidates: {
+    eokbuTop: Array<{ element: string; score: number }>; // 목(木) 등 한글로
+    johu: { element: string; score: number };
+  };
+  priorityReason: string;
+  conflictReason?: string[];
+};
+
 export interface Yongshin {
   primary: string;      // 주 용신 오행 (예: '목(木)')
   secondary?: string;   // 보조 용신 오행
   heeshin?: string[];   // 희신 오행 배열
   gishin?: string[];    // 기신 오행 배열
   type: '억부' | '조후' | '통관';
+  confidence?: YongshinConfidence;
+  evidence?: YongshinEvidence;
+}
+
+export interface FortuneCategory {
+  score: number;
+  summary: string;
+  pros: string[];
+  cons: string[];
+  strategy: string;
+}
+
+export interface MonthlyFortune {
+  month: number;
+  monthName: string;
+  solarMonth: string;
+  ganZhi: string;
+  ganHan: string;
+  jiHan: string;
+  score: number;
+  theme: string;
+  oneLiner: string;
+}
+
+export interface KeyMonth {
+  month: number;
+  theme: '큰 변화의 달' | '화합의 달' | '조심의 달';
+  advice: string;
+}
+
+export interface LuckyInfo {
+  color: string[];
+  direction: string;
+  number: number[];
+}
+
+export interface NewYearFortune {
+  year: number;
+  ganZhi: string;
+  totalScore: number;
+  totalOneLiner: string;
+  categories: {
+    total: FortuneCategory;
+    career: FortuneCategory;
+    love: FortuneCategory;
+    wealth: FortuneCategory;
+    health: FortuneCategory;
+  };
+  monthly: MonthlyFortune[];
+  keyMonths?: KeyMonth[];
+  luckyInfo?: LuckyInfo;
 }
