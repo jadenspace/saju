@@ -8,7 +8,7 @@
   max-width: 600px;
   margin: 0 auto;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .card::before {
@@ -140,7 +140,6 @@
 .daeunPeriod:hover {
   background: var(--background);
   border-color: var(--accent);
-  transform: translateY(-2px);
   box-shadow: var(--shadow-sm);
 }
 

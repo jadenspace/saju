@@ -40,8 +40,8 @@
     left: 50%;
     transform: translateX(-50%);
     padding: 0.5rem 0.75rem;
-    background: var(--text-on-light);
-    color: #fff;
+    background: var(--card-bg);
+    color: var(--foreground);
     border-radius: 0.5rem;
     font-size: 0.75rem;
     white-space: nowrap;
@@ -49,7 +49,7 @@
     pointer-events: none;
     transition: all 0.2s ease;
     box-shadow: var(--shadow-md);
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--border);
 }
 
 .tooltipContainer:hover .tooltip {
@@ -107,9 +107,17 @@
     font-size: 1.8rem;
     font-weight: bold;
     font-family: "Noto Serif KR", serif;
-    color: #fff;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
     transition: transform 0.2s ease;
+}
+
+/* 음양에 따른 텍스트 색상 */
+.yang {
+    color: #fff;
+}
+
+.yin {
+    color: #000;
 }
 
 .characterContainer:hover {
@@ -210,13 +218,11 @@
 .earth {
     background-color: #fbbf24;
     border: 1px solid #f59e0b;
-    color: var(--text-on-light);
 }
 
 .metal {
     background-color: #94a3b8;
     border: 1px solid #64748b;
-    color: var(--text-on-light);
 }
 
 .water {

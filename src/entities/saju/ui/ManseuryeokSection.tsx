@@ -9,6 +9,7 @@ import {
 import { TWELVE_STAGES_DESCRIPTIONS } from '../../../shared/lib/saju/data/TwelveStages';
 import { SINSAL_DESCRIPTIONS, TwelveSinsal } from '../../../shared/lib/saju/data/TwelveSinsal';
 import { GONGMANG_MEANING } from '../../../shared/lib/saju/data/Gongmang';
+import { getPolarity } from '../../../shared/lib/saju/calculators/TenGod';
 import styles from './ManseuryeokSection.module.css';
 
 interface ManseuryeokSectionProps {
@@ -60,13 +61,21 @@ const PillarColumn = ({
             </Tooltip>
 
             <Tooltip content={CHEONGAN_EXPLANATIONS[pillar.ganHan] || ''}>
-                <div className={clsx(styles.characterContainer, styles[pillar.ganElement || 'unknown'])}>
+                <div className={clsx(
+                    styles.characterContainer, 
+                    styles[pillar.ganElement || 'unknown'],
+                    getPolarity(pillar.ganHan) === 'yang' ? styles.yang : styles.yin
+                )}>
                     {pillar.ganHan}
                 </div>
             </Tooltip>
 
             <Tooltip content={JIJI_EXPLANATIONS[pillar.jiHan] || ''}>
-                <div className={clsx(styles.characterContainer, styles[pillar.jiElement || 'unknown'])}>
+                <div className={clsx(
+                    styles.characterContainer, 
+                    styles[pillar.jiElement || 'unknown'],
+                    getPolarity(pillar.jiHan) === 'yang' ? styles.yang : styles.yin
+                )}>
                     {pillar.jiHan}
                 </div>
             </Tooltip>
