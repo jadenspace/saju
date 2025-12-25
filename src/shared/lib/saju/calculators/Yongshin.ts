@@ -352,6 +352,7 @@ function calculateHeeshinGishin(
 export function calculateYongshin(sajuData: SajuData): Yongshin | null {
   if (!sajuData.ilganStrength) return null;
 
+  const ilganStrength = sajuData.ilganStrength;
   const dayMaster = sajuData.day.ganHan;
   const monthJi = sajuData.month.jiHan;
 
@@ -372,10 +373,10 @@ export function calculateYongshin(sajuData: SajuData): Yongshin | null {
 
   const roots = countRootsWeighted(sajuData, dayElement);
 
-  const eokbuCandidates = getEokbuCandidates(dayElement, sajuData.ilganStrength.strength);
+  const eokbuCandidates = getEokbuCandidates(dayElement, ilganStrength.strength);
   const eokbuScored = eokbuCandidates.map(el => ({
     element: el,
-    score: scoreEokbuCandidate(el, dayElement, sajuData.ilganStrength.strength, imbalance, season, roots, elementScores),
+    score: scoreEokbuCandidate(el, dayElement, ilganStrength.strength, imbalance, season, roots, elementScores),
   }));
   const eokbuTop2 = pickTopTwo(eokbuScored);
   if (!eokbuTop2) return null;
@@ -449,7 +450,7 @@ export function calculateYongshin(sajuData: SajuData): Yongshin | null {
   const { heeshin, gishin } = calculateHeeshinGishin(
     primaryScored.element,
     dayElement,
-    sajuData.ilganStrength.strength,
+    ilganStrength.strength,
     imbalance
   );
 
@@ -467,7 +468,7 @@ export function calculateYongshin(sajuData: SajuData): Yongshin | null {
     confidence,
     evidence: {
       season,
-      ilganStrength: sajuData.ilganStrength.strength,
+      ilganStrength: ilganStrength.strength,
       roots,
       elementScores,
       imbalance,
