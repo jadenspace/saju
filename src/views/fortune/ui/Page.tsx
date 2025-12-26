@@ -6,11 +6,10 @@ import { Button } from '@/shared/ui/Button';
 import { useRouter } from 'next/navigation';
 import { FortuneCard } from '@/entities/saju/ui/FortuneCard';
 import { MonthlyFortuneGrid } from '@/entities/saju/ui/MonthlyFortuneGrid';
-import { YongshinEvidence } from '@/entities/saju/ui/YongshinEvidence';
 import { KeyMonthsSection } from '@/entities/saju/ui/KeyMonthsSection';
 import { LuckyInfoSection } from '@/entities/saju/ui/LuckyInfoSection';
+import { TotalScoreEvidenceComponent } from '@/entities/saju/ui/TotalScoreEvidence';
 import { useState } from 'react';
-import clsx from 'clsx';
 
 interface FortuneViewProps {
   sajuData: SajuData;
@@ -46,56 +45,22 @@ export const FortuneView = ({ sajuData, fortuneData }: FortuneViewProps) => {
               <p className={styles.totalSummary}>{fortuneData.categories.total.summary}</p>
             </div>
           </div>
+          {fortuneData.totalScoreEvidence && (
+            <div className={styles.evidenceToggleWrapper}>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowEvidence(!showEvidence)}
+                fullWidth
+              >
+                {showEvidence ? '계산 근거 접기' : '왜 이런 점수가 나왔나요? (계산 과정 보기)'}
+              </Button>
+            </div>
+          )}
+          {showEvidence && fortuneData.totalScoreEvidence && (
+            <TotalScoreEvidenceComponent evidence={fortuneData.totalScoreEvidence} />
+          )}
         </section>
-
-        {sajuData.yongshin && (
-          <section className={styles.yongshinSection}>
-            <div className={styles.sectionHeader}>
-              <h3>핵심 용신 분석</h3>
-            </div>
-            <div className={styles.yongshinMain}>
-              <div className={styles.yongshinGrid}>
-                <div className={styles.yongshinItem}>
-                  <span className={styles.label}>주 용신 (Primary)</span>
-                  <span className={clsx(styles.value, styles.primary)}>
-                    {sajuData.yongshin.primary}
-                  </span>
-                </div>
-                <div className={styles.yongshinItem}>
-                  <span className={styles.label}>보조 용신 (Secondary)</span>
-                  <span className={styles.value}>
-                    {sajuData.yongshin.secondary || '없음'}
-                  </span>
-                </div>
-                <div className={styles.yongshinItem}>
-                  <span className={styles.label}>판단 방식</span>
-                  <span className={styles.value}>
-                    {sajuData.yongshin.type}
-                  </span>
-                </div>
-                <div className={styles.yongshinItem}>
-                  <span className={styles.label}>판단 신뢰도</span>
-                  <span className={clsx(styles.value, styles[sajuData.yongshin.confidence || 'medium'])}>
-                    {sajuData.yongshin.confidence === 'high' ? '높음' : sajuData.yongshin.confidence === 'low' ? '낮음' : '보통'}
-                  </span>
-                </div>
-              </div>
-              <div className={styles.evidenceToggle}>
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={() => setShowEvidence(!showEvidence)}
-                  fullWidth
-                >
-                  {showEvidence ? '분석 근거 접기' : '왜 이런 결과가 나왔나요? (분석 근거 보기)'}
-                </Button>
-              </div>
-            </div>
-            {showEvidence && sajuData.yongshin.evidence && (
-              <YongshinEvidence evidence={sajuData.yongshin.evidence} confidence={sajuData.yongshin.confidence} />
-            )}
-          </section>
-        )}
 
         <section className={styles.categoriesSection}>
           <div className={styles.sectionHeader}>

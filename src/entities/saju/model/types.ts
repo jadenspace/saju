@@ -446,6 +446,33 @@ export interface LuckyInfo {
   number: number[];
 }
 
+export interface TotalScoreEvidence {
+  seunTenGods: {
+    gan: string; // 세운 천간의 십신
+    ji: string; // 세운 지지의 십신
+    evaluation: '긍정' | '중립' | '부정';
+    point: number;
+  };
+  yongshinMatch: {
+    yongshin: string; // 용신
+    seunGanElement: string; // 세운 천간 오행
+    seunJiElement: string; // 세운 지지 오행
+    isMatch: boolean; // 용신과 일치 여부
+    isControlling: boolean; // 용신을 극하는지
+    point: number;
+  };
+  jiRelationships: {
+    hasHap: boolean; // 합 관계
+    hasChung: boolean; // 충 관계
+    hasHyung: boolean; // 형 관계
+    details: string[];
+    point: number;
+  };
+  basePoint: number;
+  totalPoint: number;
+  finalScore: number;
+}
+
 export interface NewYearFortune {
   year: number;
   ganZhi: string;
@@ -461,4 +488,5 @@ export interface NewYearFortune {
   monthly: MonthlyFortune[];
   keyMonths?: KeyMonth[];
   luckyInfo?: LuckyInfo;
+  totalScoreEvidence?: TotalScoreEvidence;
 }

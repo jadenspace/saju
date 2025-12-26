@@ -108,6 +108,10 @@
   line-height: 1.6;
 }
 
+.evidenceToggleWrapper {
+  margin-top: 1.5rem;
+}
+
 /* Yongshin Section */
 .yongshinSection {
   background: var(--card-bg);
