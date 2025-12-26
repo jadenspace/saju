@@ -316,8 +316,8 @@
 }
 
 .buttonGroup {
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 0.75rem;
   margin-top: 1rem;
 }
@@ -335,15 +335,31 @@
   height: 3.5rem;
   font-size: 1.05rem;
   font-weight: 600;
-  background: var(--accent-gradient) !important;
+  background: var(--silver-gradient) !important;
   color: var(--secondary) !important;
-  border: 1px solid rgba(136, 136, 136, 0.3) !important;
-  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(156, 163, 175, 0.3) !important;
+  box-shadow: var(--shadow-sm), 0 0 20px rgba(156, 163, 175, 0.2);
 }
 
 .secondaryButton:hover {
   transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-md), var(--shadow-silver-glow);
+}
+
+.tertiaryButton {
+  flex: 1;
+  height: 3.5rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  background: var(--silver-gradient) !important;
+  color: var(--secondary) !important;
+  border: 1px solid rgba(156, 163, 175, 0.3) !important;
+  box-shadow: var(--shadow-sm), 0 0 20px rgba(156, 163, 175, 0.2);
+}
+
+.tertiaryButton:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md), var(--shadow-silver-glow);
 }
 
 /* Tablet and mobile optimization */
@@ -379,7 +395,7 @@
   }
 
   .buttonGroup {
-    flex-direction: column;
+    grid-template-columns: 1fr;
   }
 
   .tooltipContent {

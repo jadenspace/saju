@@ -20,6 +20,14 @@
   --primary-gradient: linear-gradient(135deg, #c49a6c 0%, #e8cdb0 50%, #c49a6c 100%);
   --primary-rgb: 196, 154, 108;
 
+  /* 실버 그라데이션 */
+  --silver: #9CA3AF;
+  --silver-light: #D1D5DB;
+  --silver-dark: #6B7280;
+  --silver-gradient: linear-gradient(135deg, #9CA3AF 0%, #D1D5DB 50%, #9CA3AF 100%);
+  --silver-rgb: 156, 163, 175;
+  --shadow-silver-glow: 0 0 25px rgba(156, 163, 175, 0.3);
+
   /* 세컨더리 - 모던 그레이 */
   --secondary: #F5F5F5;
   --secondary-light: #EFEFEF;
@@ -96,6 +104,14 @@
   --primary-hover: #e8c08e;
   --primary-gradient: linear-gradient(135deg, #d4a574 0%, #f5d9b8 50%, #d4a574 100%);
   --primary-rgb: 212, 165, 116;
+
+  /* 실버 그라데이션 */
+  --silver: #C0C0C0;
+  --silver-light: #E8E8E8;
+  --silver-dark: #A0A0A0;
+  --silver-gradient: linear-gradient(135deg, #A8A8A8 0%, #E0E0E0 50%, #A8A8A8 100%);
+  --silver-rgb: 192, 192, 192;
+  --shadow-silver-glow: 0 0 25px rgba(192, 192, 192, 0.4);
 
   /* 세컨더리 - 다크 그레이 */
   --secondary: #27272a;

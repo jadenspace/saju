@@ -47,7 +47,7 @@ export const SajuForm = () => {
   };
 
   const [formData, setFormData] = useState(getInitialFormData);
-  const [loading, setLoading] = useState<'fortune' | 'result' | null>(null);
+  const [loading, setLoading] = useState<'fortune' | 'result' | 'yongshin' | null>(null);
   const [error, setError] = useState<string>('');
   const [showSettings, setShowSettings] = useState(false);
 
@@ -97,7 +97,7 @@ export const SajuForm = () => {
     if (error) setError('');
   };
 
-  const handleSubmit = (e: React.FormEvent, destination: 'fortune' | 'result') => {
+  const handleSubmit = (e: React.FormEvent, destination: 'fortune' | 'result' | 'yongshin') => {
     e.preventDefault();
     setLoading(destination);
     setError('');
@@ -459,6 +459,15 @@ export const SajuForm = () => {
           id="btn-saju-all"
         >
           {loading === 'result' ? '분석 중...' : '종합 사주'}
+        </Button>
+        <Button
+          type="button"
+          disabled={loading !== null}
+          className={styles.tertiaryButton}
+          onClick={(e: React.MouseEvent) => handleSubmit(e as unknown as React.FormEvent, 'yongshin')}
+          id="btn-yongshin"
+        >
+          {loading === 'yongshin' ? '분석 중...' : '용신 찾기'}
         </Button>
       </div>
     </form>
