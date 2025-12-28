@@ -729,7 +729,7 @@ function checkJonggyeok(
 
 /**
  * PRD v4.2: 격국 판단 강화
- * - 지장간 우선순위 (주기 > 중기 > 여기)
+ * - 지장간 우선순위 (정기 > 중기 > 여기)
  * - 격국 문제 패턴 체크
  */
 function determineGyeokgukV2(saju: SajuData, dayMaster: string): GyeokgukAnalysis {
@@ -741,7 +741,7 @@ function determineGyeokgukV2(saju: SajuData, dayMaster: string): GyeokgukAnalysi
   const monthJi = monthPillar.jiHan;
   const jijanggan = HIDDEN_STEMS[monthJi] || [];
   
-  // 순수 지기 (卯, 酉, 子)는 주기만 존재
+  // 순수 지기 (卯, 酉, 子)는 정기만 존재
   const isPure = ['卯', '酉', '子'].includes(monthJi);
   
   const tianganList: string[] = [];
@@ -753,23 +753,23 @@ function determineGyeokgukV2(saju: SajuData, dayMaster: string): GyeokgukAnalysi
   }
   
   let touchulGan: string | null = null;
-  let touchulPosition: 'jugi' | 'junggi' | 'yeogi' | null = null;
+  let touchulPosition: 'jeonggi' | 'junggi' | 'yeogi' | null = null;
   let confidence: 'high' | 'medium' | 'low' = 'low';
   
-  // PRD: 주기 → 중기 → 여기 순서로 투출 체크
+  // PRD: 정기 → 중기 → 여기 순서로 투출 체크
   if (isPure) {
-    // 순수 지기는 주기만 체크
+    // 순수 지기는 정기만 체크
     if (jijanggan.length > 0 && tianganList.includes(jijanggan[0])) {
       touchulGan = jijanggan[0];
-      touchulPosition = 'jugi';
+      touchulPosition = 'jeonggi';
       confidence = 'high';
     }
   } else {
-    // 주기 (마지막 인덱스)
-    const jugiIndex = jijanggan.length - 1;
-    if (jugiIndex >= 0 && tianganList.some(gan => isSameGan(gan, jijanggan[jugiIndex]))) {
-      touchulGan = jijanggan[jugiIndex];
-      touchulPosition = 'jugi';
+    // 정기 (마지막 인덱스)
+    const jeonggiIndex = jijanggan.length - 1;
+    if (jeonggiIndex >= 0 && tianganList.some(gan => isSameGan(gan, jijanggan[jeonggiIndex]))) {
+      touchulGan = jijanggan[jeonggiIndex];
+      touchulPosition = 'jeonggi';
       confidence = 'high';
     }
     // 중기 (두 번째 인덱스, 있을 경우)
@@ -1290,10 +1290,43 @@ function imbalanceScore(ohaeng: OhaengAnalysis, element: Element): number {
   return s;
 }
 
-function getEokbuCandidates(day: Element, strength: IlganStrength['strength']): Element[] {
-  if (strength === 'strong') return dedupe([GENERATING_MAP[day], CONTROLLING_MAP[day], invControlling(day)]);
-  if (strength === 'weak') return dedupe([invGenerating(day), day]);
+function getEokbuCandidates(day: Element, strength: IlganStrength['strength'] | 'extreme-strong' | 'extreme-weak'): Element[] {
+  // 극강은 신강과 동일하게 처리
+  if (strength === 'strong' || strength === 'extreme-strong') {
+    return dedupe([GENERATING_MAP[day], CONTROLLING_MAP[day], invControlling(day)]);
+  }
+  // 극약은 신약과 동일하게 처리
+  if (strength === 'weak' || strength === 'extreme-weak') {
+    return dedupe([invGenerating(day), day]);
+  }
   return dedupe([GENERATING_MAP[day], CONTROLLING_MAP[day], invControlling(day), invGenerating(day), day]);
+}
+
+/**
+ * 억부 용신 후보 검증
+ * @param cand 후보 오행
+ * @param elementScores 오행 점수
+ * @param ohaeng 오행 불균형 분석
+ * @returns 검증 통과 여부 (원국에 있고 과다하지 않으면 true)
+ */
+function validateEokbuCandidate(
+  cand: Element,
+  elementScores: Record<Element, number>,
+  ohaeng: OhaengAnalysis
+): boolean {
+  // 원국에 없으면 통과 실패
+  if (elementScores[cand] === 0) {
+    return false;
+  }
+  
+  // excess에 포함되면 통과 실패
+  const candKorean = ELEMENT_TO_KOREAN[cand];
+  if (hasKorean(ohaeng.excess, candKorean)) {
+    return false;
+  }
+  
+  // 둘 다 아니면 통과 성공
+  return true;
 }
 
 function pickTopTwo(scored: Scored[]): { top: Scored; second?: Scored } | null {
@@ -1673,11 +1706,32 @@ export function calculateYongshin(sajuData: SajuData): Yongshin | null {
     }
   }
   
-  if (hapChungEffects.length > 0) {
+  // 합충 분석 조건 설명 생성
+  const getHapChungCondition = () => {
+    const parts: string[] = [];
+    if (combinations.tianganHe.length > 0) {
+      parts.push(`천간합 ${combinations.tianganHe.length}개`);
+    }
+    if (combinations.dizhiHe.length > 0) {
+      parts.push(`지지합 ${combinations.dizhiHe.length}개`);
+    }
+    if (combinations.chong.length > 0) {
+      parts.push(`충 ${combinations.chong.length}개`);
+    }
+    if (parts.length === 0) {
+      return '합충 관계 없음';
+    }
+    return parts.join(', ');
+  };
+  
+  // 합충 분석 목적 설명
+  const hapChungPurpose = '합(合)과 충(沖)으로 인한 오행 점수 변화 분석';
+  
+  if (hapChungEffects.length > 0 || combinations.tianganHe.length > 0 || combinations.dizhiHe.length > 0 || combinations.chong.length > 0) {
     decisionPath.push({
       step: '합충분석',
-      result: hapChungEffects.join(', '),
-      condition: `천간합 ${combinations.tianganHe.length}개, 지지합 ${combinations.dizhiHe.length}개, 충 ${combinations.chong.length}개`,
+      result: hapChungEffects.length > 0 ? hapChungEffects.join(', ') : '합충 영향 없음',
+      condition: `${hapChungPurpose} | ${getHapChungCondition()}`,
       continued: true,
     });
   }
@@ -1698,7 +1752,10 @@ export function calculateYongshin(sajuData: SajuData): Yongshin | null {
   // 격국 판단 상세 조건 생성
   const getGyeokgukCondition = () => {
     if (gyeokgukAnalysis.touchulPosition) {
-      return `${monthJi}월 ${gyeokgukAnalysis.touchulPosition} ${gyeokgukAnalysis.touchulGan || ''} 투출`;
+      const positionKr = gyeokgukAnalysis.touchulPosition === 'jeonggi' ? '정기' 
+        : gyeokgukAnalysis.touchulPosition === 'junggi' ? '중기' 
+        : '여기';
+      return `${monthJi}월 ${positionKr} ${gyeokgukAnalysis.touchulGan || ''} 투출`;
     }
     // 투출 없을 때 상세 사유
     const jijanggan = sajuData.month.jijanggan || [];
@@ -1740,7 +1797,7 @@ export function calculateYongshin(sajuData: SajuData): Yongshin | null {
     decisionPath.push({
       step: '일행득기격',
       result: ilhaengResult.type!,
-      condition: ilhaengResult.reason,
+      condition: `일행득기격 충족 요건: 일간 오행 비율 ≥80% + 관살 ≤0.5 | ${ilhaengResult.reason}`,
       continued: false,  // 일행득기격이면 바로 용신 결정
     });
     
@@ -1752,6 +1809,15 @@ export function calculateYongshin(sajuData: SajuData): Yongshin | null {
       confidence: 'high' as const,
       evidence: { decisionPath },
     };
+  } else {
+    // 일행득기격 조건 불충족 시 decisionPath에 추가
+    decisionPath.push({
+      step: '일행득기격',
+      result: '일행득기격 아님',
+      condition: `일행득기격 충족 요건: 일간 오행 비율 ≥80% + 관살 ≤0.5`,
+      continued: true,
+      skipReason: `일행득기격 조건 불충족: ${ilhaengResult.reason}`,
+    });
   }
   
   // 양신성상격 체크
@@ -1760,7 +1826,7 @@ export function calculateYongshin(sajuData: SajuData): Yongshin | null {
     decisionPath.push({
       step: '양신성상격',
       result: `${ELEMENT_TO_KOREAN[yangshinResult.elements![0]]} + ${ELEMENT_TO_KOREAN[yangshinResult.elements![1]]}`,
-      condition: yangshinResult.reason,
+      condition: `양신성상격 충족 요건: 2개 오행만 존재 + 각 ≥30% + 상생/상극 관계 | ${yangshinResult.reason}`,
       continued: false,
     });
     
@@ -1772,6 +1838,15 @@ export function calculateYongshin(sajuData: SajuData): Yongshin | null {
       confidence: 'medium' as const,
       evidence: { decisionPath },
     };
+  } else {
+    // 양신성상격 조건 불충족 시 decisionPath에 추가
+    decisionPath.push({
+      step: '양신성상격',
+      result: '양신성상격 아님',
+      condition: `양신성상격 충족 요건: 2개 오행만 존재 + 각 ≥30% + 상생/상극 관계`,
+      continued: true,
+      skipReason: `양신성상격 조건 불충족: ${yangshinResult.reason}`,
+    });
   }
   
   // ============================================
@@ -1819,15 +1894,29 @@ export function calculateYongshin(sajuData: SajuData): Yongshin | null {
     return failures.length > 1 ? failures.join(' | ') : '종격 조건 불충족';
   };
   
+  // 종격 충족 요건 설명 생성
+  const getJonggyeokCriteria = () => {
+    if (jonggyeokV2.isJonggyeok) {
+      if (jonggyeokV2.type === 'jonggang') {
+        return '종강격 충족 요건: 득령 + 근점수≥6.0 + 관살≤1.0 + 설기≤1.5';
+      } else if (jonggyeokV2.type === 'jongyak') {
+        return '종약격 충족 요건: 실령 + 근점수≤2.0 + 지원≤1.5 + 식상/재/관≥3.0';
+      }
+      return '종격 충족 요건';
+    }
+    return '종격 충족 요건: 종강격(득령 + 근점수≥6.0 + 관살≤1.0 + 설기≤1.5) 또는 종약격(실령 + 근점수≤2.0 + 지원≤1.5 + 식상/재/관≥3.0)';
+  };
+
   decisionPath.push({
     step: '종격체크',
     result: jonggyeokV2.isJonggyeok 
       ? `${jonggyeokV2.type}${jonggyeokV2.subType ? ` (${jonggyeokV2.subType})` : ''}`
       : '보통격',
     condition: jonggyeokV2.isJonggyeok
-      ? `근점수 ${jonggyeokV2.scores.rootScore}, 지원 ${jonggyeokV2.scores.support}, 설기 ${jonggyeokV2.scores.drain}, 관살 ${jonggyeokV2.scores.oppression}`
-      : getJonggyeokFailureReason(),
+      ? `${getJonggyeokCriteria()} | 근점수 ${jonggyeokV2.scores.rootScore}, 지원 ${jonggyeokV2.scores.support}, 설기 ${jonggyeokV2.scores.drain}, 관살 ${jonggyeokV2.scores.oppression}`
+      : `${getJonggyeokCriteria()} | ${getJonggyeokFailureReason()}`,
     continued: !jonggyeokV2.isJonggyeok,
+    skipReason: !jonggyeokV2.isJonggyeok ? `종격 조건 불충족: ${getJonggyeokFailureReason()}` : undefined,
   });
   
   // ============================================
@@ -1857,11 +1946,20 @@ export function calculateYongshin(sajuData: SajuData): Yongshin | null {
     return map[s] || s;
   };
   
+  // 조후용신 조건 불충족 이유 생성
+  const getJohuSkipReason = (status: string): string | undefined => {
+    if (status === 'extreme') return undefined; // extreme이면 조후용신 적용
+    if (status === 'poor') return `조후 상태가 부족(不足)이지만 extreme이 아니어서 조후용신 적용 불가`;
+    if (status === 'satisfied' || status === 'good') return `조후 상태가 충족/양호하여 조후용신 필요 없음`;
+    return `조후 상태가 extreme이 아니어서 조후용신 적용 불가`;
+  };
+
   decisionPath.push({
     step: '조후분석',
     result: `${getJohuStatusKorean(johuAnalysis.status)} (${getSeasonKorean(season)}, ${ELEMENT_TO_KOREAN[johuAnalysis.neededElement]} ${elementScores[johuAnalysis.neededElement].toFixed(1)})`,
-    condition: `${season === 'summer' ? '夏月' : season === 'winter' ? '冬月' : season === 'spring' ? '春月' : '秋月'} + ${ELEMENT_TO_KOREAN[johuAnalysis.neededElement]} ${elementScores[johuAnalysis.neededElement].toFixed(1)} ${johuAnalysis.status === 'extreme' ? '< 0.5' : johuAnalysis.status === 'poor' ? '0.5~2.0' : '>= 2.0'}`,
+    condition: `조후용신 충족 요건: 조후 상태가 extreme(급선무)일 때만 적용 | 현재: ${getSeasonKorean(season)} + ${ELEMENT_TO_KOREAN[johuAnalysis.neededElement]} ${elementScores[johuAnalysis.neededElement].toFixed(1)} ${johuAnalysis.status === 'extreme' ? '< 0.5 (extreme)' : johuAnalysis.status === 'poor' ? '0.5~2.0 (poor)' : '>= 2.0 (satisfied/good)'}`,
     continued: johuAnalysis.status !== 'extreme',
+    skipReason: getJohuSkipReason(johuAnalysis.status),
   });
   
   // ============================================
@@ -1904,10 +2002,15 @@ export function calculateYongshin(sajuData: SajuData): Yongshin | null {
     });
     
     const roots = countRootsWeighted(sajuData, dayElement);
-    const eokbuCandidates = getEokbuCandidates(dayElement, ilganStrength.strength);
+    // structuralStrength를 사용하여 극강/극약도 올바르게 처리
+    const eokbuCandidates = getEokbuCandidates(dayElement, strengthAnalysis.structuralStrength);
+    // scoreEokbuCandidate는 'strong' | 'weak' | 'neutral'만 받으므로 매핑 필요
+    const strengthForScoringJohu = strengthAnalysis.structuralStrength === 'extreme-strong' ? 'strong' :
+                                   strengthAnalysis.structuralStrength === 'extreme-weak' ? 'weak' :
+                                   strengthAnalysis.structuralStrength;
     const eokbuScored = eokbuCandidates.map(el => ({
       element: el,
-      score: scoreEokbuCandidate(el, dayElement, ilganStrength.strength, imbalance, season, roots, elementScores),
+      score: scoreEokbuCandidate(el, dayElement, strengthForScoringJohu, imbalance, season, roots, elementScores),
     }));
     const eokbuTop2 = pickTopTwo(eokbuScored);
     
@@ -1967,16 +2070,61 @@ export function calculateYongshin(sajuData: SajuData): Yongshin | null {
   });
   
   const roots = countRootsWeighted(sajuData, dayElement);
-  const eokbuCandidates = getEokbuCandidates(dayElement, ilganStrength.strength);
+  // structuralStrength를 사용하여 극강/극약도 올바르게 처리
+  const eokbuCandidates = getEokbuCandidates(dayElement, strengthAnalysis.structuralStrength);
+  
+  // 순차 검증: 후보 배열 순서대로 검증하여 통과한 첫 번째 후보 선택
+  let validatedPrimary: Element | null = null;
+  const validationResults: Array<{ element: Element; passed: boolean; reason?: string }> = [];
+  
+  for (const cand of eokbuCandidates) {
+    const isValid = validateEokbuCandidate(cand, elementScores, imbalance);
+    const candKorean = ELEMENT_TO_KOREAN[cand];
+    let reason: string | undefined;
+    
+    if (!isValid) {
+      if (elementScores[cand] === 0) {
+        reason = '원국에 없음';
+      } else if (hasKorean(imbalance.excess, candKorean)) {
+        reason = '과다 오행';
+      }
+    }
+    
+    validationResults.push({ element: cand, passed: isValid, reason });
+    
+    if (isValid && validatedPrimary === null) {
+      validatedPrimary = cand;
+    }
+  }
+  
+  // 모든 후보에 대해 점수 계산 (폴백 및 보조용신 결정용)
+  // scoreEokbuCandidate는 'strong' | 'weak' | 'neutral'만 받으므로 매핑 필요
+  const strengthForScoring = strengthAnalysis.structuralStrength === 'extreme-strong' ? 'strong' :
+                              strengthAnalysis.structuralStrength === 'extreme-weak' ? 'weak' :
+                              strengthAnalysis.structuralStrength;
   const eokbuScored = eokbuCandidates.map(el => ({
     element: el,
-    score: scoreEokbuCandidate(el, dayElement, ilganStrength.strength, imbalance, season, roots, elementScores),
+    score: scoreEokbuCandidate(el, dayElement, strengthForScoring, imbalance, season, roots, elementScores),
     isAbsent: elementScores[el] === 0,
   }));
-  const eokbuTop2 = pickTopTwo(eokbuScored);
-  if (!eokbuTop2) return null;
   
-  const primaryScored = eokbuTop2.top;
+  // 검증 통과한 후보가 있으면 그것을 선택, 없으면 점수 기반으로 폴백
+  let primaryScored: { element: Element; score: number; isAbsent: boolean };
+  if (validatedPrimary !== null) {
+    const found = eokbuScored.find(s => s.element === validatedPrimary);
+    if (!found) return null;
+    primaryScored = found;
+  } else {
+    // 모든 후보가 검증 실패 시 점수 기반으로 폴백
+    const eokbuTop2 = pickTopTwo(eokbuScored);
+    if (!eokbuTop2) return null;
+    primaryScored = {
+      element: eokbuTop2.top.element,
+      score: eokbuTop2.top.score,
+      isAbsent: eokbuTop2.top.isAbsent ?? false,
+    };
+  }
+  
   const primaryK = ELEMENT_TO_KOREAN[primaryScored.element];
   const primarySipseong = getSipseongForElement(primaryScored.element, dayMaster);
   
@@ -2002,11 +2150,19 @@ export function calculateYongshin(sajuData: SajuData): Yongshin | null {
       decisionPath.push({
         step: '통관적용',
         result: `${ELEMENT_TO_KOREAN[byungyak.yak]} (통관)`,
-        condition: `통관 유효: 점수 ${tonggwanValidation.validationDetail?.score}`,
+        condition: `통관용신 충족 요건: 원국 존재≥0.5 + 점수≥1.5 + 피극 오행 ≤ 점수×1.5 | 통관 유효: 점수 ${tonggwanValidation.validationDetail?.score}`,
         continued: true,
       });
     } else {
       priorityReason = `통관 불가: ${tonggwanValidation.reason}`;
+      // 통관 조건 불충족 시 decisionPath에 추가
+      decisionPath.push({
+        step: '통관적용',
+        result: '통관 적용 불가',
+        condition: `통관용신 충족 요건: 원국 존재≥0.5 + 점수≥1.5 + 피극 오행 ≤ 점수×1.5 | 통관 오행: ${ELEMENT_TO_KOREAN[byungyak.yak]}`,
+        continued: true,
+        skipReason: `통관 조건 불충족: ${tonggwanValidation.reason}`,
+      });
     }
   } else if (byungyak.yak && byungyak.byung) {
     const byungyakScore = scoreEokbuCandidate(
@@ -2069,19 +2225,58 @@ export function calculateYongshin(sajuData: SajuData): Yongshin | null {
     return map[type] || type;
   };
   
+  // 검증 과정 기록
+  const validationText = validationResults
+    .map(v => {
+      const elemKr = ELEMENT_TO_KOREAN[v.element];
+      if (v.passed) {
+        return `${elemKr}(통과)`;
+      } else {
+        return `${elemKr}(실패: ${v.reason || '알 수 없음'})`;
+      }
+    })
+    .join(', ');
+  
+  // 억부 오행별 점수 정렬 및 포맷팅
+  const eokbuScoredSorted = [...eokbuScored].sort((a, b) => b.score - a.score);
+  const eokbuScoresText = eokbuScoredSorted
+    .map(c => `${ELEMENT_TO_KOREAN[c.element]}(${c.score.toFixed(1)})`)
+    .join(', ');
+  
+  // 검증 방식 표시
+  const selectionMethod = validatedPrimary !== null 
+    ? '순차 검증 통과' 
+    : '검증 실패 → 점수 기반 폴백';
+  
   decisionPath.push({
     step: '억부결정',
     result: `${ELEMENT_TO_KOREAN[finalPrimaryElement]}`,
-    condition: `${getYongshinTypeKorean(finalPrimaryType)} 용신: ${ELEMENT_TO_KOREAN[finalPrimaryElement]} (${primaryScored.score.toFixed(1)})`,
+    condition: `${getYongshinTypeKorean(finalPrimaryType)} 용신: ${ELEMENT_TO_KOREAN[finalPrimaryElement]} (${primaryScored.score.toFixed(1)}) | 검증: ${validationText} | 선택 방식: ${selectionMethod} | 오행별 점수: ${eokbuScoresText}`,
     continued: false,
   });
   
-  // 보조용신 결정
+  // 보조용신 결정: 검증 통과한 후보 중에서 선택
   let secondaryK: string | undefined;
-  if (eokbuTop2.second && 
-      eokbuTop2.second.element !== finalPrimaryElement && 
-      !isControlling(eokbuTop2.second.element, finalPrimaryElement)) {
-    secondaryK = ELEMENT_TO_KOREAN[eokbuTop2.second.element];
+  const validatedCandidates = validationResults
+    .filter(v => v.passed && v.element !== finalPrimaryElement)
+    .map(v => v.element);
+  
+  // 검증 통과한 후보 중에서 주용신과 상극이 아닌 것 선택
+  for (const cand of validatedCandidates) {
+    if (!isControlling(cand, finalPrimaryElement)) {
+      secondaryK = ELEMENT_TO_KOREAN[cand];
+      break;
+    }
+  }
+  
+  // 검증 통과한 후보가 없으면 점수 기반으로 폴백
+  if (!secondaryK) {
+    const eokbuTop2 = pickTopTwo(eokbuScored);
+    if (eokbuTop2?.second && 
+        eokbuTop2.second.element !== finalPrimaryElement && 
+        !isControlling(eokbuTop2.second.element, finalPrimaryElement)) {
+      secondaryK = ELEMENT_TO_KOREAN[eokbuTop2.second.element];
+    }
   }
   
   decisionPath.push({

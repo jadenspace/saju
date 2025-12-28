@@ -43,6 +43,7 @@ export const YongshinPage = ({ sajuData, searchParams }: YongshinPageProps) => {
                   evidence={sajuData.yongshin.evidence} 
                   confidence={sajuData.yongshin.confidence}
                   yongshin={sajuData.yongshin}
+                  sajuData={sajuData}
                 />
               </div>
             )}

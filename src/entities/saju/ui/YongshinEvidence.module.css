@@ -255,6 +255,17 @@
   padding-left: 0.25rem;
 }
 
+.stepSkipReason {
+  font-size: 0.75rem;
+  color: #d97706;
+  line-height: 1.4;
+  margin: 0.5rem 0 0 0;
+  padding: 0.5rem;
+  background: rgba(245, 158, 11, 0.1);
+  border-left: 3px solid #d97706;
+  border-radius: var(--radius-sm);
+}
+
 .timelineStep.finalStep .stepContent {
   background: rgba(var(--primary-rgb), 0.03);
   border-radius: var(--radius-md);
@@ -341,6 +352,31 @@
   font-size: 1rem;
   font-weight: 700;
   color: var(--foreground);
+}
+
+.yongshinInfo {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sipseongName {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.elementLabel {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--foreground-muted);
+}
+
+.sipseongLabel {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--foreground-muted);
 }
 
 .noValue {
