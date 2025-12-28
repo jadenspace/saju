@@ -24,6 +24,7 @@
   font-weight: 800;
   line-height: 1.2;
   margin-bottom: 0.5rem;
+  text-align: center;
   background: var(--silver-gradient);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -110,6 +111,25 @@
   gap: 1rem;
   flex-wrap: wrap;
   justify-content: center;
+}
+
+.secondaryActions {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.tertiaryButton {
+  background: var(--silver-gradient) !important;
+  color: var(--secondary) !important;
+  border: 1px solid rgba(156, 163, 175, 0.3) !important;
+  box-shadow: var(--shadow-sm), 0 0 20px rgba(156, 163, 175, 0.2);
+  font-weight: 600;
+}
+
+.tertiaryButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md), var(--shadow-silver-glow);
 }
 
 /* Tablet optimization */
