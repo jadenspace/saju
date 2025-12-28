@@ -65,7 +65,9 @@ const PillarColumn = ({
             <Tooltip content={PILLAR_EXPLANATIONS[label] || ''}>
                 <div className={styles.headerPill}>
                     <span className={styles.headerLabel}>{label}</span>
-                    <span className={styles.headerGanZhi}>({pillar.ganHan}{pillar.jiHan})</span>
+                    <span className={styles.headerGanZhi}>
+                        ({pillar.gan}{pillar.ji})
+                    </span>
                 </div>
             </Tooltip>
 
@@ -76,22 +78,28 @@ const PillarColumn = ({
             </Tooltip>
 
             <Tooltip content={CHEONGAN_EXPLANATIONS[pillar.ganHan] || ''}>
-                <div className={clsx(
-                    styles.characterContainer, 
-                    styles[pillar.ganElement || 'unknown'],
-                    getPolarity(pillar.ganHan) === 'yang' ? styles.yang : styles.yin
-                )}>
-                    {pillar.ganHan}
+                <div className={styles.characterWrapper}>
+                    <div className={clsx(
+                        styles.characterContainer, 
+                        styles[pillar.ganElement || 'unknown'],
+                        getPolarity(pillar.ganHan) === 'yang' ? styles.yang : styles.yin
+                    )}>
+                        {pillar.ganHan}
+                    </div>
+                    <span className={styles.koreanLabel}>{pillar.gan}</span>
                 </div>
             </Tooltip>
 
             <Tooltip content={JIJI_EXPLANATIONS[pillar.jiHan] || ''}>
-                <div className={clsx(
-                    styles.characterContainer, 
-                    styles[pillar.jiElement || 'unknown'],
-                    getPolarity(pillar.jiHan) === 'yang' ? styles.yang : styles.yin
-                )}>
-                    {pillar.jiHan}
+                <div className={styles.characterWrapper}>
+                    <div className={clsx(
+                        styles.characterContainer, 
+                        styles[pillar.jiElement || 'unknown'],
+                        getPolarity(pillar.jiHan) === 'yang' ? styles.yang : styles.yin
+                    )}>
+                        {pillar.jiHan}
+                    </div>
+                    <span className={styles.koreanLabel}>{pillar.ji}</span>
                 </div>
             </Tooltip>
 

@@ -96,6 +96,14 @@
     font-weight: 700;
 }
 
+.characterWrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+}
+
 .characterContainer {
     width: 100%;
     aspect-ratio: 1 / 1.1;
@@ -109,6 +117,13 @@
     font-family: "Noto Serif KR", serif;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
     transition: transform 0.2s ease;
+}
+
+.koreanLabel {
+    font-size: 0.75rem;
+    color: var(--foreground-muted);
+    font-weight: 500;
+    text-align: center;
 }
 
 /* 음양에 따른 텍스트 색상 */
@@ -305,6 +320,10 @@
     .characterContainer {
         font-size: 1.4rem;
         border-radius: 0.75rem;
+    }
+
+    .koreanLabel {
+        font-size: 0.65rem;
     }
 
     .sipsin {
