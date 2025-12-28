@@ -248,7 +248,7 @@ export interface ElementClassification {
 export interface GyeokgukAnalysis {
   type: GyeokgukType;
   confidence: 'high' | 'medium' | 'low';
-  touchulPosition: 'jugi' | 'junggi' | 'yeogi' | null;
+  touchulPosition: 'jeonggi' | 'junggi' | 'yeogi' | null;
   touchulGan?: string;
   issues: GyeokgukIssue[];
 }
@@ -304,6 +304,7 @@ export interface DecisionStep {
   result: string;
   condition?: string;
   continued: boolean;
+  skipReason?: string; // 조건 불충족으로 넘어간 경우의 이유
 }
 
 // 확장된 Evidence 타입
