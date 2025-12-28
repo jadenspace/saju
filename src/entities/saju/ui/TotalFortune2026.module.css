@@ -1,0 +1,165 @@
+.totalSection {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-2xl);
+  padding: 2.5rem;
+  box-shadow: var(--shadow-xl);
+  position: relative;
+  overflow: hidden;
+}
+
+.totalSection::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--primary-gradient);
+}
+
+.totalCard {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.divider {
+  height: 1px;
+  background: var(--card-border);
+}
+
+.gradeSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.gradeLabel {
+  font-size: 0.875rem;
+  color: var(--foreground-muted);
+  font-weight: 600;
+}
+
+.gradeValue {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.stars {
+  font-size: 1.25rem;
+  color: #fbbf24;
+}
+
+.gradeText {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.keywordsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.keywordsLabel {
+  font-size: 0.875rem;
+  color: var(--foreground-muted);
+  font-weight: 600;
+}
+
+.keywords {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.keyword {
+  padding: 0.375rem 0.75rem;
+  background: rgba(var(--primary-rgb), 0.1);
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.analysisSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.analysisLabel {
+  font-size: 0.875rem;
+  color: var(--foreground-muted);
+  font-weight: 600;
+}
+
+.analysisText {
+  font-size: 1rem;
+  color: var(--foreground);
+  line-height: 1.8;
+}
+
+.adviceSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.adviceLabel {
+  font-size: 0.875rem;
+  color: var(--foreground-muted);
+  font-weight: 600;
+}
+
+.adviceList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.adviceItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: rgba(var(--primary-rgb), 0.05);
+  border-radius: var(--radius-lg);
+}
+
+.adviceIcon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.adviceText {
+  font-size: 0.9375rem;
+  color: var(--foreground);
+  line-height: 1.6;
+}
+
+@media (max-width: 600px) {
+  .totalSection {
+    padding: 1.5rem;
+  }
+
+  .title {
+    font-size: 1.25rem;
+  }
+}
+

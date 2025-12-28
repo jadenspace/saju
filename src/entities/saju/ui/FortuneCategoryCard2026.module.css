@@ -1,0 +1,116 @@
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-xl);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.grade {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.stars {
+  font-size: 1rem;
+  color: #fbbf24;
+}
+
+.gradeText {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--foreground-muted);
+}
+
+.keywords {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.keyword {
+  padding: 0.25rem 0.5rem;
+  background: rgba(var(--primary-rgb), 0.1);
+  border-radius: var(--radius-md);
+  font-size: 0.8125rem;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.analysis {
+  flex: 1;
+}
+
+.analysisText {
+  font-size: 0.9375rem;
+  color: var(--foreground);
+  line-height: 1.7;
+}
+
+.advice {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--card-border);
+}
+
+.adviceLabel {
+  font-size: 0.8125rem;
+  color: var(--foreground-muted);
+  font-weight: 600;
+}
+
+.adviceList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.adviceItem {
+  font-size: 0.875rem;
+  color: var(--foreground);
+  line-height: 1.6;
+  padding-left: 1rem;
+  position: relative;
+}
+
+.adviceItem::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: var(--primary);
+}
+
+@media (max-width: 600px) {
+  .card {
+    padding: 1.25rem;
+  }
+}
+

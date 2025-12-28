@@ -97,9 +97,9 @@ export const SajuForm = () => {
     if (error) setError('');
   };
 
-  const handleSubmit = (e: React.FormEvent, destination: 'fortune' | 'result' | 'yongshin') => {
+  const handleSubmit = (e: React.FormEvent, destination: 'fortune' | 'result' | 'yongshin' | 'new-year-2026') => {
     e.preventDefault();
-    setLoading(destination);
+    setLoading(destination === 'new-year-2026' ? 'fortune' : destination);
     setError('');
 
     // Check Date format (YYYYMMDD)
@@ -443,10 +443,7 @@ export const SajuForm = () => {
           type="button"
           disabled={loading !== null}
           className={styles.primaryButton}
-          onClick={(e: React.MouseEvent) => {
-            alert("준비중입니다.");
-            // handleSubmit(e as unknown as React.FormEvent, 'fortune')
-          }}
+          onClick={(e: React.MouseEvent) => handleSubmit(e as unknown as React.FormEvent, 'new-year-2026')}
           id="btn-saju-2026"
         >
           {loading === 'fortune' ? '분석 중...' : '2026 신년운세'}
