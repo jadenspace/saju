@@ -31,6 +31,8 @@ export const FortuneView = ({ sajuData, fortuneData }: FortuneViewProps) => {
           </h1>
           <p className={styles.subtitle}>
             {sajuData.gender === 'male' ? '남성' : '여성'} | {sajuData.birthDate} {sajuData.birthTime}
+            {sajuData.useTrueSolarTime && ' (-30)'}
+            {sajuData.solar ? ' (양력)' : ' (음력)'}
           </p>
         </header>
 

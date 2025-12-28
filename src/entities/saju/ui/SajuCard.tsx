@@ -67,7 +67,7 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
           </div>
         </div>
         <p>
-          {data.birthDate} {data.birthTime} {data.useTrueSolarTime ? '(-30)' : ''} {data.gender === 'male' ? '남' : '여'}
+          {data.birthDate} {data.birthTime} {data.useTrueSolarTime ? '(-30)' : ''} {data.gender === 'male' ? '남' : '여'} {data.solar ? '(양력)' : '(음력)'}
         </p>
       </div>
 
