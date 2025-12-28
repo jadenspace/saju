@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { YongshinEvidence as YongshinEvidenceType, YongshinConfidence, DecisionStep, Yongshin } from '@/entities/saju/model/types';
 import { OHAENG_COLORS } from '@/shared/lib/saju/data/OhaengColors';
 import styles from './YongshinEvidence.module.css';
@@ -17,6 +17,13 @@ interface TooltipProps {
 const Tooltip = ({ title, description, criteria, children }: TooltipProps) => {
   const [isVisible, setIsVisible] = useState(false);
 
+  // 툴팁이 표시될 때만 판정기준을 console.log로 출력
+  useEffect(() => {
+    if (isVisible && criteria) {
+      console.log(`[${title}] 판정 기준:`, criteria);
+    }
+  }, [isVisible, criteria, title]);
+
   return (
     <div 
       className={styles.tooltipWrapper}
@@ -30,12 +37,6 @@ const Tooltip = ({ title, description, criteria, children }: TooltipProps) => {
         <div className={styles.tooltipContent}>
           <div className={styles.tooltipTitle}>{title}</div>
           <p className={styles.tooltipDesc}>{description}</p>
-          {criteria && (
-            <div className={styles.tooltipCriteria}>
-              <span className={styles.criteriaLabel}>판정 기준</span>
-              <pre className={styles.criteriaText}>{criteria}</pre>
-            </div>
-          )}
         </div>
       )}
     </div>
