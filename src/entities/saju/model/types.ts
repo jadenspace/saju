@@ -452,6 +452,7 @@ export interface TotalScoreEvidence {
     ji: string; // 세운 지지의 십신
     evaluation: '긍정' | '중립' | '부정';
     point: number;
+    details?: string[]; // 상세 설명
   };
   yongshinMatch: {
     yongshin: string; // 용신
@@ -460,6 +461,7 @@ export interface TotalScoreEvidence {
     isMatch: boolean; // 용신과 일치 여부
     isControlling: boolean; // 용신을 극하는지
     point: number;
+    details?: string[]; // 상세 설명
   };
   jiRelationships: {
     hasHap: boolean; // 합 관계
@@ -467,10 +469,17 @@ export interface TotalScoreEvidence {
     hasHyung: boolean; // 형 관계
     details: string[];
     point: number;
+    calculationDetails?: string[]; // 계산 상세
   };
   basePoint: number;
   totalPoint: number;
   finalScore: number;
+  calculationSteps?: Array<{
+    step: string;
+    description: string;
+    formula?: string; // 콘솔에만 출력할 공식
+    result: string;
+  }>;
 }
 
 export interface NewYearFortune {

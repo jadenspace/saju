@@ -61,13 +61,22 @@ export const TotalScoreEvidenceComponent = ({ evidence }: TotalScoreEvidenceProp
             <p className={styles.stepCondition}>
               천간: {evidence.seunTenGods.gan} | 지지: {evidence.seunTenGods.ji}
             </p>
-            <p className={styles.stepNote}>
-              {evidence.seunTenGods.evaluation === '긍정'
-                ? '길신(吉神)으로 좋은 기운을 가져옵니다.'
-                : evidence.seunTenGods.evaluation === '부정'
-                ? '흉신(凶神)으로 주의가 필요합니다.'
-                : '보통의 십신으로 중립적입니다.'}
-            </p>
+            {evidence.seunTenGods.details && evidence.seunTenGods.details.length > 0 && (
+              <div className={styles.detailsList}>
+                {evidence.seunTenGods.details.map((detail, idx) => (
+                  <p key={idx} className={styles.stepNote}>{detail}</p>
+                ))}
+              </div>
+            )}
+            {!evidence.seunTenGods.details && (
+              <p className={styles.stepNote}>
+                {evidence.seunTenGods.evaluation === '긍정'
+                  ? '길신(吉神)으로 좋은 기운을 가져옵니다.'
+                  : evidence.seunTenGods.evaluation === '부정'
+                  ? '흉신(凶神)으로 주의가 필요합니다.'
+                  : '보통의 십신으로 중립적입니다.'}
+              </p>
+            )}
           </div>
         </div>
 
@@ -88,13 +97,22 @@ export const TotalScoreEvidenceComponent = ({ evidence }: TotalScoreEvidenceProp
               용신: {evidence.yongshinMatch.yongshin} |
               세운: 천간({evidence.yongshinMatch.seunGanElement}), 지지({evidence.yongshinMatch.seunJiElement})
             </p>
-            <p className={styles.stepNote}>
-              {evidence.yongshinMatch.isMatch
-                ? '세운이 용신과 일치하여 매우 좋습니다.'
-                : evidence.yongshinMatch.isControlling
-                ? '세운이 용신을 극하여 주의가 필요합니다.'
-                : '세운과 용신의 관계가 중립적입니다.'}
-            </p>
+            {evidence.yongshinMatch.details && evidence.yongshinMatch.details.length > 0 && (
+              <div className={styles.detailsList}>
+                {evidence.yongshinMatch.details.map((detail, idx) => (
+                  <p key={idx} className={styles.stepNote}>{detail}</p>
+                ))}
+              </div>
+            )}
+            {!evidence.yongshinMatch.details && (
+              <p className={styles.stepNote}>
+                {evidence.yongshinMatch.isMatch
+                  ? '세운이 용신과 일치하여 매우 좋습니다.'
+                  : evidence.yongshinMatch.isControlling
+                  ? '세운이 용신을 극하여 주의가 필요합니다.'
+                  : '세운과 용신의 관계가 중립적입니다.'}
+              </p>
+            )}
           </div>
         </div>
 
@@ -122,6 +140,13 @@ export const TotalScoreEvidenceComponent = ({ evidence }: TotalScoreEvidenceProp
                 </div>
               ))}
             </div>
+            {evidence.jiRelationships.calculationDetails && evidence.jiRelationships.calculationDetails.length > 0 && (
+              <div className={styles.detailsList}>
+                {evidence.jiRelationships.calculationDetails.map((detail, idx) => (
+                  <p key={idx} className={styles.stepNote}>{detail}</p>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 

@@ -162,6 +162,13 @@
   font-style: italic;
 }
 
+.detailsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
+}
+
 /* Relationship Details */
 .relationshipDetails {
   display: flex;

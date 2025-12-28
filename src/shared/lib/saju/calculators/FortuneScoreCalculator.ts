@@ -278,19 +278,47 @@ export class FortuneScoreCalculator {
   }
 
   private static buildTotalScoreEvidence(seun: Seun, saju: SajuData, jiRel: any, yongshin: any, finalScore: number): TotalScoreEvidence {
+    const calculationSteps: Array<{ step: string; description: string; formula?: string; result: string }> = [];
+    
     // 1. 세운 십신 분석
     const positiveGods = ['정관', '정인', '정재', '식신'];
     const negativeGods = ['편관', '겁재', '상관'];
 
     let tenGodsEval: '긍정' | '중립' | '부정' = '중립';
     let tenGodsPoint = 0;
+    const tenGodsDetails: string[] = [];
 
     if (positiveGods.includes(seun.tenGodsGan)) {
       tenGodsEval = '긍정';
       tenGodsPoint = 1;
+      tenGodsDetails.push(`세운 천간의 십신이 "${seun.tenGodsGan}"로 길신(吉神)입니다.`);
+      calculationSteps.push({
+        step: '세운 십신 분석',
+        description: `세운 천간 십신: ${seun.tenGodsGan} (길신)`,
+        formula: `길신(정관/정인/정재/식신) → +1점`,
+        result: `+${tenGodsPoint}점`
+      });
+      console.log(`[총운 점수 계산] 세운 십신 분석 공식: 길신(정관/정인/정재/식신) → +1점`);
     } else if (negativeGods.includes(seun.tenGodsGan)) {
       tenGodsEval = '부정';
       tenGodsPoint = -1;
+      tenGodsDetails.push(`세운 천간의 십신이 "${seun.tenGodsGan}"로 흉신(凶神)입니다.`);
+      calculationSteps.push({
+        step: '세운 십신 분석',
+        description: `세운 천간 십신: ${seun.tenGodsGan} (흉신)`,
+        formula: `흉신(편관/겁재/상관) → -1점`,
+        result: `${tenGodsPoint}점`
+      });
+      console.log(`[총운 점수 계산] 세운 십신 분석 공식: 흉신(편관/겁재/상관) → -1점`);
+    } else {
+      tenGodsDetails.push(`세운 천간의 십신이 "${seun.tenGodsGan}"로 중립적입니다.`);
+      calculationSteps.push({
+        step: '세운 십신 분석',
+        description: `세운 천간 십신: ${seun.tenGodsGan} (중립)`,
+        formula: `중립 십신 → 0점`,
+        result: `${tenGodsPoint}점`
+      });
+      console.log(`[총운 점수 계산] 세운 십신 분석 공식: 중립 십신 → 0점`);
     }
 
     // 2. 용신 매칭 분석
@@ -298,20 +326,60 @@ export class FortuneScoreCalculator {
     let isMatch = false;
     let isControlling = false;
     let yongshinName = '없음';
+    const yongshinDetails: string[] = [];
 
     if (yongshin) {
       yongshinName = yongshin.primary;
       const yongshinElement = this.koreanToElement(yongshin.primary);
+      const seunGanElement = seun.ganElement as Element;
+      const seunJiElement = seun.jiElement as Element;
 
-      if (seun.ganElement === yongshinElement || seun.jiElement === yongshinElement) {
+      if (seunGanElement === yongshinElement || seunJiElement === yongshinElement) {
         isMatch = true;
         yongshinPoint += 1.5;
+        const matchedPillar = seunGanElement === yongshinElement ? '천간' : '지지';
+        yongshinDetails.push(`세운 ${matchedPillar}의 오행이 용신(${yongshinName})과 일치합니다.`);
+        calculationSteps.push({
+          step: '용신 충족도',
+          description: `세운 ${matchedPillar}(${this.elementToKorean(seunGanElement === yongshinElement ? seunGanElement : seunJiElement)}) = 용신(${yongshinName})`,
+          formula: `세운 오행 = 용신 오행 → +1.5점`,
+          result: `+${yongshinPoint}점`
+        });
+        console.log(`[총운 점수 계산] 용신 충족도 공식: 세운 오행 = 용신 오행 → +1.5점`);
       }
 
-      if (this.isControlling(seun.ganElement as Element, yongshinElement as Element)) {
+      if (this.isControlling(seunGanElement, yongshinElement as Element)) {
         isControlling = true;
         yongshinPoint -= 1;
+        yongshinDetails.push(`세운 천간(${this.elementToKorean(seunGanElement)})이 용신(${yongshinName})을 극합니다.`);
+        calculationSteps.push({
+          step: '용신 충족도',
+          description: `세운 천간(${this.elementToKorean(seunGanElement)})이 용신(${yongshinName})을 극함`,
+          formula: `세운 오행이 용신을 극함 → -1점`,
+          result: `${yongshinPoint}점`
+        });
+        console.log(`[총운 점수 계산] 용신 충족도 공식: 세운 오행이 용신을 극함 → -1점`);
       }
+
+      if (!isMatch && !isControlling) {
+        yongshinDetails.push(`세운과 용신의 관계가 중립적입니다.`);
+        calculationSteps.push({
+          step: '용신 충족도',
+          description: `세운과 용신의 관계 중립`,
+          formula: `용신과 일치/극 관계 없음 → 0점`,
+          result: `${yongshinPoint}점`
+        });
+        console.log(`[총운 점수 계산] 용신 충족도 공식: 용신과 일치/극 관계 없음 → 0점`);
+      }
+    } else {
+      yongshinDetails.push('용신이 없어 분석하지 않습니다.');
+      calculationSteps.push({
+        step: '용신 충족도',
+        description: '용신 없음',
+        formula: '용신 없음 → 0점',
+        result: '0점'
+      });
+      console.log(`[총운 점수 계산] 용신 충족도 공식: 용신 없음 → 0점`);
     }
 
     // 3. 지지 관계 분석
@@ -320,6 +388,7 @@ export class FortuneScoreCalculator {
     const chungRelations: string[] = [];
     const hyungRelations: string[] = [];
     let jiRelPoint = 0;
+    const jiRelCalculationDetails: string[] = [];
 
     const pillars = ['year', 'month', 'day', 'hour'];
     const pillarNames: Record<string, string> = {
@@ -347,16 +416,36 @@ export class FortuneScoreCalculator {
     // calculateTotalFortune과 동일한 로직
     if (hapRelations.length > 0) {
       jiRelPoint += 0.5;
+      jiRelCalculationDetails.push(`합(合) 관계 ${hapRelations.length}개 발견`);
+      console.log(`[총운 점수 계산] 형충회합 공식: 합(合) 관계 → +0.5점`);
     }
     if (banHapRelations.length > 0) {
       jiRelPoint += 0.5;
+      jiRelCalculationDetails.push(`반합(半合) 관계 ${banHapRelations.length}개 발견`);
+      console.log(`[총운 점수 계산] 형충회합 공식: 반합(半合) 관계 → +0.5점`);
     }
     if (chungRelations.length > 0) {
       jiRelPoint -= 1;
+      jiRelCalculationDetails.push(`충(沖) 관계 ${chungRelations.length}개 발견`);
+      console.log(`[총운 점수 계산] 형충회합 공식: 충(沖) 관계 → -1점`);
     }
     if (hyungRelations.length > 0) {
       jiRelPoint -= 0.5;
+      jiRelCalculationDetails.push(`형(刑) 관계 ${hyungRelations.length}개 발견`);
+      console.log(`[총운 점수 계산] 형충회합 공식: 형(刑) 관계 → -0.5점`);
     }
+
+    if (hapRelations.length === 0 && banHapRelations.length === 0 && chungRelations.length === 0 && hyungRelations.length === 0) {
+      jiRelCalculationDetails.push('특별한 형충회합 관계 없음');
+      console.log(`[총운 점수 계산] 형충회합 공식: 형충회합 없음 → 0점`);
+    }
+
+    calculationSteps.push({
+      step: '형충회합 관계',
+      description: jiRelCalculationDetails.length > 0 ? jiRelCalculationDetails.join(', ') : '형충회합 없음',
+      formula: `합/반합: +0.5점씩 | 충: -1점 | 형: -0.5점`,
+      result: jiRelPoint > 0 ? `+${jiRelPoint}점` : `${jiRelPoint}점`
+    });
 
     const hasHap = hapRelations.length > 0 || banHapRelations.length > 0;
     const hasChung = chungRelations.length > 0;
@@ -369,12 +458,29 @@ export class FortuneScoreCalculator {
     const basePoint = 3;
     const totalPoint = basePoint + tenGodsPoint + yongshinPoint + jiRelPoint;
 
+    // 최종 계산 공식 콘솔 출력
+    console.log(`[총운 점수 계산] 최종 계산 공식:`);
+    console.log(`  기본 점수: ${basePoint}점`);
+    console.log(`  세운 십신: ${tenGodsPoint > 0 ? '+' : ''}${tenGodsPoint}점`);
+    console.log(`  용신 충족도: ${yongshinPoint > 0 ? '+' : ''}${yongshinPoint}점`);
+    console.log(`  형충회합: ${jiRelPoint > 0 ? '+' : ''}${jiRelPoint}점`);
+    console.log(`  합계: ${basePoint} + ${tenGodsPoint > 0 ? '+' : ''}${tenGodsPoint} + ${yongshinPoint > 0 ? '+' : ''}${yongshinPoint} + ${jiRelPoint > 0 ? '+' : ''}${jiRelPoint} = ${totalPoint.toFixed(1)}점`);
+    console.log(`  최종 점수 환산: ${totalPoint.toFixed(1)} × 20 = ${finalScore}점`);
+
+    calculationSteps.push({
+      step: '최종 계산',
+      description: '모든 요소를 합산하여 최종 점수를 계산합니다.',
+      formula: `기본점수(${basePoint}) + 십신(${tenGodsPoint > 0 ? '+' : ''}${tenGodsPoint}) + 용신(${yongshinPoint > 0 ? '+' : ''}${yongshinPoint}) + 형충회합(${jiRelPoint > 0 ? '+' : ''}${jiRelPoint}) = ${totalPoint.toFixed(1)}점`,
+      result: `${finalScore}점 (${totalPoint.toFixed(1)} × 20)`
+    });
+
     return {
       seunTenGods: {
         gan: seun.tenGodsGan,
         ji: seun.tenGodsJi,
         evaluation: tenGodsEval,
         point: tenGodsPoint,
+        details: tenGodsDetails,
       },
       yongshinMatch: {
         yongshin: yongshinName,
@@ -383,6 +489,7 @@ export class FortuneScoreCalculator {
         isMatch,
         isControlling,
         point: yongshinPoint,
+        details: yongshinDetails,
       },
       jiRelationships: {
         hasHap,
@@ -390,10 +497,12 @@ export class FortuneScoreCalculator {
         hasHyung,
         details,
         point: jiRelPoint,
+        calculationDetails: jiRelCalculationDetails,
       },
       basePoint,
       totalPoint,
       finalScore,
+      calculationSteps,
     };
   }
 }
