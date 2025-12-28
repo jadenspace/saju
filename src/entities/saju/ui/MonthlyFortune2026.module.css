@@ -1,0 +1,151 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.graph {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-xl);
+  padding: 1.5rem;
+}
+
+.graphItem {
+  display: grid;
+  grid-template-columns: 40px 1fr 120px;
+  gap: 1rem;
+  align-items: center;
+}
+
+.graphLabel {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.graphBarContainer {
+  height: 20px;
+  background: rgba(var(--primary-rgb), 0.1);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.graphBar {
+  height: 100%;
+  background: var(--primary-gradient);
+  border-radius: var(--radius-md);
+  transition: width 0.3s ease;
+}
+
+.graphValue {
+  font-size: 0.8125rem;
+  color: var(--foreground-muted);
+  text-align: right;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.monthCard {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-xl);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.monthHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.monthTitle {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.monthNumber {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.monthStars {
+  font-size: 0.9375rem;
+  color: #fbbf24;
+}
+
+.monthToggle {
+  font-size: 0.875rem;
+  color: var(--foreground-muted);
+}
+
+.monthKeywords {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.monthKeyword {
+  padding: 0.25rem 0.5rem;
+  background: rgba(var(--primary-rgb), 0.1);
+  border-radius: var(--radius-md);
+  font-size: 0.8125rem;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.monthContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--card-border);
+}
+
+.monthSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.monthSectionLabel {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.monthSectionText {
+  font-size: 0.9375rem;
+  color: var(--foreground);
+  line-height: 1.7;
+}
+
+@media (max-width: 600px) {
+  .graphItem {
+    grid-template-columns: 35px 1fr 100px;
+    gap: 0.75rem;
+  }
+
+  .graphValue {
+    font-size: 0.75rem;
+  }
+
+  .monthCard {
+    padding: 1.25rem;
+  }
+}
+

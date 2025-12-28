@@ -500,3 +500,75 @@ export interface NewYearFortune {
   luckyInfo?: LuckyInfo;
   totalScoreEvidence?: TotalScoreEvidence;
 }
+
+// ===== 2026 신년운세 타입 정의 =====
+
+/**
+ * 2026 병오년 신년운세 데이터 구조
+ */
+export interface NewYearFortune2026 {
+  year: number;
+  ganZhi: string;
+  
+  // 총운
+  total: {
+    score: number; // 1-5 척도
+    grade: '상상' | '상' | '중상' | '중' | '중하' | '하' | '하하';
+    keywords: string[];
+    analysis: string; // 상세 해석
+    advice: {
+      firstHalf: string;
+      secondHalf: string;
+      direction: string;
+      color: string;
+    };
+  };
+  
+  // 세부 운세
+  wealth: FortuneCategory2026;
+  love: FortuneCategory2026;
+  career: FortuneCategory2026;
+  health: FortuneCategory2026;
+  
+  // 월별운
+  monthly: MonthlyFortune2026[];
+}
+
+/**
+ * 세부 운세 카테고리 (재물/애정/직장/건강)
+ */
+export interface FortuneCategory2026 {
+  score: number; // 1-5 척도
+  grade: '상' | '중상' | '중' | '중하' | '하';
+  keywords: string[];
+  analysis: string; // 핵심 해석
+  details: {
+    // 재물운: 수입, 부수입, 투자, 사업 등
+    // 애정운: 솔로, 연애중, 기혼자 등
+    // 직장운: 취업, 승진, 이직, 창업 등
+    // 건강운: 주의 부위, 주의 시기 등
+    [key: string]: string | string[];
+  };
+  advice: string[]; // 조언 목록
+}
+
+/**
+ * 월별 운세 (2026년 12개월)
+ */
+export interface MonthlyFortune2026 {
+  month: number; // 1-12
+  ganZhi: string; // 간지 (예: "己丑")
+  ganHan: string; // 천간 한자
+  jiHan: string; // 지지 한자
+  score: number; // 1-5 척도
+  grade: '상' | '중상' | '중' | '중하' | '하';
+  keywords: string[];
+  analysis: {
+    total: string; // 총평
+    wealth: string; // 재물
+    love: string; // 애정
+    career: string; // 직장
+    health: string; // 건강
+    advice: string; // 조언
+  };
+}
