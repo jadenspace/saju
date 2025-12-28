@@ -128,6 +128,45 @@ const YONGSHIN_CONFIG = {
   PRIORITY_JONG_WEIGHT: 2.0,       // α
   PRIORITY_JOHU_WEIGHT: 1.5,       // β
   PRIORITY_GYEOK_WEIGHT: 1.0,      // γ
+  
+  // ===== 강약 분석 관련 설정값 =====
+  
+  // 주별 통근 가중치
+  PILLAR_WEIGHT_YEAR: 1.0,         // 연주 가중치
+  PILLAR_WEIGHT_MONTH: 3.0,        // 월주 가중치
+  PILLAR_WEIGHT_DAY: 2.5,          // 일주 가중치
+  PILLAR_WEIGHT_HOUR: 1.5,         // 시주 가중치
+  
+  // 지장간 통근 가중치
+  HIDDEN_STEM_WEIGHT_JUGI: 0.8,    // 정기(주기) 가중치
+  HIDDEN_STEM_WEIGHT_JUNGGI: 0.5,  // 중기 가중치
+  HIDDEN_STEM_WEIGHT_YEOGI: 0.3,   // 여기 가중치
+  
+  // 천간 지원 점수
+  TIANGAN_SUPPORT_SCORE: 1.0,     // 비견/겁재/편인/정인 각각 점수
+  
+  // 득지/득세 임계값
+  DEUKJI_THRESHOLD: 2.0,           // 득지 판정 기준 (총 통근 점수)
+  DEUKSE_THRESHOLD: 1.0,           // 득세 판정 기준 (천간 지원 점수)
+  
+  // 강약 판정 기준
+  STRENGTH_EXTREME_STRONG: 6.0,    // 극강 기준 (득령 + 근점수)
+  STRENGTH_STRONG: 4.0,            // 신강 기준 (득령 + 근점수)
+  STRENGTH_NEUTRAL_MIN: 3.0,       // 중화 최소
+  STRENGTH_NEUTRAL_MAX: 5.0,       // 중화 최대
+  STRENGTH_WEAK_MIN: 1.5,          // 신약 최소
+  STRENGTH_WEAK_MAX: 3.0,          // 신약 최대 (미포함)
+  
+  // 종격 신뢰도 판정 기준
+  JONGGANG_CONFIDENCE_HIGH: 7.0,   // 종강격 high 신뢰도 기준 (근점수)
+  JONGYAK_CONFIDENCE_HIGH: 1.0,    // 종약격 high 신뢰도 기준 (근점수)
+  
+  // 가종격 판정 기준
+  GAJONG_JONGGANG_ROOT_MIN: 5.0,   // 가종격 종강격 근접 기준 (근점수)
+  GAJONG_JONGYAK_ROOT_MAX: 2.5,    // 가종격 종약격 근접 기준 (근점수)
+  GAJONG_OPPRESSION_MAX: 2.0,      // 가종격 관살 최대
+  GAJONG_DRAIN_MAX: 2.0,           // 가종격 설기 최대
+  GAJONG_SUPPORT_MAX: 2.0,         // 가종격 지원 최대
 } as const;
 
 type Season = 'spring' | 'summer' | 'autumn' | 'winter';
@@ -255,10 +294,10 @@ function countRootsWeighted(saju: SajuData, dayElement: Element): number {
   let roots = 0;
 
   const pillars = [
-    { p: saju.year,  w: 1.0 },
-    { p: saju.month, w: 3.0 },
-    { p: saju.day,   w: 2.5 },
-    { p: saju.hour,  w: 1.5 },
+    { p: saju.year,  w: YONGSHIN_CONFIG.PILLAR_WEIGHT_YEAR },
+    { p: saju.month, w: YONGSHIN_CONFIG.PILLAR_WEIGHT_MONTH },
+    { p: saju.day,   w: YONGSHIN_CONFIG.PILLAR_WEIGHT_DAY },
+    { p: saju.hour,  w: YONGSHIN_CONFIG.PILLAR_WEIGHT_HOUR },
   ];
 
   for (const { p, w } of pillars) {
@@ -268,7 +307,9 @@ function countRootsWeighted(saju: SajuData, dayElement: Element): number {
     const hs = HIDDEN_STEMS[p.jiHan] ?? [];
     for (let i = 0; i < hs.length; i++) {
       if (getOhaeng(hs[i]) === dayElement) {
-        const hsW = (i === 0) ? 0.8 : (i === 1 ? 0.5 : 0.3);
+        const hsW = (i === 0) ? YONGSHIN_CONFIG.HIDDEN_STEM_WEIGHT_JUGI 
+                 : (i === 1) ? YONGSHIN_CONFIG.HIDDEN_STEM_WEIGHT_JUNGGI 
+                 : YONGSHIN_CONFIG.HIDDEN_STEM_WEIGHT_YEOGI;
         roots += hsW * (w / 2);
       }
     }
@@ -288,10 +329,10 @@ function analyzeStrength(saju: SajuData, dayElement: Element): StrengthAnalysis 
   const deukryeong = monthElement === dayElement;
   
   const pillars = [
-    { p: saju.year,  name: 'year',  w: 1.0 },
-    { p: saju.month, name: 'month', w: 3.0 },
-    { p: saju.day,   name: 'day',   w: 2.5 },
-    { p: saju.hour,  name: 'hour',  w: 1.5 },
+    { p: saju.year,  name: 'year',  w: YONGSHIN_CONFIG.PILLAR_WEIGHT_YEAR },
+    { p: saju.month, name: 'month', w: YONGSHIN_CONFIG.PILLAR_WEIGHT_MONTH },
+    { p: saju.day,   name: 'day',   w: YONGSHIN_CONFIG.PILLAR_WEIGHT_DAY },
+    { p: saju.hour,  name: 'hour',  w: YONGSHIN_CONFIG.PILLAR_WEIGHT_HOUR },
   ];
   
   let monthRoot = 0;
@@ -310,7 +351,9 @@ function analyzeStrength(saju: SajuData, dayElement: Element): StrengthAnalysis 
     const hs = HIDDEN_STEMS[p.jiHan] ?? [];
     for (let i = 0; i < hs.length; i++) {
       if (getOhaeng(hs[i]) === dayElement) {
-        const hsW = (i === 0) ? 0.8 : (i === 1 ? 0.5 : 0.3);
+        const hsW = (i === 0) ? YONGSHIN_CONFIG.HIDDEN_STEM_WEIGHT_JUGI 
+                 : (i === 1) ? YONGSHIN_CONFIG.HIDDEN_STEM_WEIGHT_JUNGGI 
+                 : YONGSHIN_CONFIG.HIDDEN_STEM_WEIGHT_YEOGI;
         root += hsW * (w / 2);
       }
     }
@@ -321,29 +364,29 @@ function analyzeStrength(saju: SajuData, dayElement: Element): StrengthAnalysis 
     else if (name === 'hour') hourRoot = root;
   }
   
-  const deukji = (monthRoot + dayRoot + yearRoot + hourRoot) > 2.0;
+  const deukji = (monthRoot + dayRoot + yearRoot + hourRoot) > YONGSHIN_CONFIG.DEUKJI_THRESHOLD;
   
   let tianganSupport = 0;
   for (const pillar of pillars) {
     if (!pillar.p || pillar.p.ganHan === '?') continue;
     const sipsin = calculateSipsin(dayMaster, pillar.p.ganHan);
     if (sipsin === '비견' || sipsin === '겁재' || sipsin === '편인' || sipsin === '정인') {
-      tianganSupport += 1.0;
+      tianganSupport += YONGSHIN_CONFIG.TIANGAN_SUPPORT_SCORE;
     }
   }
   
-  const deukse = tianganSupport >= 1.0;
+  const deukse = tianganSupport >= YONGSHIN_CONFIG.DEUKSE_THRESHOLD;
   const tugan = deukji && deukse;
   const rootScore = monthRoot + dayRoot + yearRoot + hourRoot + tianganSupport;
   
   let structuralStrength: 'extreme-strong' | 'strong' | 'neutral' | 'weak' | 'extreme-weak';
-  if (deukryeong && rootScore >= 6.0) {
+  if (deukryeong && rootScore >= YONGSHIN_CONFIG.STRENGTH_EXTREME_STRONG) {
     structuralStrength = 'extreme-strong';
-  } else if (deukryeong && rootScore >= 4.0) {
+  } else if (deukryeong && rootScore >= YONGSHIN_CONFIG.STRENGTH_STRONG) {
     structuralStrength = 'strong';
-  } else if (rootScore >= 3.0 && rootScore <= 5.0) {
+  } else if (rootScore >= YONGSHIN_CONFIG.STRENGTH_NEUTRAL_MIN && rootScore <= YONGSHIN_CONFIG.STRENGTH_NEUTRAL_MAX) {
     structuralStrength = 'neutral';
-  } else if (rootScore >= 1.5 && rootScore < 3.0) {
+  } else if (rootScore >= YONGSHIN_CONFIG.STRENGTH_WEAK_MIN && rootScore < YONGSHIN_CONFIG.STRENGTH_WEAK_MAX) {
     structuralStrength = 'weak';
   } else {
     structuralStrength = 'extreme-weak';
@@ -469,7 +512,7 @@ function checkJonggyeokV2(
       details: {
         deukryeong: true,
         structure: structureStr,
-        confidence: strengthAnalysis.rootScore >= 7.0 ? 'high' : 'medium',
+        confidence: strengthAnalysis.rootScore >= YONGSHIN_CONFIG.JONGGANG_CONFIDENCE_HIGH ? 'high' : 'medium',
       },
       breakCheck: { broken: false },
       scores,
@@ -511,7 +554,7 @@ function checkJonggyeokV2(
       details: {
         deukryeong: false,
         structure: structureStr,
-        confidence: strengthAnalysis.rootScore <= 1.0 ? 'high' : 'medium',
+        confidence: strengthAnalysis.rootScore <= YONGSHIN_CONFIG.JONGYAK_CONFIDENCE_HIGH ? 'high' : 'medium',
       },
       breakCheck: { broken: false },
       scores,
@@ -521,8 +564,8 @@ function checkJonggyeokV2(
   // ========================================
   // 가종격 판단
   // ========================================
-  if ((deukryeong && strengthAnalysis.rootScore >= 5.0 && totalOppression <= 2.0 && totalDrain <= 2.0) ||
-      (!deukryeong && strengthAnalysis.rootScore <= 2.5 && totalSupport <= 2.0)) {
+  if ((deukryeong && strengthAnalysis.rootScore >= YONGSHIN_CONFIG.GAJONG_JONGGANG_ROOT_MIN && totalOppression <= YONGSHIN_CONFIG.GAJONG_OPPRESSION_MAX && totalDrain <= YONGSHIN_CONFIG.GAJONG_DRAIN_MAX) ||
+      (!deukryeong && strengthAnalysis.rootScore <= YONGSHIN_CONFIG.GAJONG_JONGYAK_ROOT_MAX && totalSupport <= YONGSHIN_CONFIG.GAJONG_SUPPORT_MAX)) {
     
     // 가종격도 파격 체크 필수
     const breakCheck = checkJonggyeokBreak(
