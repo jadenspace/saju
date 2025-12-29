@@ -1,11 +1,6 @@
 .container {
-  margin-top: 1.5rem;
-  padding: 1.5rem;
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: 1.5rem;
+  width: 100%;
   color: var(--foreground);
-  box-shadow: var(--shadow-sm);
 }
 
 .header {

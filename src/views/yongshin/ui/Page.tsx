@@ -26,17 +26,19 @@ export const YongshinPage = ({ sajuData, searchParams }: YongshinPageProps) => {
   return (
     <main className={styles.main}>
       <div className={styles.content}>
-        <h1 className={styles.title}>용신 찾기</h1>
-        <p className={styles.subtitle}>
-          용신(用神)은 사주에서 가장 필요한 오행으로, 일생의 길흉화복을 좌우하는 핵심 요소입니다. 
-          합충·격국·조후·억부를 종합 분석하여 당신에게 가장 필요한 오행을 찾아드립니다. 
-          용신을 알아야 운세를 개선하고, 좋은 기운을 활용하며, 불리한 시기를 피할 수 있습니다.
-        </p>
+        <header className={styles.header}>
+          <h1 className={styles.title}>용신 찾기</h1>
+          <p className={styles.subtitle}>
+            용신(用神)은 사주에서 가장 필요한 오행으로, 일생의 길흉화복을 좌우하는 핵심 요소입니다. 
+            합충·격국·조후·억부를 종합 분석하여 당신에게 가장 필요한 오행을 찾아드립니다. 
+            용신을 알아야 운세를 개선하고, 좋은 기운을 활용하며, 불리한 시기를 피할 수 있습니다.
+          </p>
+        </header>
 
         {/* 용신 분석 결과 */}
-        <div className={styles.analysisSection}>
+        <section className={styles.analysisSection}>
           <DitianSuiAnalysis sajuData={sajuData} />
-        </div>
+        </section>
 
         {/* 네비게이션 버튼 */}
         <div className={styles.actions}>
