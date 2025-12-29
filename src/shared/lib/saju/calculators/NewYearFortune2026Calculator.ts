@@ -222,7 +222,7 @@ export class NewYearFortune2026Calculator {
     const monthly = this.calculateMonthlyFortunes(SEUN_2026, sajuData);
     
     // 총운 조언 업데이트 (월별운 계산 후)
-    const totalAdvice = generateTotalAdvice(monthly, total.advice.direction, total.advice.color);
+    const totalAdvice = generateTotalAdvice(monthly);
     total.advice.firstHalf = totalAdvice.firstHalf;
     total.advice.secondHalf = totalAdvice.secondHalf;
     
@@ -382,7 +382,9 @@ export class NewYearFortune2026Calculator {
       isSeunWealth,
       hasWealthInWonguk,
       hasSiksin,
-      strength
+      strength,
+      sajuData,
+      seun
     );
     
     return {
@@ -456,7 +458,9 @@ export class NewYearFortune2026Calculator {
       isSeunSpouseStar,
       dayRelationship,
       hasDohwa,
-      gender
+      gender,
+      sajuData,
+      seun
     );
     
     return {
@@ -527,7 +531,9 @@ export class NewYearFortune2026Calculator {
       isSiksin,
       hasOfficialInWonguk,
       hasYukma,
-      strength
+      strength,
+      sajuData,
+      seun
     );
     
     return {
@@ -598,7 +604,9 @@ export class NewYearFortune2026Calculator {
       excessElements,
       missingElements,
       hasChung,
-      hasHyung
+      hasHyung,
+      sajuData,
+      seun
     );
     
     return {
@@ -669,8 +677,7 @@ export class NewYearFortune2026Calculator {
         { month: monthData.month, ganZhi: monthData.ganZhi, ganHan: monthData.ganHan, jiHan: monthData.jiHan, score, grade: scoreToGrade(score), keywords, analysis: { total: '', wealth: '', love: '', career: '', health: '', advice: '' } },
         monthTenGodsGan,
         monthTenGodsJi,
-        monthRelationship,
-        monthSeunRelationship
+        monthRelationship
       );
       
       return {

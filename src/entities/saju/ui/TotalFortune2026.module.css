@@ -110,10 +110,12 @@
 }
 
 .analysisText {
-  font-size: 1rem;
+  margin-top: 0;
+  font-size: 0.875rem;
   color: var(--foreground);
   line-height: 1.8;
 }
+
 
 .adviceSection {
   display: flex;
