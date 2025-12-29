@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { SajuData } from '@/entities/saju/model/types';
-import { YongshinEvidence } from '@/entities/saju/ui/YongshinEvidence';
+import { DitianSuiAnalysis } from '@/entities/saju/ui/DitianSuiAnalysis';
 import { Button } from '@/shared/ui/Button';
 import styles from './Page.module.css';
 
@@ -34,26 +34,9 @@ export const YongshinPage = ({ sajuData, searchParams }: YongshinPageProps) => {
         </p>
 
         {/* 용신 분석 결과 */}
-        {sajuData.yongshin ? (
-          <div className={styles.analysisSection}>
-            {/* 용신 결정 흐름 (분석 근거) */}
-            {sajuData.yongshin.evidence && (
-              <div className={styles.evidenceSection}>
-                <YongshinEvidence 
-                  evidence={sajuData.yongshin.evidence} 
-                  confidence={sajuData.yongshin.confidence}
-                  yongshin={sajuData.yongshin}
-                  sajuData={sajuData}
-                />
-              </div>
-            )}
-          </div>
-        ) : (
-          <div className={styles.noData}>
-            <p>용신 정보를 계산할 수 없습니다.</p>
-            <p className={styles.hint}>일간 강약 분석이 필요합니다.</p>
-          </div>
-        )}
+        <div className={styles.analysisSection}>
+          <DitianSuiAnalysis sajuData={sajuData} />
+        </div>
 
         {/* 네비게이션 버튼 */}
         <div className={styles.actions}>
