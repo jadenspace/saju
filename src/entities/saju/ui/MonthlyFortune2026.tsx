@@ -11,8 +11,10 @@ interface MonthlyFortune2026Props {
 
 export const MonthlyFortune2026 = ({ monthly }: MonthlyFortune2026Props) => {
   const [selectedMonth, setSelectedMonth] = useState<MonthlyFortune2026Type | null>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
+  const [startY, setStartY] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
   const detailsRef = useRef<HTMLDivElement>(null);
 
@@ -109,9 +111,8 @@ export const MonthlyFortune2026 = ({ monthly }: MonthlyFortune2026Props) => {
     setIsDragging(false);
   };
 
-  // 카드 클릭 시 드래그와 구분
-  const handleCardClick = (month: MonthlyFortune2026Type, e: React.MouseEvent) => {
-    // 드래그 중이면 클릭 무시
+  // 카드 클릭 시 드래그와 구분 (데스크탑 버전)
+  const handleDesktopCardClick = (month: MonthlyFortune2026Type, e: React.MouseEvent) => {
     if (isDragging) {
       e.preventDefault();
       return;
@@ -119,169 +120,274 @@ export const MonthlyFortune2026 = ({ monthly }: MonthlyFortune2026Props) => {
     setSelectedMonth(month);
   };
 
+  // 모바일 터치 처리
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setStartY(e.touches[0].pageY);
+    setIsDragging(true);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDragging) return;
+    const currentY = e.touches[0].pageY;
+    const diff = startY - currentY;
+
+    if (Math.abs(diff) > 30) {
+      if (diff > 0 && activeIndex < monthly.length - 1) {
+        setActiveIndex(prev => prev + 1);
+        setStartY(currentY);
+      } else if (diff < 0 && activeIndex > 0) {
+        setActiveIndex(prev => prev - 1);
+        setStartY(currentY);
+      }
+    }
+  };
+
+  const handleTouchEnd = () => {
+    setIsDragging(false);
+  };
+
+  // 휠 이벤트 처리 (모바일 시뮬레이션 및 터치패드 대응)
+  const handleWheel = (e: React.WheelEvent) => {
+    if (Math.abs(e.deltaY) < 10) return;
+    
+    if (e.deltaY > 0 && activeIndex < monthly.length - 1) {
+      setActiveIndex(prev => prev + 1);
+    } else if (e.deltaY < 0 && activeIndex > 0) {
+      setActiveIndex(prev => prev - 1);
+    }
+  };
+
+  const activeMonth = monthly[activeIndex];
+
   return (
     <div className={styles.container}>
-      {/* 월별 선형 그래프 */}
-      <div className={styles.graph}>
-        <svg
-          viewBox={`0 0 ${chartData.width} ${chartData.height}`}
-          className={styles.lineChart}
-          preserveAspectRatio="xMidYMid meet"
+      {/* 데스크탑 뷰: 그래프 + 가로 스크롤 카드 */}
+      <div className={styles.desktopView}>
+        {/* 월별 선형 그래프 */}
+        <div className={styles.graph}>
+          <svg
+            viewBox={`0 0 ${chartData.width} ${chartData.height}`}
+            className={styles.lineChart}
+            preserveAspectRatio="xMidYMid meet"
+          >
+            {/* 그리드 라인 */}
+            <defs>
+              <linearGradient id="lineGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="var(--primary)" stopOpacity="0.8" />
+                <stop offset="100%" stopColor="var(--primary)" stopOpacity="0.3" />
+              </linearGradient>
+            </defs>
+            
+            {/* Y축 그리드 라인 */}
+            {[1, 2, 3, 4, 5].map((score) => {
+              const chartHeight = chartData.height - chartData.padding.top - chartData.padding.bottom;
+              const y = chartData.padding.top + chartHeight - ((score - 1) / 4) * chartHeight;
+              return (
+                <g key={score}>
+                  <line
+                    x1={chartData.padding.left}
+                    y1={y}
+                    x2={chartData.width - chartData.padding.right}
+                    y2={y}
+                    stroke="var(--card-border)"
+                    strokeWidth="1"
+                    strokeDasharray="4 4"
+                    opacity="0.3"
+                  />
+                  <text
+                    x={chartData.padding.left - 10}
+                    y={y + 4}
+                    fontSize="12"
+                    fill="var(--foreground-muted)"
+                    textAnchor="end"
+                  >
+                    {score}
+                  </text>
+                </g>
+              );
+            })}
+
+            {/* 영역 채우기 */}
+            {chartData.pathData && (
+              <path
+                d={`${chartData.pathData} L ${chartData.width - chartData.padding.right} ${chartData.height - chartData.padding.bottom} L ${chartData.padding.left} ${chartData.height - chartData.padding.bottom} Z`}
+                fill="url(#lineGradient)"
+                opacity="0.2"
+              />
+            )}
+
+            {/* 선 */}
+            {chartData.pathData && (
+              <path
+                d={chartData.pathData}
+                fill="none"
+                stroke="var(--primary)"
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            )}
+
+            {/* 점 */}
+            {chartData.points.map((point, index) => {
+              const scoreText = point.score.toFixed(1);
+              return (
+                <g key={`point-${point.month.month}-${index}`}>
+                  <circle
+                    cx={point.x}
+                    cy={point.y}
+                    r="5"
+                    fill="var(--primary)"
+                    stroke="var(--card-bg)"
+                    strokeWidth="2"
+                  />
+                  {/* 점수 표시 */}
+                  <text
+                    x={point.x}
+                    y={point.y - 12}
+                    fontSize="11"
+                    fill="var(--foreground)"
+                    textAnchor="middle"
+                    fontWeight="600"
+                  >
+                    {scoreText}
+                  </text>
+                </g>
+              );
+            })}
+
+            {/* X축 레이블 */}
+            {chartData.points.map((point, index) => (
+              <text
+                key={`label-${point.month.month}-${index}`}
+                x={point.x}
+                y={chartData.height - chartData.padding.bottom + 20}
+                fontSize="11"
+                fill="var(--foreground-muted)"
+                textAnchor="middle"
+              >
+                {point.month.month}월
+              </text>
+            ))}
+          </svg>
+        </div>
+
+        {/* 월별 상세 */}
+        <div
+          ref={detailsRef}
+          className={`${styles.details} ${isDragging ? styles.dragging : ''}`}
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseLeave}
         >
-          {/* 그리드 라인 */}
-          <defs>
-            <linearGradient id="lineGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="var(--primary)" stopOpacity="0.8" />
-              <stop offset="100%" stopColor="var(--primary)" stopOpacity="0.3" />
-            </linearGradient>
-          </defs>
-          
-          {/* Y축 그리드 라인 */}
-          {[1, 2, 3, 4, 5].map((score) => {
-            const chartHeight = chartData.height - chartData.padding.top - chartData.padding.bottom;
-            const y = chartData.padding.top + chartHeight - ((score - 1) / 4) * chartHeight;
+          {monthly.map((month) => {
+            const stars = gradeStars(month.grade);
+            const monthJiKorean = convertJiToKorean(month.jiHan);
+            const summaryTitle = getSummaryTitle(month.score);
+
             return (
-              <g key={score}>
-                <line
-                  x1={chartData.padding.left}
-                  y1={y}
-                  x2={chartData.width - chartData.padding.right}
-                  y2={y}
-                  stroke="var(--card-border)"
-                  strokeWidth="1"
-                  strokeDasharray="4 4"
-                  opacity="0.3"
-                />
-                <text
-                  x={chartData.padding.left - 10}
-                  y={y + 4}
-                  fontSize="12"
-                  fill="var(--foreground-muted)"
-                  textAnchor="end"
-                >
-                  {score}
-                </text>
-              </g>
+              <div 
+                key={month.month} 
+                className={styles.monthCard}
+                onClick={(e) => handleDesktopCardClick(month, e)}
+              >
+                {/* 헤더: 월과 월명 */}
+                <div className={styles.monthHeader}>
+                  <span className={styles.solarMonth}>{month.month}월</span>
+                  <span className={styles.monthName}>{monthJiKorean}월</span>
+                </div>
+
+                {/* 간지 표시 */}
+                <div className={styles.ganZhi}>
+                  <span className={styles.hanja}>{month.ganHan}{month.jiHan}</span>
+                  <span className={styles.hangul}>{month.ganZhi}</span>
+                </div>
+
+                {/* 별점과 테마 */}
+                <div className={styles.scoreRow}>
+                  <div className={styles.stars}>
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <span
+                        key={i}
+                        className={`${styles.star} ${i < stars ? styles.active : ''}`}
+                      >
+                        ★
+                      </span>
+                    ))}
+                  </div>
+                  <span className={styles.theme}>{summaryTitle}</span>
+                </div>
+
+                {/* 설명 */}
+                <p className={styles.oneLiner}>{month.analysis.total}</p>
+              </div>
             );
           })}
-
-          {/* 영역 채우기 */}
-          {chartData.pathData && (
-            <path
-              d={`${chartData.pathData} L ${chartData.width - chartData.padding.right} ${chartData.height - chartData.padding.bottom} L ${chartData.padding.left} ${chartData.height - chartData.padding.bottom} Z`}
-              fill="url(#lineGradient)"
-              opacity="0.2"
-            />
-          )}
-
-          {/* 선 */}
-          {chartData.pathData && (
-            <path
-              d={chartData.pathData}
-              fill="none"
-              stroke="var(--primary)"
-              strokeWidth="3"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          )}
-
-          {/* 점 */}
-          {chartData.points.map((point, index) => {
-            const scoreText = point.score.toFixed(1);
-            return (
-              <g key={`point-${point.month.month}-${index}`}>
-                <circle
-                  cx={point.x}
-                  cy={point.y}
-                  r="5"
-                  fill="var(--primary)"
-                  stroke="var(--card-bg)"
-                  strokeWidth="2"
-                />
-                {/* 점수 표시 */}
-                <text
-                  x={point.x}
-                  y={point.y - 12}
-                  fontSize="11"
-                  fill="var(--foreground)"
-                  textAnchor="middle"
-                  fontWeight="600"
-                >
-                  {scoreText}
-                </text>
-              </g>
-            );
-          })}
-
-          {/* X축 레이블 */}
-          {chartData.points.map((point, index) => (
-            <text
-              key={`label-${point.month.month}-${index}`}
-              x={point.x}
-              y={chartData.height - chartData.padding.bottom + 20}
-              fontSize="11"
-              fill="var(--foreground-muted)"
-              textAnchor="middle"
-            >
-              {point.month.month}월
-            </text>
-          ))}
-        </svg>
+        </div>
       </div>
 
-      {/* 월별 상세 */}
-      <div
-        ref={detailsRef}
-        className={`${styles.details} ${isDragging ? styles.dragging : ''}`}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseLeave}
+      {/* 모바일 뷰: 세로 드래그 휠 UI */}
+      <div 
+        className={styles.mobileView}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        onWheel={handleWheel}
       >
-        {monthly.map((month) => {
-          const stars = gradeStars(month.grade);
-          const monthJiKorean = convertJiToKorean(month.jiHan);
-          const summaryTitle = getSummaryTitle(month.score);
+        <div className={styles.wheelContainer}>
+          {/* 왼쪽 곡선 가이드 (SVG) */}
+          <svg className={styles.wheelArc} viewBox="0 0 100 400">
+            <path 
+              d="M 120,0 Q 20,200 120,400" 
+              fill="none" 
+              stroke="var(--card-border)" 
+              strokeWidth="1" 
+              opacity="0.3"
+            />
+          </svg>
 
-          return (
-            <div 
-              key={month.month} 
-              className={styles.monthCard}
-              onClick={(e) => handleCardClick(month, e)}
-            >
-              {/* 헤더: 월과 월명 */}
-              <div className={styles.monthHeader}>
-                <span className={styles.solarMonth}>{month.month}월</span>
-                <span className={styles.monthName}>{monthJiKorean}월</span>
-              </div>
+          {/* 월별 숫자들 */}
+          <div className={styles.monthWheel}>
+            {monthly.map((month, idx) => {
+              const offset = idx - activeIndex;
+              const opacity = Math.max(0, 1 - Math.abs(offset) * 0.3);
+              const scale = Math.max(0.6, 1 - Math.abs(offset) * 0.15);
+              const translateY = offset * 60;
+              // 곡선 효과를 위한 X축 이동
+              const translateX = Math.pow(offset, 2) * 5;
 
-              {/* 간지 표시 */}
-              <div className={styles.ganZhi}>
-                <span className={styles.hanja}>{month.ganHan}{month.jiHan}</span>
-                <span className={styles.hangul}>{month.ganZhi}</span>
-              </div>
-
-              {/* 별점과 테마 */}
-              <div className={styles.scoreRow}>
-                <div className={styles.stars}>
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <span
-                      key={i}
-                      className={`${styles.star} ${i < stars ? styles.active : ''}`}
-                    >
-                      ★
-                    </span>
-                  ))}
+              return (
+                <div
+                  key={month.month}
+                  className={`${styles.wheelItem} ${idx === activeIndex ? styles.active : ''}`}
+                  style={{
+                    transform: `translate(${translateX}px, ${translateY}px) scale(${scale})`,
+                    opacity,
+                  }}
+                  onClick={() => setActiveIndex(idx)}
+                >
+                  {month.month < 10 ? `0${month.month}` : month.month}
                 </div>
-                <span className={styles.theme}>{summaryTitle}</span>
-              </div>
+              );
+            })}
+          </div>
 
-              {/* 설명 */}
-              <p className={styles.oneLiner}>{month.analysis.total}</p>
+          {/* 현재 활성화된 월의 콘텐츠 */}
+          {activeMonth && (
+            <div 
+              className={styles.activeContent}
+              onClick={() => setSelectedMonth(activeMonth)}
+            >
+              <div className={styles.mobileMonthTitle}>
+                <span className={styles.mobileGanZhi}>{activeMonth.ganZhi}월</span>
+                <h4 className={styles.mobileSummaryTitle}>{getSummaryTitle(activeMonth.score)}</h4>
+              </div>
+              <p className={styles.mobileDesc}>{activeMonth.analysis.total}</p>
+              <div className={styles.mobileMore}>자세히 보기 <span>→</span></div>
             </div>
-          );
-        })}
+          )}
+        </div>
       </div>
 
       {/* 모달 */}

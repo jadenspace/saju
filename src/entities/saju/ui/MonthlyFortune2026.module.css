@@ -4,6 +4,16 @@
   gap: 2rem;
 }
 
+.desktopView {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.mobileView {
+  display: none;
+}
+
 .graph {
   background: var(--card-bg);
   border: 1px solid var(--card-border);
@@ -189,27 +199,146 @@
 }
 
 @media (max-width: 768px) {
-  .monthCard {
-    width: calc((100% - (1rem * 1.5)) / 2.5);
-    min-width: 160px;
-    max-width: 200px;
+  .desktopView {
+    display: none;
+  }
+
+  .mobileView {
+    display: block;
+    height: 480px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    position: relative;
+    touch-action: none; /* 기본 스크롤 방지하여 커스텀 휠 동작 보장 */
+  }
+
+  .wheelContainer {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding: 2rem;
+    gap: 3rem;
+  }
+
+  .wheelArc {
+    position: absolute;
+    left: -20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 120px;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  .monthWheel {
+    position: relative;
+    width: 80px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .wheelItem {
+    position: absolute;
+    font-size: 3rem;
+    font-weight: 900;
+    color: var(--foreground-muted);
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: -0.05em;
+    user-select: none;
+  }
+
+  .wheelItem.active {
+    color: var(--foreground);
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .activeContent {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    animation: fadeIn 0.5s ease;
+    cursor: pointer;
+  }
+
+  .mobileMonthTitle {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .mobileGanZhi {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--primary);
+    text-transform: uppercase;
+  }
+
+  .mobileSummaryTitle {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin: 0;
+    color: var(--foreground);
+    line-height: 1.2;
+  }
+
+  .mobileDesc {
+    font-size: 1rem;
+    color: var(--foreground-muted);
+    line-height: 1.6;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .mobileMore {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .mobileMore span {
+    transition: transform 0.2s ease;
+  }
+
+  .activeContent:hover .mobileMore span {
+    transform: translateX(4px);
   }
 }
 
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 @media (max-width: 600px) {
-  .graph {
-    padding: 1rem;
+  .wheelContainer {
+    gap: 2rem;
+    padding: 1.5rem;
   }
 
-  .lineChart {
-    min-width: 500px;
+  .wheelItem {
+    font-size: 2.5rem;
   }
 
-  .monthCard {
-    padding: 1rem;
-    width: calc((100% - (1rem * 0.5)) / 1.5);
-    min-width: 200px;
-    max-width: 280px;
+  .mobileSummaryTitle {
+    font-size: 1.25rem;
+  }
+
+  .mobileDesc {
+    font-size: 0.9375rem;
   }
 }
 
