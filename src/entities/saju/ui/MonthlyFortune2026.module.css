@@ -1,0 +1,346 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.desktopView {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.mobileView {
+  display: none;
+}
+
+.graph {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-xl);
+  padding: 1.5rem 0;
+  overflow-x: auto;
+}
+
+.lineChart {
+  width: 100%;
+  min-width: 600px;
+  height: auto;
+  display: block;
+}
+
+.details {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 0.5rem;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  cursor: grab;
+  user-select: none;
+}
+
+.details.dragging {
+  cursor: grabbing;
+  scroll-behavior: auto;
+}
+
+.details::-webkit-scrollbar {
+  height: 8px;
+}
+
+.details::-webkit-scrollbar-track {
+  background: var(--card-bg);
+  border-radius: 4px;
+}
+
+.details::-webkit-scrollbar-thumb {
+  background: var(--card-border);
+  border-radius: 4px;
+}
+
+.details::-webkit-scrollbar-thumb:hover {
+  background: var(--foreground-muted);
+}
+
+.monthCard {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: calc((100% - (1rem * 2.5)) / 3.5);
+  min-width: 180px;
+  max-width: 240px;
+  flex-shrink: 0;
+  user-select: none;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.monthCard:hover {
+  border-color: var(--primary);
+  box-shadow: var(--shadow-md);
+}
+
+.monthHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.5rem;
+}
+
+.solarMonth {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--primary);
+}
+
+.monthName {
+  font-size: 0.75rem;
+  color: var(--foreground-muted);
+  font-weight: 600;
+}
+
+.ganZhi {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.hanja {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.hangul {
+  font-size: 0.875rem;
+  color: var(--foreground-muted);
+}
+
+.scoreRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.stars {
+  display: flex;
+  gap: 2px;
+}
+
+.star {
+  font-size: 0.875rem;
+  color: var(--border);
+}
+
+.star.active {
+  color: #f59e0b;
+}
+
+.theme {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.oneLiner {
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: var(--foreground-muted);
+  margin: 0;
+}
+
+.monthKeywords {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.monthKeyword {
+  padding: 0.25rem 0.5rem;
+  background: rgba(var(--primary-rgb), 0.1);
+  border-radius: var(--radius-md);
+  font-size: 0.8125rem;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.monthContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--card-border);
+}
+
+.monthSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.monthSectionLabel {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.monthSectionText {
+  font-size: 0.9375rem;
+  color: var(--foreground);
+  line-height: 1.7;
+}
+
+@media (max-width: 768px) {
+  .desktopView {
+    display: none;
+  }
+
+  .mobileView {
+    display: block;
+    height: 400px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    position: relative;
+    touch-action: none; /* 기본 스크롤 방지하여 커스텀 휠 동작 보장 */
+  }
+
+  .wheelContainer {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding: 2rem;
+    gap: 3rem;
+  }
+
+  .wheelArc {
+    position: absolute;
+    left: -20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 120px;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  .monthWheel {
+    position: relative;
+    width: 80px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: -110px;
+  }
+
+  .wheelItem {
+    position: absolute;
+    font-size: 3rem;
+    font-weight: 900;
+    color: var(--foreground-muted);
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: -0.05em;
+    user-select: none;
+  }
+
+  .wheelItem.active {
+    color: var(--foreground);
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .activeContent {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    animation: fadeIn 0.5s ease;
+    cursor: pointer;
+  }
+
+  .mobileMonthTitle {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .mobileGanZhi {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--primary);
+    text-transform: uppercase;
+  }
+
+  .mobileSummaryTitle {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin: 0;
+    color: var(--foreground);
+    line-height: 1.2;
+  }
+
+  .mobileDesc {
+    font-size: 1rem;
+    color: var(--foreground-muted);
+    height: 75px;
+    line-height: 1.6;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .mobileMore {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .mobileMore span {
+    transition: transform 0.2s ease;
+  }
+
+  .activeContent:hover .mobileMore span {
+    transform: translateX(4px);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 600px) {
+  .wheelContainer {
+    gap: 2rem;
+    padding: 1.5rem;
+  }
+
+  .wheelItem {
+    font-size: 2.5rem;
+  }
+
+  .mobileSummaryTitle {
+    font-size: 1.25rem;
+  }
+
+  .mobileDesc {
+    font-size: 0.9375rem;
+  }
+}
+

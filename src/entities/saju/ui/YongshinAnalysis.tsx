@@ -8,11 +8,11 @@ interface YongshinAnalysisProps {
 }
 
 const ELEMENT_INFO = {
-  '목(木)': { name: '목', hanja: '木', color: '#4ade80' },
-  '화(火)': { name: '화', hanja: '火', color: '#f87171' },
-  '토(土)': { name: '토', hanja: '土', color: '#fbbf24' },
-  '금(金)': { name: '금', hanja: '金', color: '#94a3b8' },
-  '수(水)': { name: '수', hanja: '水', color: '#374151' },
+  '목(木)': { name: '목', hanja: '木', color: '#4ade80' },  // 청/녹
+  '화(火)': { name: '화', hanja: '火', color: '#f87171' },  // 적
+  '토(土)': { name: '토', hanja: '土', color: '#fbbf24' },  // 황
+  '금(金)': { name: '금', hanja: '金', color: '#94a3b8' },  // 백
+  '수(水)': { name: '수', hanja: '水', color: '#374151' },  // 흑 (남색/어두운 회색)
 };
 
 const TYPE_EXPLANATION: Record<string, string> = {
@@ -120,70 +120,6 @@ export const YongshinAnalysis = ({ data }: YongshinAnalysisProps) => {
           </section>
         )}
 
-        {/* Heeshin & Gishin */}
-        <div className={styles.grid}>
-          {/* Heeshin */}
-          {yongshin.heeshin && yongshin.heeshin.length > 0 && (
-            <section className={styles.section}>
-              <h4 className={styles.sectionTitle}>희신 (喜神)</h4>
-              <p className={styles.description}>
-                용신을 돕고 생조(生助)하는 오행으로, 용신의 힘을 강화시킵니다.
-              </p>
-              <div className={styles.elementList}>
-                {yongshin.heeshin.map((element, index) => {
-                  const info = ELEMENT_INFO[element as keyof typeof ELEMENT_INFO];
-                  return (
-                    <div key={index} className={clsx(styles.elementTag, styles.positive)}>
-                      <span className={clsx(styles.elementIcon, styles[getElementKey(element)])}>
-                        {info.hanja}
-                      </span>
-                      <span>{element}</span>
-                    </div>
-                  );
-                })}
-              </div>
-              {/* Heeshin Colors */}
-              <div className={styles.colorInfo}>
-                <div className={styles.colorSection}>
-                  <span className={styles.colorLabel}>추천 색상:</span>
-                  <div className={styles.colorTags}>
-                    {yongshin.heeshin.flatMap((element) => 
-                      OHAENG_COLORS[element]?.practicalColors.map((color, idx) => (
-                        <span key={`${element}-${idx}`} className={styles.colorTag}>
-                          {color}
-                        </span>
-                      ))
-                    )}
-                  </div>
-                </div>
-              </div>
-            </section>
-          )}
-
-          {/* Gishin */}
-          {yongshin.gishin && yongshin.gishin.length > 0 && (
-            <section className={styles.section}>
-              <h4 className={styles.sectionTitle}>기신 (忌神)</h4>
-              <p className={styles.description}>
-                용신을 극하거나 방해하는 오행으로, 용신의 작용을 약화시킵니다.
-              </p>
-              <div className={styles.elementList}>
-                {yongshin.gishin.map((element, index) => {
-                  const info = ELEMENT_INFO[element as keyof typeof ELEMENT_INFO];
-                  return (
-                    <div key={index} className={clsx(styles.elementTag, styles.negative)}>
-                      <span className={clsx(styles.elementIcon, styles[getElementKey(element)])}>
-                        {info.hanja}
-                      </span>
-                      <span>{element}</span>
-                    </div>
-                  );
-                })}
-              </div>
-            </section>
-          )}
-        </div>
-
         {/* Color Usage Tips */}
         <section className={styles.section}>
           <h4 className={styles.sectionTitle}>색상 활용 팁</h4>
@@ -228,14 +164,7 @@ export const YongshinAnalysis = ({ data }: YongshinAnalysisProps) => {
               <span className={styles.guideIcon}>✓</span>
               <div className={styles.guideContent}>
                 <strong className={styles.guideLabel}>추천:</strong>
-                <span className={styles.guideText}>용신과 희신 오행을 활용한 색상, 방향, 직업, 생활 습관을 선택하세요.</span>
-              </div>
-            </div>
-            <div className={styles.guideItem}>
-              <span className={styles.guideIcon}>⚠</span>
-              <div className={styles.guideContent}>
-                <strong className={styles.guideLabel}>주의:</strong>
-                <span className={styles.guideText}>기신 오행과 관련된 요소는 피하거나 신중하게 접근하세요.</span>
+                <span className={styles.guideText}>용신 오행을 활용한 색상, 방향, 직업, 생활 습관을 선택하세요.</span>
               </div>
             </div>
           </div>

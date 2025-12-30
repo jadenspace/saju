@@ -1,11 +1,11 @@
 .container {
     margin-top: 1.5rem;
     padding: 1.5rem;
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
     border-radius: 1.5rem;
     color: var(--foreground);
+    box-shadow: var(--shadow-sm);
 }
 
 .title {
@@ -19,8 +19,7 @@
 
 .subtitle {
     font-size: 0.85rem;
-    color: var(--foreground);
-    opacity: 0.6;
+    color: var(--foreground-muted);
     margin-top: -1rem;
     margin-bottom: 1.5rem;
     padding-left: 0.75rem;
@@ -34,22 +33,22 @@
 
 .card {
     padding: 1rem;
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--bg-light);
     border: 1px solid var(--border);
     border-radius: 0.75rem;
     transition: all 0.2s;
 }
 
 .card:hover {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--bg-lighter);
 }
 
 .card.strong {
-    border-left: 3px solid #22c55e;
+    border-left: 3px solid #16a34a;
 }
 
 .card.medium {
-    border-left: 3px solid #f59e0b;
+    border-left: 3px solid #d97706;
 }
 
 .card.weak {
@@ -71,8 +70,7 @@
 
 .branch {
     font-size: 0.85rem;
-    color: var(--foreground);
-    opacity: 0.7;
+    color: var(--foreground-muted);
 }
 
 .stageInfo {
@@ -90,8 +88,7 @@
 
 .stageHanja {
     font-size: 0.9rem;
-    color: var(--foreground);
-    opacity: 0.5;
+    color: var(--foreground-muted);
 }
 
 .meaning {
@@ -103,28 +100,25 @@
 .meaningLabel {
     font-size: 0.85rem;
     color: var(--foreground);
-    opacity: 0.8;
 }
 
 .stageLabel {
     font-size: 0.85rem;
-    color: var(--foreground);
-    opacity: 0.6;
+    color: var(--foreground-muted);
 }
 
 .energyBadge {
     display: inline-block;
     padding: 0.25rem 0.5rem;
     font-size: 0.75rem;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(0, 0, 0, 0.04);
     border-radius: 0.25rem;
     margin-bottom: 0.75rem;
 }
 
 .description {
     font-size: 0.8rem;
-    color: var(--foreground);
-    opacity: 0.7;
+    color: var(--foreground-muted);
     line-height: 1.5;
     margin: 0;
 }

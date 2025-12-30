@@ -1,0 +1,292 @@
+.container {
+  width: 100%;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding: 2rem;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-2xl);
+  color: var(--foreground);
+  box-shadow: var(--shadow-xl);
+  position: relative;
+  overflow: hidden;
+}
+
+.header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--silver-gradient);
+}
+
+.header h2 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.header p {
+  opacity: 0.8;
+  font-size: 1.1rem;
+}
+
+.stepList {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  position: relative;
+}
+
+.stepList::before {
+  content: '';
+  position: absolute;
+  left: 24px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, #e2e8f0, #cbd5e1);
+  z-index: 0;
+}
+
+.stepCard {
+  position: relative;
+  background: var(--card-bg);
+  border-radius: var(--radius-xl);
+  padding: 1.5rem 1.5rem 1.5rem 4rem;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--card-border);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  z-index: 1;
+}
+
+.stepCard:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.stepNumber {
+  position: absolute;
+  left: 0;
+  top: 1.5rem;
+  width: 48px;
+  height: 48px;
+  background: var(--card-bg);
+  border: 2px solid var(--silver);
+  color: var(--silver);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.25rem;
+  margin-left: 0;
+  transform: translateX(0);
+}
+
+.activeStep .stepNumber {
+  background: var(--silver-gradient);
+  color: var(--secondary);
+  border-color: var(--silver);
+}
+
+.stepTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--foreground);
+  margin-bottom: 1rem;
+}
+
+.originalTextContent {
+  background: var(--bg-light);
+  padding: 1rem;
+  border-radius: var(--radius-lg);
+  margin-bottom: 1rem;
+  border-left: 4px solid var(--silver);
+}
+
+.originalText {
+  font-family: 'Times New Roman', serif;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: var(--foreground-muted);
+  font-style: italic;
+  margin-bottom: 0.5rem;
+}
+
+.interpretation {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--foreground);
+  margin-bottom: 1rem;
+  padding-left: 0.5rem;
+}
+
+.application {
+  background: var(--bg-light);
+  padding: 1rem;
+  border-radius: var(--radius-lg);
+  margin-bottom: 1rem;
+}
+
+.applicationTitle {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--silver);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.applicationText {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--foreground);
+  white-space: pre-line;
+}
+
+.resultSection {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--card-border);
+}
+
+.resultTag {
+  background: var(--silver-gradient);
+  color: var(--secondary);
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.resultValue {
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.conclusion {
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  color: var(--foreground-muted);
+  text-align: right;
+  font-style: italic;
+}
+
+.finalResult {
+  margin-top: 4rem;
+  padding: 2.5rem;
+  background: var(--card-bg);
+  border-radius: var(--radius-2xl);
+  border: 2px solid var(--silver);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.finalResult::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--silver-gradient);
+}
+
+.finalTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--foreground);
+  margin-bottom: 2rem;
+}
+
+.yongshinBox {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 4rem;
+  background: var(--bg-light);
+  border-radius: var(--radius-xl);
+  margin-bottom: 2rem;
+  border: 1px solid var(--card-border);
+}
+
+.yongshinLabel {
+  font-size: 1rem;
+  color: var(--silver);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.yongshinValue {
+  font-size: 3rem;
+  font-weight: 800;
+  background: var(--silver-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.elementsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.elementGroup {
+  padding: 1.5rem;
+  background: var(--bg-light);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--card-border);
+}
+
+.elementLabel {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--foreground-muted);
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+}
+
+.elementValue {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.heeshin {
+  color: #059669;
+}
+
+.gishin {
+  color: #dc2626;
+}
+
+@media (max-width: 640px) {
+  .stepCard {
+    padding: 1.5rem 1.5rem 1.5rem 1.5rem;
+  }
+  
+  .stepList::before {
+    display: none;
+  }
+  
+  .stepNumber {
+    position: static;
+    margin-bottom: 1rem;
+  }
+  
+  .elementsGrid {
+    grid-template-columns: 1fr;
+  }
+}

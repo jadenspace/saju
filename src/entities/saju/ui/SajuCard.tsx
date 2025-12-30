@@ -9,7 +9,6 @@ import { OhaengAnalysis } from './OhaengAnalysis';
 import { TwelveStagesAnalysis } from './TwelveStagesAnalysis';
 import { TwelveSinsalAnalysis } from './TwelveSinsalAnalysis';
 import { GongmangAnalysis } from './GongmangAnalysis';
-import { YongshinAnalysis } from './YongshinAnalysis';
 import styles from './SajuCard.module.css';
 
 interface SajuCardProps {
@@ -24,7 +23,6 @@ interface SajuCardProps {
 export const SajuCard = ({ data, className }: SajuCardProps) => {
   const [showOhaeng, setShowOhaeng] = useState(false);
   const [showIlju, setShowIlju] = useState(true);
-  const [showYongshin, setShowYongshin] = useState(false);
   const [showTwelveStages, setShowTwelveStages] = useState(false);
   const [showTwelveSinsal, setShowTwelveSinsal] = useState(false);
   const [showGongmang, setShowGongmang] = useState(false);
@@ -69,7 +67,7 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
           </div>
         </div>
         <p>
-          {data.birthDate} {data.birthTime} {data.useTrueSolarTime ? '(-30)' : ''} {data.gender === 'male' ? '남' : '여'}
+          {data.birthDate} {data.birthTime} {data.useTrueSolarTime ? '(-30)' : ''} {data.gender === 'male' ? '남' : '여'} {data.solar ? '(양력)' : '(음력)'}
         </p>
       </div>
 
@@ -261,37 +259,31 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
       <div className={styles.analysisButtons}>
         <button
           className={clsx(styles.analysisButton, showIlju && styles.active)}
-          onClick={() => { setShowIlju(!showIlju); setShowOhaeng(false); setShowYongshin(false); setShowTwelveStages(false); setShowTwelveSinsal(false); setShowGongmang(false); }}
+          onClick={() => { setShowIlju(!showIlju); setShowOhaeng(false); setShowTwelveStages(false); setShowTwelveSinsal(false); setShowGongmang(false); }}
         >
           일주 분석
         </button>
         <button
           className={clsx(styles.analysisButton, showOhaeng && styles.active)}
-          onClick={() => { setShowOhaeng(!showOhaeng); setShowIlju(false); setShowYongshin(false); setShowTwelveStages(false); setShowTwelveSinsal(false); setShowGongmang(false); }}
+          onClick={() => { setShowOhaeng(!showOhaeng); setShowIlju(false); setShowTwelveStages(false); setShowTwelveSinsal(false); setShowGongmang(false); }}
         >
           오행 분석
         </button>
         <button
-          className={clsx(styles.analysisButton, showYongshin && styles.active)}
-          onClick={() => { setShowYongshin(!showYongshin); setShowIlju(false); setShowOhaeng(false); setShowTwelveStages(false); setShowTwelveSinsal(false); setShowGongmang(false); }}
-        >
-          용신 분석
-        </button>
-        <button
           className={clsx(styles.analysisButton, showTwelveStages && styles.active)}
-          onClick={() => { setShowTwelveStages(!showTwelveStages); setShowIlju(false); setShowOhaeng(false); setShowYongshin(false); setShowTwelveSinsal(false); setShowGongmang(false); }}
+          onClick={() => { setShowTwelveStages(!showTwelveStages); setShowIlju(false); setShowOhaeng(false); setShowTwelveSinsal(false); setShowGongmang(false); }}
         >
           12운성 분석
         </button>
         <button
           className={clsx(styles.analysisButton, showTwelveSinsal && styles.active)}
-          onClick={() => { setShowTwelveSinsal(!showTwelveSinsal); setShowIlju(false); setShowOhaeng(false); setShowYongshin(false); setShowTwelveStages(false); setShowGongmang(false); }}
+          onClick={() => { setShowTwelveSinsal(!showTwelveSinsal); setShowIlju(false); setShowOhaeng(false); setShowTwelveStages(false); setShowGongmang(false); }}
         >
           12신살 분석
         </button>
         <button
           className={clsx(styles.analysisButton, showGongmang && styles.active)}
-          onClick={() => { setShowGongmang(!showGongmang); setShowIlju(false); setShowOhaeng(false); setShowYongshin(false); setShowTwelveStages(false); setShowTwelveSinsal(false); }}
+          onClick={() => { setShowGongmang(!showGongmang); setShowIlju(false); setShowOhaeng(false); setShowTwelveStages(false); setShowTwelveSinsal(false); }}
         >
           공망 분석
         </button>
@@ -300,7 +292,6 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
       {/* Analysis Sections */}
       {showOhaeng && <OhaengAnalysis data={data} />}
       {showIlju && <IljuAnalysis data={data} />}
-      {showYongshin && <YongshinAnalysis data={data} />}
       {showTwelveStages && <TwelveStagesAnalysis data={data} />}
       {showTwelveSinsal && <TwelveSinsalAnalysis data={data} />}
       {showGongmang && <GongmangAnalysis data={data} />}

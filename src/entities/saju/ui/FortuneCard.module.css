@@ -1,0 +1,130 @@
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-xl);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  word-break: keep-all;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.icon {
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: rgba(var(--primary-rgb), 0.1);
+  border-radius: var(--radius-lg);
+}
+
+.title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  flex: 1;
+}
+
+.scoreBadge {
+  background: var(--primary-gradient);
+  color: var(--secondary);
+  padding: 0.25rem 0.75rem;
+  border-radius: 2rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  box-shadow: var(--shadow-sm);
+}
+
+.summary {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--foreground);
+  margin-bottom: 0.5rem;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.detailItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.detailLabel {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--foreground-muted);
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.list li {
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  padding-left: 1rem;
+  position: relative;
+}
+
+.pro::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: #10b981;
+  font-weight: bold;
+}
+
+.con::before {
+  content: '!';
+  position: absolute;
+  left: 0;
+  color: #f59e0b;
+  font-weight: bold;
+}
+
+.strategy {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.strategyLabel {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--primary);
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.strategyText {
+  font-size: 0.875rem;
+  color: var(--foreground-muted);
+  line-height: 1.5;
+  font-style: italic;
+}
+
+/* Category Specific Styles */
+.career .icon { background: rgba(59, 130, 246, 0.1); }
+.wealth .icon { background: rgba(16, 185, 129, 0.1); }
+.love .icon { background: rgba(236, 72, 153, 0.1); }
+.health .icon { background: rgba(245, 158, 11, 0.1); }
+

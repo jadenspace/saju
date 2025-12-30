@@ -17,36 +17,11 @@ export const HomePage = () => {
         </p>
         <SajuForm />
 
-        <div style={{ margin: '2rem 0', display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-
-          <Link
-            href="/guide"
-            style={{
-              display: 'inline-block',
-              padding: '0.75rem 1.5rem',
-              background: 'rgba(255,255,255,0.1)',
-              borderRadius: '0.75rem',
-              color: 'white',
-              textDecoration: 'none',
-              fontSize: '0.9rem',
-              border: '1px solid rgba(255,255,255,0.2)'
-            }}
-          >
+        <div className={styles.linkButtons}>
+          <Link href="/guide" className={styles.linkButton}>
             📖 사주 명리학 가이드
           </Link>
-          <Link
-            href="/search"
-            style={{
-              display: 'inline-block',
-              padding: '0.75rem 1.5rem',
-              background: 'rgba(255,255,255,0.1)',
-              borderRadius: '0.75rem',
-              color: 'white',
-              textDecoration: 'none',
-              fontSize: '0.9rem',
-              border: '1px solid rgba(255,255,255,0.2)'
-            }}
-          >
+          <Link href="/search" className={styles.linkButton}>
             🔍 일주/일간으로 날짜 찾기
           </Link>
         </div>

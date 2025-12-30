@@ -1,0 +1,43 @@
+.main {
+  min-height: 100vh;
+  padding: 4rem 1rem;
+  background: var(--background);
+  color: var(--foreground);
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.backLink {
+  opacity: 0.7;
+  text-decoration: none;
+  color: var(--foreground);
+  margin-bottom: 1rem;
+  display: inline-block;
+  transition: color 0.2s ease;
+}
+
+.backLink:hover {
+  color: var(--primary);
+  opacity: 1;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 1rem 0 0.5rem;
+  color: var(--foreground);
+}
+
+.subtitle {
+  opacity: 0.8;
+  color: var(--foreground-muted);
+}
+

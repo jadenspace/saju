@@ -9,7 +9,23 @@ import {
 import { TWELVE_STAGES_DESCRIPTIONS } from '../../../shared/lib/saju/data/TwelveStages';
 import { SINSAL_DESCRIPTIONS, TwelveSinsal } from '../../../shared/lib/saju/data/TwelveSinsal';
 import { GONGMANG_MEANING } from '../../../shared/lib/saju/data/Gongmang';
+import { getPolarity, getOhaeng, Element } from '../../../shared/lib/saju/calculators/TenGod';
 import styles from './ManseuryeokSection.module.css';
+
+// 한글 천간을 한자로 변환하는 매핑
+const KOREAN_TO_HAN_GAN: Record<string, string> = {
+    '갑': '甲', '을': '乙', '병': '丙', '정': '丁', '무': '戊',
+    '기': '己', '경': '庚', '신': '辛', '임': '壬', '계': '癸'
+};
+
+// 오행별 지장간 색상 매핑
+const ELEMENT_COLOR_MAP: Record<Element, { bg: string; color: string; border: string }> = {
+    wood: { bg: '#4ade80', color: '#fff', border: '#22c55e' },
+    fire: { bg: '#f87171', color: '#fff', border: '#ef4444' },
+    earth: { bg: '#fbbf24', color: '#000', border: '#f59e0b' },
+    metal: { bg: '#94a3b8', color: '#fff', border: '#64748b' },
+    water: { bg: '#374151', color: '#fff', border: '#1f2937' },
+};
 
 interface ManseuryeokSectionProps {
     data: SajuData;
@@ -49,7 +65,9 @@ const PillarColumn = ({
             <Tooltip content={PILLAR_EXPLANATIONS[label] || ''}>
                 <div className={styles.headerPill}>
                     <span className={styles.headerLabel}>{label}</span>
-                    <span className={styles.headerGanZhi}>({pillar.ganHan}{pillar.jiHan})</span>
+                    <span className={styles.headerGanZhi}>
+                        ({pillar.gan}{pillar.ji})
+                    </span>
                 </div>
             </Tooltip>
 
@@ -60,14 +78,28 @@ const PillarColumn = ({
             </Tooltip>
 
             <Tooltip content={CHEONGAN_EXPLANATIONS[pillar.ganHan] || ''}>
-                <div className={clsx(styles.characterContainer, styles[pillar.ganElement || 'unknown'])}>
-                    {pillar.ganHan}
+                <div className={styles.characterWrapper}>
+                    <div className={clsx(
+                        styles.characterContainer, 
+                        styles[pillar.ganElement || 'unknown'],
+                        getPolarity(pillar.ganHan) === 'yang' ? styles.yang : styles.yin
+                    )}>
+                        {pillar.ganHan}
+                    </div>
+                    <span className={styles.koreanLabel}>{pillar.gan}</span>
                 </div>
             </Tooltip>
 
             <Tooltip content={JIJI_EXPLANATIONS[pillar.jiHan] || ''}>
-                <div className={clsx(styles.characterContainer, styles[pillar.jiElement || 'unknown'])}>
-                    {pillar.jiHan}
+                <div className={styles.characterWrapper}>
+                    <div className={clsx(
+                        styles.characterContainer, 
+                        styles[pillar.jiElement || 'unknown'],
+                        getPolarity(pillar.jiHan) === 'yang' ? styles.yang : styles.yin
+                    )}>
+                        {pillar.jiHan}
+                    </div>
+                    <span className={styles.koreanLabel}>{pillar.ji}</span>
                 </div>
             </Tooltip>
 
@@ -78,14 +110,33 @@ const PillarColumn = ({
             </Tooltip>
 
             <div className={styles.jijangganSection}>
-                {pillar.jijanggan?.map((char, i) => (
-                    <Tooltip key={i} content={pillar.jijangganTenGods?.[i] ? `${pillar.jijangganTenGods[i]} - ${SIPSIN_EXPLANATIONS[pillar.jijangganTenGods[i]] || ''}` : ''}>
-                        <div className={styles.jijangganRow}>
-                            <span className={styles.jijangganChar}>{char}</span>
-                            <span>{pillar.jijangganTenGods?.[i]}</span>
-                        </div>
-                    </Tooltip>
-                ))}
+                {pillar.jijanggan?.map((char, i) => {
+                    // 한글을 한자로 변환 후 오행 및 음양 확인 (모든 지장간 글자에 적용)
+                    const hanChar = KOREAN_TO_HAN_GAN[char] || char;
+                    const element = getOhaeng(hanChar);
+                    const polarity = getPolarity(hanChar);
+                    const colorStyle = element ? ELEMENT_COLOR_MAP[element] : null;
+                    // 음양에 따른 텍스트 색상 적용
+                    const textColor = polarity === 'yang' ? '#fff' : '#000';
+                    return (
+                        <Tooltip key={i} content={pillar.jijangganTenGods?.[i] ? `${pillar.jijangganTenGods[i]} - ${SIPSIN_EXPLANATIONS[pillar.jijangganTenGods[i]] || ''}` : ''}>
+                            <div className={styles.jijangganRow}>
+                                <span 
+                                    className={styles.jijangganChar}
+                                    style={colorStyle ? {
+                                        backgroundColor: colorStyle.bg,
+                                        color: textColor,
+                                        border: `1px solid ${colorStyle.border}`,
+                                        fontWeight: '500'
+                                    } : {
+                                        color: 'var(--foreground)'
+                                    }}
+                                >{char}</span>
+                                <span>{pillar.jijangganTenGods?.[i]}</span>
+                            </div>
+                        </Tooltip>
+                    );
+                })}
             </div>
 
             <Tooltip content={pillar.twelveStage ? (TWELVE_STAGES_DESCRIPTIONS[pillar.twelveStage as keyof typeof TWELVE_STAGES_DESCRIPTIONS] || '') : ''}>

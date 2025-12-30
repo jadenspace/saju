@@ -47,7 +47,7 @@ export const SajuForm = () => {
   };
 
   const [formData, setFormData] = useState(getInitialFormData);
-  const [loading, setLoading] = useState<'fortune' | 'result' | null>(null);
+  const [loading, setLoading] = useState<'fortune' | 'result' | 'yongshin' | null>(null);
   const [error, setError] = useState<string>('');
   const [showSettings, setShowSettings] = useState(false);
 
@@ -97,9 +97,9 @@ export const SajuForm = () => {
     if (error) setError('');
   };
 
-  const handleSubmit = (e: React.FormEvent, destination: 'fortune' | 'result') => {
+  const handleSubmit = (e: React.FormEvent, destination: 'fortune' | 'result' | 'yongshin' | 'new-year-2026') => {
     e.preventDefault();
-    setLoading(destination);
+    setLoading(destination === 'new-year-2026' ? 'fortune' : destination);
     setError('');
 
     // Check Date format (YYYYMMDD)
@@ -279,7 +279,7 @@ export const SajuForm = () => {
                   onChange={(e) => setFormData(prev => ({ ...prev, useTrueSolarTime: true }))}
                   disabled={formData.unknownTime}
                 />
-                진태양시 <br className={styles.mobileBr} />(경도보정)
+                <p className={styles.radioLabelText}>진태양시 <br />(경도보정)</p>
               </label>
               <label className={styles.radioLabel}>
                 <input
@@ -290,7 +290,7 @@ export const SajuForm = () => {
                   onChange={(e) => setFormData(prev => ({ ...prev, useTrueSolarTime: false }))}
                   disabled={formData.unknownTime}
                 />
-                표준시 <br className={styles.mobileBr} />(KST)
+                <p className={styles.radioLabelText}>표준시 <br className={styles.mobileBr} />(KST)</p>
               </label>
             </div>
           </div>
@@ -443,10 +443,7 @@ export const SajuForm = () => {
           type="button"
           disabled={loading !== null}
           className={styles.primaryButton}
-          onClick={(e: React.MouseEvent) => {
-            alert("준비중입니다.");
-            // handleSubmit(e as unknown as React.FormEvent, 'fortune')
-          }}
+          onClick={(e: React.MouseEvent) => handleSubmit(e as unknown as React.FormEvent, 'new-year-2026')}
           id="btn-saju-2026"
         >
           {loading === 'fortune' ? '분석 중...' : '2026 신년운세'}
@@ -459,6 +456,15 @@ export const SajuForm = () => {
           id="btn-saju-all"
         >
           {loading === 'result' ? '분석 중...' : '종합 사주'}
+        </Button>
+        <Button
+          type="button"
+          disabled={loading !== null}
+          className={styles.tertiaryButton}
+          onClick={(e: React.MouseEvent) => handleSubmit(e as unknown as React.FormEvent, 'yongshin')}
+          id="btn-yongshin"
+        >
+          {loading === 'yongshin' ? '분석 중...' : '용신 찾기'}
         </Button>
       </div>
     </form>

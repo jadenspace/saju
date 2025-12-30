@@ -1,15 +1,14 @@
 .card {
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
   border-radius: var(--radius-xl);
   padding: 2rem;
-  backdrop-filter: blur(var(--glass-blur));
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-md);
   width: 100%;
   max-width: 600px;
   margin: 0 auto;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .card::before {
@@ -18,9 +17,9 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 1px;
+  height: 3px;
   background: linear-gradient(90deg, transparent, var(--primary), transparent);
-  opacity: 0.5;
+  opacity: 0.8;
 }
 
 .header {
@@ -77,16 +76,16 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.03);
   padding: 0.4rem 0.8rem;
   border-radius: 2rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border);
   transition: all 0.2s ease;
 }
 
 .daeunInfoPill:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.06);
+  border-color: var(--accent);
 }
 
 .daeunDirectionBadge {
@@ -94,7 +93,7 @@
   color: var(--foreground);
   opacity: 0.9;
   padding-right: 0.5rem;
-  border-right: 1px solid rgba(255, 255, 255, 0.2);
+  border-right: 1px solid var(--border);
 }
 
 .daeunSuBadge {
@@ -114,7 +113,7 @@
   color: var(--primary);
   margin-bottom: 0.5rem;
   padding-bottom: 0.3rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1px solid var(--border);
 }
 
 .daeunContainer {
@@ -130,7 +129,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem;
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--bg-light);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   min-width: 100px;
@@ -139,16 +138,15 @@
 }
 
 .daeunPeriod:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--background);
   border-color: var(--accent);
-  transform: translateY(-2px);
   box-shadow: var(--shadow-sm);
 }
 
 .daeunPeriod.active {
-  background: linear-gradient(135deg, rgba(212, 165, 116, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(212, 165, 116, 0.15) 0%, rgba(212, 165, 116, 0.05) 100%);
   border-color: var(--primary);
-  box-shadow: 0 0 20px rgba(212, 165, 116, 0.2), var(--shadow-sm);
+  box-shadow: 0 0 15px rgba(212, 165, 116, 0.2), var(--shadow-sm);
 }
 
 .daeunAge {
@@ -207,20 +205,20 @@
 
 .twelveStageTag {
   font-size: 0.7rem;
-  color: #2dd4bf;
-  background: rgba(45, 212, 191, 0.15);
+  color: #0d9488;
+  background: rgba(13, 148, 136, 0.1);
   padding: 0.15rem 0.4rem;
   border-radius: 0.25rem;
-  border: 1px solid rgba(45, 212, 191, 0.3);
+  border: 1px solid rgba(13, 148, 136, 0.25);
 }
 
 .sinsalTag {
   font-size: 0.65rem;
-  color: #fbbf24;
-  background: rgba(251, 191, 36, 0.15);
+  color: #d97706;
+  background: rgba(217, 119, 6, 0.1);
   padding: 0.1rem 0.3rem;
   border-radius: 0.2rem;
-  border: 1px solid rgba(251, 191, 36, 0.3);
+  border: 1px solid rgba(217, 119, 6, 0.25);
 }
 
 /* Seun Section Decorator */
@@ -244,7 +242,7 @@
 
 .seunHeader {
   margin-bottom: 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--border);
   padding-bottom: 0.5rem;
 }
 
@@ -267,7 +265,7 @@
   align-items: center;
   gap: 0.4rem;
   padding: 0.6rem;
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--bg-light);
   border: 1px solid var(--border);
   border-radius: 0.5rem;
   transition: all 0.2s ease;
@@ -278,13 +276,13 @@
 }
 
 .seunItem:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-lighter);
 }
 
 .seunItem.active {
-  background: rgba(var(--primary-rgb), 0.1);
+  background: rgba(212, 165, 116, 0.1);
   border-color: var(--primary);
-  box-shadow: 0 0 10px rgba(var(--primary-rgb), 0.15);
+  box-shadow: 0 0 10px rgba(212, 165, 116, 0.15);
 }
 
 .seunAge {
@@ -340,27 +338,27 @@
 
 .twelveStageTagSmall {
   font-size: 0.55rem;
-  color: #2dd4bf;
-  background: rgba(45, 212, 191, 0.15);
+  color: #0d9488;
+  background: rgba(13, 148, 136, 0.1);
   padding: 0.1rem 0.25rem;
   border-radius: 0.15rem;
-  border: 1px solid rgba(45, 212, 191, 0.25);
+  border: 1px solid rgba(13, 148, 136, 0.2);
 }
 
 .sinsalTagSmall {
   font-size: 0.5rem;
-  color: #fbbf24;
-  background: rgba(251, 191, 36, 0.15);
+  color: #d97706;
+  background: rgba(217, 119, 6, 0.1);
   padding: 0.08rem 0.2rem;
   border-radius: 0.15rem;
-  border: 1px solid rgba(251, 191, 36, 0.25);
+  border: 1px solid rgba(217, 119, 6, 0.2);
 }
 
 .sipsinMini {
   font-size: 0.6rem;
   color: var(--foreground);
   opacity: 0.5;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.04);
   padding: 0.1rem 0.2rem;
   border-radius: 0.2rem;
 }
@@ -394,16 +392,16 @@
   align-items: center;
   gap: 0.3rem;
   padding: 0.5rem;
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--bg-light);
   border: 1px solid var(--border);
   border-radius: 0.5rem;
   transition: all 0.2s ease;
 }
 
 .wolunItem.active {
-  background: rgba(var(--primary-rgb), 0.1);
+  background: rgba(212, 165, 116, 0.1);
   border-color: var(--primary);
-  box-shadow: 0 0 10px rgba(var(--primary-rgb), 0.15);
+  box-shadow: 0 0 10px rgba(212, 165, 116, 0.15);
 }
 
 .wolunMonth {
@@ -461,7 +459,6 @@
 .analysisButtons {
   display: flex;
   flex-wrap: wrap;
-  /* Added for responsiveness */
   gap: 1rem;
   margin-top: 2rem;
   padding-top: 1.5rem;
@@ -470,7 +467,7 @@
 
 .analysisButton {
   padding: 0.75rem 1rem;
-  background: var(--glass-bg);
+  background: var(--bg-light);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   color: var(--foreground);
@@ -478,7 +475,6 @@
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  backdrop-filter: blur(8px);
 }
 
 /* 첫 줄 3개 버튼 (33.33% 너비) */
@@ -496,7 +492,7 @@
 }
 
 .analysisButton:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-lighter);
   border-color: var(--accent);
   transform: translateY(-2px);
   box-shadow: var(--shadow-sm);
@@ -504,7 +500,7 @@
 
 .analysisButton.active {
   background: var(--primary-gradient);
-  color: #1a1625;
+  color: var(--secondary);
   border-color: var(--primary);
   box-shadow: var(--shadow-glow);
 }
@@ -525,7 +521,7 @@
   transform: translateX(-50%);
   margin-bottom: 0.5rem;
   padding: 0.5rem 0.75rem;
-  background: var(--secondary);
+  background: var(--card-bg);
   color: var(--foreground);
   border-radius: var(--radius-sm);
   border: 1px solid var(--border);
@@ -535,7 +531,6 @@
   pointer-events: none;
   transition: all 0.2s ease-in-out;
   box-shadow: var(--shadow-md);
-  backdrop-filter: blur(var(--glass-blur));
 }
 
 .tooltipContainer:hover .tooltip {
@@ -546,27 +541,27 @@
 /* Element Colors (for Daeun/Seun Hanja) - Enhanced */
 .wood {
   color: #4ade80;
-  text-shadow: 0 0 10px rgba(74, 222, 128, 0.3);
+  text-shadow: 0 0 8px rgba(74, 222, 128, 0.3);
 }
 
 .fire {
-  color: #fb7185;
-  text-shadow: 0 0 10px rgba(251, 113, 133, 0.3);
+  color: #f87171;
+  text-shadow: 0 0 8px rgba(248, 113, 113, 0.3);
 }
 
 .earth {
   color: #fbbf24;
-  text-shadow: 0 0 10px rgba(251, 191, 36, 0.3);
+  text-shadow: 0 0 8px rgba(251, 191, 36, 0.3);
 }
 
 .metal {
-  color: #e2e8f0;
-  text-shadow: 0 0 10px rgba(226, 232, 240, 0.3);
+  color: #94a3b8;
+  text-shadow: 0 0 8px rgba(148, 163, 184, 0.3);
 }
 
 .water {
-  color: #4b5563;
-  text-shadow: 0 0 10px rgba(75, 85, 99, 0.3);
+  color: #6b7280;
+  text-shadow: 0 0 8px rgba(107, 114, 128, 0.3);
 }
 
 @media (max-width: 600px) {
