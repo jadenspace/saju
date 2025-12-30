@@ -57,18 +57,7 @@ export const NewYearFortune2026View = ({ sajuData, fortuneData }: NewYearFortune
               당신의 사주에서 가장 필요한 기운(용신)을 알면, 운을 극대화하는 방법을 찾을 수 있습니다.
             </p>
             <Button
-              onClick={() => router.push(`/yongshin?${new URLSearchParams({
-                year: sajuData.birthDate.split('-')[0],
-                month: sajuData.birthDate.split('-')[1],
-                day: sajuData.birthDate.split('-')[2],
-                hour: sajuData.birthTime.split(':')[0] || '0',
-                minute: sajuData.birthTime.split(':')[1] || '0',
-                gender: sajuData.gender,
-                unknownTime: String(sajuData.unknownTime || false),
-                useTrueSolarTime: String(sajuData.useTrueSolarTime || true),
-                applyDST: String(sajuData.applyDST || true),
-                midnightMode: sajuData.midnightMode || 'late',
-              }).toString()}`)}
+              onClick={() => alert('준비중입니다')}
               variant="primary"
               fullWidth
             >

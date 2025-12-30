@@ -32,7 +32,7 @@ export const ResultPage = ({ sajuData, searchParams }: ResultPageProps) => {
           <Button onClick={() => router.push('/new-year-2026?' + searchParamsString)} id="btn-saju-2026">
             2026 신년운세 보기
           </Button>
-          <Button onClick={() => router.push('/yongshin?' + searchParamsString)} className={styles.tertiaryButton}>
+          <Button onClick={() => alert('준비중입니다')} className={styles.tertiaryButton}>
             용신 분석
           </Button>
         </div>
