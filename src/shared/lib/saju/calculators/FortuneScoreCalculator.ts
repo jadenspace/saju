@@ -63,9 +63,9 @@ export class FortuneScoreCalculator {
     const positiveGods = ['정관', '정인', '정재', '식신'];
     const negativeGods = ['편관', '겁재', '상관'];
 
-    if (positiveGods.includes(seun.tenGodsGan)) {
+    if (seun.tenGodsGan && positiveGods.includes(seun.tenGodsGan)) {
       point += 1;
-    } else if (negativeGods.includes(seun.tenGodsGan)) {
+    } else if (seun.tenGodsGan && negativeGods.includes(seun.tenGodsGan)) {
       point -= 1;
     }
 
@@ -288,7 +288,7 @@ export class FortuneScoreCalculator {
     let tenGodsPoint = 0;
     const tenGodsDetails: string[] = [];
 
-    if (positiveGods.includes(seun.tenGodsGan)) {
+    if (seun.tenGodsGan && positiveGods.includes(seun.tenGodsGan)) {
       tenGodsEval = '긍정';
       tenGodsPoint = 1;
       tenGodsDetails.push(`세운 천간의 십신이 "${seun.tenGodsGan}"로 길신(吉神)입니다.`);
@@ -299,7 +299,7 @@ export class FortuneScoreCalculator {
         result: `+${tenGodsPoint}점`
       });
       console.log(`[총운 점수 계산] 세운 십신 분석 공식: 길신(정관/정인/정재/식신) → +1점`);
-    } else if (negativeGods.includes(seun.tenGodsGan)) {
+    } else if (seun.tenGodsGan && negativeGods.includes(seun.tenGodsGan)) {
       tenGodsEval = '부정';
       tenGodsPoint = -1;
       tenGodsDetails.push(`세운 천간의 십신이 "${seun.tenGodsGan}"로 흉신(凶神)입니다.`);
@@ -311,10 +311,10 @@ export class FortuneScoreCalculator {
       });
       console.log(`[총운 점수 계산] 세운 십신 분석 공식: 흉신(편관/겁재/상관) → -1점`);
     } else {
-      tenGodsDetails.push(`세운 천간의 십신이 "${seun.tenGodsGan}"로 중립적입니다.`);
+      tenGodsDetails.push(`세운 천간의 십신이 "${seun.tenGodsGan || '없음'}"로 중립적입니다.`);
       calculationSteps.push({
         step: '세운 십신 분석',
-        description: `세운 천간 십신: ${seun.tenGodsGan} (중립)`,
+        description: `세운 천간 십신: ${seun.tenGodsGan || '없음'} (중립)`,
         formula: `중립 십신 → 0점`,
         result: `${tenGodsPoint}점`
       });
@@ -476,8 +476,8 @@ export class FortuneScoreCalculator {
 
     return {
       seunTenGods: {
-        gan: seun.tenGodsGan,
-        ji: seun.tenGodsJi,
+        gan: seun.tenGodsGan || '',
+        ji: seun.tenGodsJi || '',
         evaluation: tenGodsEval,
         point: tenGodsPoint,
         details: tenGodsDetails,

@@ -5,7 +5,6 @@ import { useState, useRef, useEffect } from 'react';
 import styles from './ThemeToggle.module.css';
 
 const THEME_INFO: Record<Theme, { icon: string; label: string }> = {
-  light: { icon: '☀️', label: '라이트' },
   dark: { icon: '🌙', label: '다크' },
 };
 

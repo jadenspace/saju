@@ -139,12 +139,12 @@ function getWealthStars(dayMaster: string): { jeongjae: string; pyeonjae: string
   const wealthElement = controllingMap[dayElement];
   
   // 정재/편재 구분은 음양으로
-  const yangWealth: Record<Element, { jeong: string; pyeon: string }> = {
-    'earth': { jeong: '己', pyeon: '戊' },
-    'metal': { jeong: '辛', pyeon: '庚' },
-    'water': { jeong: '癸', pyeon: '壬' },
-    'wood': { jeong: '乙', pyeon: '甲' },
-    'fire': { jeong: '丁', pyeon: '丙' },
+  const yangWealth: Record<Element, { jeongjae: string; pyeonjae: string }> = {
+    'earth': { jeongjae: '己', pyeonjae: '戊' },
+    'metal': { jeongjae: '辛', pyeonjae: '庚' },
+    'water': { jeongjae: '癸', pyeonjae: '壬' },
+    'wood': { jeongjae: '乙', pyeonjae: '甲' },
+    'fire': { jeongjae: '丁', pyeonjae: '丙' },
   };
   
   return yangWealth[wealthElement] || { jeongjae: '', pyeonjae: '' };
@@ -168,12 +168,12 @@ function getOfficialStars(dayMaster: string): { jeonggwan: string; pyeongwan: st
   
   const officialElement = controllingMap[dayElement];
   
-  const yangOfficial: Record<Element, { jeong: string; pyeon: string }> = {
-    'metal': { jeong: '辛', pyeon: '庚' },
-    'water': { jeong: '癸', pyeon: '壬' },
-    'wood': { jeong: '乙', pyeon: '甲' },
-    'fire': { jeong: '丁', pyeon: '丙' },
-    'earth': { jeong: '己', pyeon: '戊' },
+  const yangOfficial: Record<Element, { jeonggwan: string; pyeongwan: string }> = {
+    'metal': { jeonggwan: '辛', pyeongwan: '庚' },
+    'water': { jeonggwan: '癸', pyeongwan: '壬' },
+    'wood': { jeonggwan: '乙', pyeongwan: '甲' },
+    'fire': { jeonggwan: '丁', pyeongwan: '丙' },
+    'earth': { jeonggwan: '己', pyeongwan: '戊' },
   };
   
   return yangOfficial[officialElement] || { jeonggwan: '', pyeongwan: '' };
@@ -380,7 +380,7 @@ export class NewYearFortune2026Calculator {
     }
     
     const analysis = generateWealthFortuneText(
-      { score, grade: scoreToGrade(score), keywords, analysis: '', details: {}, advice: [] },
+      { score, grade: scoreToGrade(score) as '상상' | '상' | '중상' | '중' | '중하' | '하', keywords, analysis: '', details: {}, advice: [] },
       isSeunWealth,
       hasWealthInWonguk,
       hasSiksin,
@@ -391,7 +391,7 @@ export class NewYearFortune2026Calculator {
     
     return {
       score,
-      grade: scoreToGrade(score),
+      grade: scoreToGrade(score) as '상상' | '상' | '중상' | '중' | '중하' | '하',
       keywords,
       analysis,
       details: {
@@ -456,7 +456,7 @@ export class NewYearFortune2026Calculator {
     }
     
     const analysis = generateLoveFortuneText(
-      { score, grade: scoreToGrade(score), keywords, analysis: '', details: {}, advice: [] },
+      { score, grade: scoreToGrade(score) as '상상' | '상' | '중상' | '중' | '중하' | '하', keywords, analysis: '', details: {}, advice: [] },
       isSeunSpouseStar,
       dayRelationship,
       hasDohwa,
@@ -467,7 +467,7 @@ export class NewYearFortune2026Calculator {
     
     return {
       score,
-      grade: scoreToGrade(score),
+      grade: scoreToGrade(score) as '상상' | '상' | '중상' | '중' | '중하' | '하',
       keywords,
       analysis,
       details: {
@@ -527,7 +527,7 @@ export class NewYearFortune2026Calculator {
     if (hasYukma) keywords.push('출장', '이동', '변화');
     
     const analysis = generateCareerFortuneText(
-      { score, grade: scoreToGrade(score), keywords, analysis: '', details: {}, advice: [] },
+      { score, grade: scoreToGrade(score) as '상상' | '상' | '중상' | '중' | '중하' | '하', keywords, analysis: '', details: {}, advice: [] },
       isOfficialStar,
       isInStar,
       isSiksin,
@@ -540,7 +540,7 @@ export class NewYearFortune2026Calculator {
     
     return {
       score,
-      grade: scoreToGrade(score),
+      grade: scoreToGrade(score) as '상상' | '상' | '중상' | '중' | '중하' | '하',
       keywords,
       analysis,
       details: {
@@ -602,7 +602,7 @@ export class NewYearFortune2026Calculator {
     }
     
     const analysis = generateHealthFortuneText(
-      { score, grade: scoreToGrade(score), keywords, analysis: '', details: {}, advice: [] },
+      { score, grade: scoreToGrade(score) as '상상' | '상' | '중상' | '중' | '중하' | '하', keywords, analysis: '', details: {}, advice: [] },
       excessElements,
       missingElements,
       hasChung,
@@ -613,7 +613,7 @@ export class NewYearFortune2026Calculator {
     
     return {
       score,
-      grade: scoreToGrade(score),
+      grade: scoreToGrade(score) as '상상' | '상' | '중상' | '중' | '중하' | '하',
       keywords,
       analysis,
       details: {
@@ -676,7 +676,7 @@ export class NewYearFortune2026Calculator {
       if (monthTenGodsGan === '식신' || monthTenGodsGan === '상관') keywords.push('능력');
       
       const monthAnalysis = generateMonthlyFortuneText(
-        { month: monthData.month, ganZhi: monthData.ganZhi, ganHan: monthData.ganHan, jiHan: monthData.jiHan, score, grade: scoreToGrade(score), keywords, analysis: { total: '', wealth: '', love: '', career: '', health: '', advice: '' } },
+        { month: monthData.month, ganZhi: monthData.ganZhi, ganHan: monthData.ganHan, jiHan: monthData.jiHan, score, grade: scoreToGrade(score) as '상상' | '상' | '중상' | '중' | '중하' | '하', keywords, analysis: { total: '', wealth: '', love: '', career: '', health: '', advice: '' } },
         monthTenGodsGan,
         monthTenGodsJi,
         monthRelationship
@@ -688,7 +688,7 @@ export class NewYearFortune2026Calculator {
         ganHan: monthData.ganHan,
         jiHan: monthData.jiHan,
         score,
-        grade: scoreToGrade(score),
+        grade: scoreToGrade(score) as '상상' | '상' | '중상' | '중' | '중하' | '하',
         keywords,
         analysis: monthAnalysis,
       };

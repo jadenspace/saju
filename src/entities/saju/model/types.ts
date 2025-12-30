@@ -539,7 +539,7 @@ export interface NewYearFortune2026 {
  */
 export interface FortuneCategory2026 {
   score: number; // 1-5 척도
-  grade: '상상' | '상' | '중상' | '중' | '중하' | '하';
+  grade: '상상' | '상' | '중상' | '중' | '중하' | '하' | '하하';
   keywords: string[];
   analysis: string; // 핵심 해석
   details: {
