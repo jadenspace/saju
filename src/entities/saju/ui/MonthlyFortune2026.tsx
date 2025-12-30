@@ -20,6 +20,7 @@ export const MonthlyFortune2026 = ({ monthly }: MonthlyFortune2026Props) => {
 
   const gradeStars = (grade: string) => {
     const starMap: Record<string, number> = {
+      '상상': 5,  // 5개 별
       '상': 4,
       '중상': 3,
       '중': 2,
@@ -38,12 +39,31 @@ export const MonthlyFortune2026 = ({ monthly }: MonthlyFortune2026Props) => {
     return map[jiHan] || jiHan;
   };
 
+  // 간지 한글 변환 (간+지)
+  const convertGanZhiToKorean = (ganZhi: string): string => {
+    const ganMap: Record<string, string> = {
+      '甲': '갑', '乙': '을', '丙': '병', '丁': '정', '戊': '무',
+      '己': '기', '庚': '경', '辛': '신', '壬': '임', '癸': '계'
+    };
+    const jiMap: Record<string, string> = {
+      '子': '자', '丑': '축', '寅': '인', '卯': '묘', '辰': '진', '巳': '사',
+      '午': '오', '未': '미', '申': '신', '酉': '유', '戌': '술', '亥': '해'
+    };
+    if (ganZhi.length === 2) {
+      const gan = ganMap[ganZhi[0]] || ganZhi[0];
+      const ji = jiMap[ganZhi[1]] || ganZhi[1];
+      return gan + ji;
+    }
+    return ganZhi;
+  };
+
   // 점수에 따른 요약 제목 생성
   const getSummaryTitle = (score: number): string => {
     if (score >= 4.5) return '최고의 달';
-    if (score >= 3.5) return '좋은 달';
-    if (score >= 2.5) return '보통의 달';
-    if (score >= 1.5) return '주의의 달';
+    if (score >= 4.0) return '좋은 달';
+    if (score >= 3.0) return '보통의 달';
+    if (score >= 2.5) return '주의의 달';
+    if (score >= 2.0) return '조심의 달';
     return '조심의 달';
   };
 
@@ -195,7 +215,7 @@ export const MonthlyFortune2026 = ({ monthly }: MonthlyFortune2026Props) => {
                     opacity="0.3"
                   />
                   <text
-                    x={chartData.padding.left - 10}
+                    x={chartData.padding.left - 15}
                     y={y + 4}
                     fontSize="12"
                     fill="var(--foreground-muted)"
@@ -301,7 +321,7 @@ export const MonthlyFortune2026 = ({ monthly }: MonthlyFortune2026Props) => {
                 {/* 간지 표시 */}
                 <div className={styles.ganZhi}>
                   <span className={styles.hanja}>{month.ganHan}{month.jiHan}</span>
-                  <span className={styles.hangul}>{month.ganZhi}</span>
+                  <span className={styles.hangul}>{convertGanZhiToKorean(month.ganZhi)}</span>
                 </div>
 
                 {/* 별점과 테마 */}

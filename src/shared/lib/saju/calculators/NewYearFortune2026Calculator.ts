@@ -90,11 +90,13 @@ function scoreToGrade(score: number, isTotal: boolean = false): '상상' | '상'
     if (score >= 2.0) return '하';
     return '하하';
   } else {
-    if (score >= 4.0) return '상';
-    if (score >= 3.5) return '중상';
-    if (score >= 3.0) return '중';
-    if (score >= 2.5) return '중하';
-    return '하';
+    // 월운의 경우
+    if (score >= 4.5) return '상상';  // 별 5개
+    if (score >= 4.0) return '상';     // 별 4개
+    if (score >= 3.0) return '중상';   // 별 3개
+    if (score >= 2.5) return '중';     // 별 2개
+    if (score >= 2.0) return '중하';   // 별 1개
+    return '하';                       // 별 0개
   }
 }
 

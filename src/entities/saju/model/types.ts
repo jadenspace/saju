@@ -539,7 +539,7 @@ export interface NewYearFortune2026 {
  */
 export interface FortuneCategory2026 {
   score: number; // 1-5 척도
-  grade: '상' | '중상' | '중' | '중하' | '하';
+  grade: '상상' | '상' | '중상' | '중' | '중하' | '하';
   keywords: string[];
   analysis: string; // 핵심 해석
   details: {
@@ -561,7 +561,7 @@ export interface MonthlyFortune2026 {
   ganHan: string; // 천간 한자
   jiHan: string; // 지지 한자
   score: number; // 1-5 척도
-  grade: '상' | '중상' | '중' | '중하' | '하';
+  grade: '상상' | '상' | '중상' | '중' | '중하' | '하';
   keywords: string[];
   analysis: {
     total: string; // 총평

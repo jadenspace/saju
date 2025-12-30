@@ -1,7 +1,6 @@
 import { GoogleAdSense } from "@/shared/lib/google/GoogleAdSense";
 import { ThemeProvider } from "@/shared/lib/theme";
 import { Footer } from "@/shared/ui/Footer";
-import { ThemeToggle } from "@/shared/ui/ThemeToggle";
 import { GoogleTagManager } from "@next/third-parties/google";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -33,7 +32,6 @@ export default function RootLayout({
         <ThemeProvider>
           <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID as string} />
           <GoogleAdSense pid={process.env.NEXT_PUBLIC_GOOGLE_ADSENSE_PID as string} />
-          <ThemeToggle />
           <main style={{ overflowX: "hidden", flex: 1 }}>
             {children}
           </main>

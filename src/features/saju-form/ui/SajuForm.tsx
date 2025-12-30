@@ -279,7 +279,7 @@ export const SajuForm = () => {
                   onChange={(e) => setFormData(prev => ({ ...prev, useTrueSolarTime: true }))}
                   disabled={formData.unknownTime}
                 />
-                진태양시 <br className={styles.mobileBr} />(경도보정)
+                <p className={styles.radioLabelText}>진태양시 <br />(경도보정)</p>
               </label>
               <label className={styles.radioLabel}>
                 <input
@@ -290,7 +290,7 @@ export const SajuForm = () => {
                   onChange={(e) => setFormData(prev => ({ ...prev, useTrueSolarTime: false }))}
                   disabled={formData.unknownTime}
                 />
-                표준시 <br className={styles.mobileBr} />(KST)
+                <p className={styles.radioLabelText}>표준시 <br className={styles.mobileBr} />(KST)</p>
               </label>
             </div>
           </div>
