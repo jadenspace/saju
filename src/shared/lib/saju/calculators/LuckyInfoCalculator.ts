@@ -53,17 +53,13 @@ const KOREAN_TO_KEY: Record<string, OhaengKey> = {
 export class LuckyInfoCalculator {
   /**
    * 행운 정보 계산
-   * 용신 오행 기반, 용신이 없으면 부족한 오행 기반
+   * 부족한 오행 기반
    */
   static calculateLuckyInfo(sajuData: SajuData): LuckyInfo {
-    // 1. 용신 오행 확인
+    // 1. 부족한 오행 확인
     let targetOhaeng: OhaengKey | null = null;
     
-    if (sajuData.yongshin?.primary) {
-      targetOhaeng = KOREAN_TO_KEY[sajuData.yongshin.primary] || null;
-    }
-    
-    // 2. 용신이 없으면 부족한 오행 사용
+    // 2. 부족한 오행 사용
     if (!targetOhaeng && sajuData.ohaengAnalysis?.deficient?.length > 0) {
       const deficientName = sajuData.ohaengAnalysis.deficient[0];
       targetOhaeng = KOREAN_TO_KEY[deficientName] || null;

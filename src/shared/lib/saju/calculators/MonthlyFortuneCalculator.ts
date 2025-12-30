@@ -12,18 +12,10 @@ export class MonthlyFortuneCalculator {
     
     // 1. Get base monthly data from SajuCalculator
     const baseMonthlyData = SajuCalculator.calculateMonthlyFortune(year, dayMaster, yearJi, dayJi);
-    
-    const yongshin = sajuData.yongshin;
-    const yongshinElement = yongshin ? this.koreanToElement(yongshin.primary) : null;
 
     // 2. Map and calculate scores for each month
     return baseMonthlyData.map((data) => {
       let score = 3; // 기본 3점 (1-5 척도)
-      
-      // 용신 오행이면 가점
-      if (yongshinElement && (data.ganElement === yongshinElement || data.jiElement === yongshinElement)) {
-        score += 1;
-      }
       
       // 원국 지지와의 관계 분석 (SeunFortuneCalculator 재활용)
       const relToDay = SeunFortuneCalculator.analyzeJiRelationship(data.jiHan, dayJi);
@@ -47,11 +39,6 @@ export class MonthlyFortuneCalculator {
         oneLiner,
       };
     });
-  }
-
-  private static koreanToElement(kor: string): Element {
-    const map: Record<string, Element> = { '목(木)': 'wood', '화(火)': 'fire', '토(土)': 'earth', '금(金)': 'metal', '수(水)': 'water' };
-    return map[kor] || 'wood';
   }
 }
 
