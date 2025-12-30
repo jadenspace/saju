@@ -405,7 +405,7 @@ export class NewYearFortune2026Calculator {
   }
 
   /**
-   * 애정운 분석
+   * 연애운 분석
    * 문서 3.3.2 알고리즘
    */
   private static calculateLoveFortune(seun: Seun, sajuData: SajuData): FortuneCategory2026 {

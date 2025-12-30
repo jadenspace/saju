@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import styles from './guide.module.css';
 
 export const metadata: Metadata = {
-    title: "사주 명리학 가이드 - 운명의 나침반",
+    title: "사주 명리학 가이드 - 오늘의 운세는",
     description: "사주팔자, 십신, 오행, 12운성, 12신살, 공망 등 명리학의 핵심 개념을 쉽게 설명합니다. 동양 철학의 지혜로 자신의 운명을 이해해보세요.",
 };
 

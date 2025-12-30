@@ -27,7 +27,7 @@ export const YongshinPage = ({ sajuData, searchParams }: YongshinPageProps) => {
     <main className={styles.main}>
       <div className={styles.content}>
         <header className={styles.header}>
-          <h1 className={styles.title}>용신 찾기</h1>
+          <h1 className={styles.title}>용신 분석</h1>
           <p className={styles.subtitle}>
             용신(用神)은 사주에서 가장 필요한 오행으로, 일생의 길흉화복을 좌우하는 핵심 요소입니다. 
             합충·격국·조후·억부를 종합 분석하여 당신에게 가장 필요한 오행을 찾아드립니다. 
@@ -42,11 +42,11 @@ export const YongshinPage = ({ sajuData, searchParams }: YongshinPageProps) => {
 
         {/* 네비게이션 버튼 */}
         <div className={styles.actions}>
-          <Button onClick={() => router.push('/fortune?' + searchParamsString)}>
+          <Button onClick={() => router.push('/new-year-2026?' + searchParamsString)}>
             2026 신년운세 보기
           </Button>
           <Button onClick={() => router.push('/result?' + searchParamsString)} className={styles.tertiaryButton}>
-            종합 사주 보기
+            정통 사주 보기
           </Button>
         </div>
         <div className={styles.secondaryActions}>

@@ -15,7 +15,7 @@ interface TotalFortune2026Props {
 export const TotalFortune2026 = ({ total, wealth, love, career, health }: TotalFortune2026Props) => {
   const categories = useMemo(() => [
     { id: 'wealth', title: '재물운', data: wealth },
-    { id: 'love', title: '애정운', data: love },
+    { id: 'love', title: '연애운', data: love },
     { id: 'career', title: '직장운', data: career },
     { id: 'health', title: '건강운', data: health },
   ], [wealth, love, career, health]);

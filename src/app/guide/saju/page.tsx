@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import styles from '../guide.module.css';
 
 export const metadata: Metadata = {
-    title: "사주팔자란? - 사주 명리학 가이드 | 운명의 나침반",
+    title: "사주팔자란? - 사주 명리학 가이드 | 오늘의 운세는",
     description: "사주팔자(四柱八字)의 의미와 구조를 알아봅니다. 년주, 월주, 일주, 시주의 네 기둥과 천간, 지지의 여덟 글자로 운명을 읽는 방법을 설명합니다.",
 };
 

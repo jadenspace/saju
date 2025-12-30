@@ -16,13 +16,13 @@ export default function NotFound() {
         <Link href="/" className={styles.primaryButton}>
           메인으로 돌아가기
         </Link>
-        <Link href="/fortune" className={styles.secondaryButton}>
+        <Link href="/new-year-2026" className={styles.secondaryButton}>
           2026 신년운세 보기
         </Link>
       </div>
 
       <div className={styles.footer}>
-        <p>운명의 나침반 - 무료 사주 및 운세 서비스</p>
+        <p>오늘의 운세는 - 무료 사주 및 운세 서비스</p>
       </div>
     </main>
   );

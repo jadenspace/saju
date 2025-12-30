@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import styles from '../guide.module.css';
 
 export const metadata: Metadata = {
-    title: "오행(五行)이란? - 사주 명리학 가이드 | 운명의 나침반",
+    title: "오행(五行)이란? - 사주 명리학 가이드 | 오늘의 운세는",
     description: "오행(五行)의 의미와 상생상극 관계를 알아봅니다. 목, 화, 토, 금, 수의 다섯 가지 기본 요소가 어떻게 상호작용하는지 설명합니다.",
 };
 

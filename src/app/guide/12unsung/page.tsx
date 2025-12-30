@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import styles from '../guide.module.css';
 
 export const metadata: Metadata = {
-    title: "12운성(十二運星)이란? - 사주 명리학 가이드 | 운명의 나침반",
+    title: "12운성(十二運星)이란? - 사주 명리학 가이드 | 오늘의 운세는",
     description: "12운성(十二運星)의 의미와 종류를 알아봅니다. 장생, 목욕, 관대, 건록, 제왕, 쇠, 병, 사, 묘, 절, 태, 양의 12단계 에너지를 설명합니다.",
 };
 

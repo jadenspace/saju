@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: "용신 찾기 - 운명의 나침반",
+  title: "용신 분석 - 오늘의 운세는",
   description: "전통 명리학 기반의 정밀 용신 분석. 합충, 격국, 조후, 억부 등 핵심 알고리즘으로 당신에게 필요한 오행을 찾아드립니다.",
 };
 

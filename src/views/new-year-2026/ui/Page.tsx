@@ -72,7 +72,7 @@ export const NewYearFortune2026View = ({ sajuData, fortuneData }: NewYearFortune
               variant="primary"
               fullWidth
             >
-              🔮 적천수 용신 분석하기 (4,900원)
+              🔮 적천수 용신 분석하기 (<span style={{ textDecoration: 'line-through' }}>4,900원</span> → <span style={{ fontWeight: 'bold' }}>무료</span>)
             </Button>
           </div>
         </section>

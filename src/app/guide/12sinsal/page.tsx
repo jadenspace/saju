@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import styles from '../guide.module.css';
 
 export const metadata: Metadata = {
-    title: "12신살(十二神殺)이란? - 사주 명리학 가이드 | 운명의 나침반",
+    title: "12신살(十二神殺)이란? - 사주 명리학 가이드 | 오늘의 운세는",
     description: "12신살(十二神殺)의 의미와 종류를 알아봅니다. 겁살, 재살, 천살, 지살, 연살, 월살, 망신살, 장성살, 반안살, 역마살, 육해살, 화개살을 설명합니다.",
 };
 

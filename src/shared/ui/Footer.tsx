@@ -6,7 +6,7 @@ export const Footer = () => {
     <footer className={styles.footer}>
       <div className={styles.content}>
         <div className={styles.copyright}>
-          © {new Date().getFullYear()} 운명의 나침반. All rights reserved.
+          © {new Date().getFullYear()} 오늘의 운세는. All rights reserved.
         </div>
         <div className={styles.links}>
           <Link href="/privacy" className={styles.link}>
