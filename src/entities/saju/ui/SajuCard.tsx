@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import { useState, useMemo } from 'react';
 import { Solar } from 'lunar-javascript';
 import { DAEUN_EXPLANATION, DAEUN_DIRECTION_EXPLANATION, SAJU_PALJA_EXPLANATION } from '../../../shared/lib/saju/data/SajuExplanations';
-import { Pillar, SajuData } from '../model/types';
+import { SajuData } from '../model/types';
 import { SajuCalculator } from '../../../shared/lib/saju/calculators/SajuCalculator';
 import { ManseuryeokSection } from './ManseuryeokSection';
 import { IljuAnalysis } from './IljuAnalysis';
@@ -22,8 +22,9 @@ interface SajuCardProps {
 // For this overhaul, we will focus on the main grid.
 
 export const SajuCard = ({ data, className }: SajuCardProps) => {
+  const [showManseuryeok, setShowManseuryeok] = useState(true); // 기본 활성화
   const [showOhaeng, setShowOhaeng] = useState(false);
-  const [showIlju, setShowIlju] = useState(true);
+  const [showIlju, setShowIlju] = useState(false); // 기본 비활성화
   const [showTwelveStages, setShowTwelveStages] = useState(false);
   const [showTwelveSinsal, setShowTwelveSinsal] = useState(false);
   const [showGongmang, setShowGongmang] = useState(false);
@@ -32,7 +33,7 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
   const getCurrentAge = () => {
     const birthDate = new Date(data.birthDate);
     const today = new Date();
-    let age = today.getFullYear() - birthDate.getFullYear() + 1; // Korean age
+    const age = today.getFullYear() - birthDate.getFullYear() + 1; // Korean age
     return age;
   };
 
@@ -72,10 +73,113 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
         </p>
       </div>
 
-      <ManseuryeokSection data={data} />
+      {/* Section Title and Analysis Buttons */}
+      <div className={styles.sectionHeader}>
+        <div className={styles.analysisButtons}>
+          <button
+            className={clsx(styles.analysisButton, showManseuryeok && styles.active)}
+            onClick={() => { 
+              if (!showManseuryeok) {
+                setShowManseuryeok(true);
+                setShowIlju(false);
+                setShowOhaeng(false);
+                setShowTwelveStages(false);
+                setShowTwelveSinsal(false);
+                setShowGongmang(false);
+              }
+            }}
+          >
+            만세력
+          </button>
+          <button
+            className={clsx(styles.analysisButton, showIlju && styles.active)}
+            onClick={() => { 
+              if (!showIlju) {
+                setShowIlju(true);
+                setShowManseuryeok(false);
+                setShowOhaeng(false);
+                setShowTwelveStages(false);
+                setShowTwelveSinsal(false);
+                setShowGongmang(false);
+              }
+            }}
+          >
+            일주 분석
+          </button>
+          <button
+            className={clsx(styles.analysisButton, showOhaeng && styles.active)}
+            onClick={() => { 
+              if (!showOhaeng) {
+                setShowOhaeng(true);
+                setShowManseuryeok(false);
+                setShowIlju(false);
+                setShowTwelveStages(false);
+                setShowTwelveSinsal(false);
+                setShowGongmang(false);
+              }
+            }}
+          >
+            오행 분석
+          </button>
+          <button
+            className={clsx(styles.analysisButton, showTwelveStages && styles.active)}
+            onClick={() => { 
+              if (!showTwelveStages) {
+                setShowTwelveStages(true);
+                setShowManseuryeok(false);
+                setShowIlju(false);
+                setShowOhaeng(false);
+                setShowTwelveSinsal(false);
+                setShowGongmang(false);
+              }
+            }}
+          >
+            12운성 분석
+          </button>
+          <button
+            className={clsx(styles.analysisButton, showTwelveSinsal && styles.active)}
+            onClick={() => { 
+              if (!showTwelveSinsal) {
+                setShowTwelveSinsal(true);
+                setShowManseuryeok(false);
+                setShowIlju(false);
+                setShowOhaeng(false);
+                setShowTwelveStages(false);
+                setShowGongmang(false);
+              }
+            }}
+          >
+            12신살 분석
+          </button>
+          <button
+            className={clsx(styles.analysisButton, showGongmang && styles.active)}
+            onClick={() => { 
+              if (!showGongmang) {
+                setShowGongmang(true);
+                setShowManseuryeok(false);
+                setShowIlju(false);
+                setShowOhaeng(false);
+                setShowTwelveStages(false);
+                setShowTwelveSinsal(false);
+              }
+            }}
+          >
+            공망 분석
+          </button>
+        </div>
+      </div>
 
-      {/* Daeun Section */}
-      <div className={styles.daeunSection}>
+      {/* Manseuryeok Section (만세력 + 대운 + 세운 + 월운) */}
+      {showManseuryeok && (
+        <div className={styles.manseuryeokSection}>
+          {/* 사주원국 타이틀 */}
+          <div className={styles.wongukHeader}>
+            <h3>사주원국 (四柱原局)</h3>
+          </div>
+          <ManseuryeokSection data={data} />
+
+          {/* Daeun Section */}
+          <div className={styles.daeunSection}>
         <div className={styles.daeunHeader}>
           <div className={styles.tooltipContainer}>
             <h3>대운 (大運)</h3>
@@ -213,7 +317,6 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
                 // 양력 월을 그대로 표시
                 const displayMonth = monthFortune.month;
                 // 현재 절기 월과 비교하여 활성화 여부 결정
-                const currentJieqiMonth = SajuCalculator.getCurrentJieqiMonth();
                 const currentJieqiJiHan = (() => {
                   const now = new Date();
                   const solar = Solar.fromYmdHms(now.getFullYear(), now.getMonth() + 1, now.getDate(), 12, 0, 0);
@@ -262,41 +365,8 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
             </div>
           </div>
         )}
-      </div>
-
-      {/* Analysis Buttons */}
-      <div className={styles.analysisButtons}>
-        <button
-          className={clsx(styles.analysisButton, showIlju && styles.active)}
-          onClick={() => { setShowIlju(!showIlju); setShowOhaeng(false); setShowTwelveStages(false); setShowTwelveSinsal(false); setShowGongmang(false); }}
-        >
-          일주 분석
-        </button>
-        <button
-          className={clsx(styles.analysisButton, showOhaeng && styles.active)}
-          onClick={() => { setShowOhaeng(!showOhaeng); setShowIlju(false); setShowTwelveStages(false); setShowTwelveSinsal(false); setShowGongmang(false); }}
-        >
-          오행 분석
-        </button>
-        <button
-          className={clsx(styles.analysisButton, showTwelveStages && styles.active)}
-          onClick={() => { setShowTwelveStages(!showTwelveStages); setShowIlju(false); setShowOhaeng(false); setShowTwelveSinsal(false); setShowGongmang(false); }}
-        >
-          12운성 분석
-        </button>
-        <button
-          className={clsx(styles.analysisButton, showTwelveSinsal && styles.active)}
-          onClick={() => { setShowTwelveSinsal(!showTwelveSinsal); setShowIlju(false); setShowOhaeng(false); setShowTwelveStages(false); setShowGongmang(false); }}
-        >
-          12신살 분석
-        </button>
-        <button
-          className={clsx(styles.analysisButton, showGongmang && styles.active)}
-          onClick={() => { setShowGongmang(!showGongmang); setShowIlju(false); setShowOhaeng(false); setShowTwelveStages(false); setShowTwelveSinsal(false); }}
-        >
-          공망 분석
-        </button>
-      </div>
+        </div>
+      </div>)}
 
       {/* Analysis Sections */}
       {showOhaeng && <OhaengAnalysis data={data} />}

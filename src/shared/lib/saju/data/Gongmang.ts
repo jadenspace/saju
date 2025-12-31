@@ -142,11 +142,16 @@ export function checkHaegong(gongmangJi: string, allJi: string[]): { isHaegong: 
     // 삼합 체크 (3개 중 2개 이상 있으면 반합 성립)
     const samhapGroup = SAMHAP_GROUPS[gongmangJi];
     if (samhapGroup) {
-        const matchCount = samhapGroup.filter(ji => allJi.includes(ji)).length;
+        const matchedJi = samhapGroup.filter(ji => allJi.includes(ji));
+        const matchCount = matchedJi.length;
         if (matchCount >= 2) {
+            const matchedKorean = matchedJi.map(ji => JI_HAN_TO_KOR[ji]).join('');
+            const isComplete = matchCount === 3;
             return {
                 isHaegong: true,
-                reason: `삼합(${samhapGroup.map(ji => JI_HAN_TO_KOR[ji]).join('')})`
+                reason: isComplete 
+                    ? `삼합(${matchedKorean})` 
+                    : `반합(${matchedKorean})`
             };
         }
     }
