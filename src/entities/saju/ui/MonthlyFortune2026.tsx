@@ -20,10 +20,12 @@ export const MonthlyFortune2026 = ({ monthly }: MonthlyFortune2026Props) => {
   const [startX, setStartX] = useState(0);
   const [startY, setStartY] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
+  const dragStartRef = useRef<{ x: number; time: number } | null>(null);
   const detailsRef = useRef<HTMLDivElement>(null);
   const monthWheelRef = useRef<HTMLDivElement>(null);
   const isDraggingRef = useRef(false);
   const startYRef = useRef(0);
+  const monthCardRefs = useRef<Map<number, HTMLDivElement>>(new Map());
 
   // monthly 배열이 변경되거나 activeIndex가 범위를 벗어났을 때 보정
   useEffect(() => {
@@ -52,6 +54,16 @@ export const MonthlyFortune2026 = ({ monthly }: MonthlyFortune2026Props) => {
       하: 0,
     };
     return starMap[grade] || 0;
+  };
+
+  // 점수를 별 개수로 변환 (월운 기준)
+  const scoreToStars = (score: number): number => {
+    if (score >= 4.5) return 5;
+    if (score >= 4.0) return 4;
+    if (score >= 3.0) return 3;
+    if (score >= 2.5) return 2;
+    if (score >= 2.0) return 1;
+    return 0;
   };
 
   // 지지 한글 변환
@@ -159,23 +171,36 @@ export const MonthlyFortune2026 = ({ monthly }: MonthlyFortune2026Props) => {
   // 드래그 시작
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!detailsRef.current) return;
-    setIsDragging(true);
+    setIsDragging(false);
     setStartX(e.pageX - detailsRef.current.offsetLeft);
     setScrollLeft(detailsRef.current.scrollLeft);
+    dragStartRef.current = {
+      x: e.pageX,
+      time: Date.now(),
+    };
   };
 
   // 드래그 중
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!isDragging || !detailsRef.current) return;
-    e.preventDefault();
+    if (!detailsRef.current || !dragStartRef.current) return;
     const x = e.pageX - detailsRef.current.offsetLeft;
-    const walk = (x - startX) * 2; // 스크롤 속도 조절
-    detailsRef.current.scrollLeft = scrollLeft - walk;
+    const walk = Math.abs(x - startX);
+
+    // 일정 거리 이상 움직였을 때만 드래그로 판단
+    if (walk > 5) {
+      if (!isDragging) {
+        setIsDragging(true);
+      }
+      e.preventDefault();
+      const scrollWalk = (x - startX) * 2; // 스크롤 속도 조절
+      detailsRef.current.scrollLeft = scrollLeft - scrollWalk;
+    }
   };
 
   // 드래그 종료
   const handleMouseUp = () => {
     setIsDragging(false);
+    dragStartRef.current = null;
   };
 
   // 마우스가 영역을 벗어날 때 드래그 종료
@@ -183,55 +208,81 @@ export const MonthlyFortune2026 = ({ monthly }: MonthlyFortune2026Props) => {
     setIsDragging(false);
   };
 
-  // 카드 클릭 시 드래그와 구분 (데스크탑 버전)
+  // 카드 클릭 처리 (드래그가 아닐 때만)
   const handleDesktopCardClick = (
     month: MonthlyFortune2026Type,
     e: React.MouseEvent,
   ) => {
+    // 드래그 중이면 클릭 무시
     if (isDragging) {
-      e.preventDefault();
       return;
     }
+
+    // 해당 카드로 스크롤
+    const cardElement = monthCardRefs.current.get(month.month);
+    if (cardElement && detailsRef.current) {
+      const container = detailsRef.current;
+      const cardLeft = cardElement.offsetLeft;
+      const cardWidth = cardElement.offsetWidth;
+      const containerWidth = container.offsetWidth;
+      const scrollPosition = cardLeft - containerWidth / 2 + cardWidth / 2;
+
+      container.scrollTo({
+        left: scrollPosition,
+        behavior: "smooth",
+      });
+    }
+
     setSelectedMonth(month);
   };
 
   // 모바일 터치 처리 (네이티브 이벤트로 passive: false 설정)
   const handleTouchStart = useCallback((e: Event) => {
     const touchEvent = e as TouchEvent;
-    touchEvent.preventDefault(); // 기본 스크롤 방지
+    // preventDefault() 제거 - 클릭 이벤트가 정상 작동하도록
     startYRef.current = touchEvent.touches[0].pageY;
-    isDraggingRef.current = true;
-    setIsDragging(true);
+    isDraggingRef.current = false; // 초기에는 드래그 아님
+    // setIsDragging 제거 - 리렌더링 방지로 더 부드러운 드래그
   }, []);
 
   const handleTouchMove = useCallback(
     (e: Event) => {
-      if (!isDraggingRef.current) return;
       if (monthly.length === 0) return;
       const touchEvent = e as TouchEvent;
-      touchEvent.preventDefault(); // 기본 스크롤 방지
       const currentY = touchEvent.touches[0].pageY;
-      const diff = startYRef.current - currentY;
+      const diff = Math.abs(startYRef.current - currentY);
 
-      if (Math.abs(diff) > 30) {
-        setActiveIndex((prev) => {
-          if (diff > 0 && prev < monthly.length - 1) {
-            startYRef.current = currentY;
-            return Math.min(prev + 1, monthly.length - 1);
-          } else if (diff < 0 && prev > 0) {
-            startYRef.current = currentY;
-            return Math.max(prev - 1, 0);
-          }
-          return prev;
-        });
+      // 실제로 움직였을 때만 드래그로 판단
+      if (diff > 2) {
+        if (!isDraggingRef.current) {
+          isDraggingRef.current = true;
+          // setIsDragging 제거 - 리렌더링 방지로 더 부드러운 드래그
+        }
+        // preventDefault() 제거 - 기본 동작 막지 않음
+
+        // 임계값을 낮춰서 더 빠르게 반응하도록 (30 -> 5)
+        if (diff > 5) {
+          setActiveIndex((prev) => {
+            const moveDiff = startYRef.current - currentY;
+            if (moveDiff > 0 && prev < monthly.length - 1) {
+              startYRef.current = currentY;
+              return Math.min(prev + 1, monthly.length - 1);
+            } else if (moveDiff < 0 && prev > 0) {
+              startYRef.current = currentY;
+              return Math.max(prev - 1, 0);
+            }
+            return prev;
+          });
+        }
       }
     },
     [monthly.length],
   );
 
   const handleTouchEnd = useCallback(() => {
+    // 드래그가 아니었으면 클릭 이벤트가 자연스럽게 발동됨
     isDraggingRef.current = false;
-    setIsDragging(false);
+    // setIsDragging 제거 - 리렌더링 방지로 더 부드러운 드래그
   }, []);
 
   // 네이티브 터치 이벤트 리스너 등록 (passive: false) - monthWheel에만 적용
@@ -427,6 +478,13 @@ export const MonthlyFortune2026 = ({ monthly }: MonthlyFortune2026Props) => {
             return (
               <div
                 key={month.month}
+                ref={(el) => {
+                  if (el) {
+                    monthCardRefs.current.set(month.month, el);
+                  } else {
+                    monthCardRefs.current.delete(month.month);
+                  }
+                }}
                 className={styles.monthCard}
                 onClick={(e) => handleDesktopCardClick(month, e)}
               >
@@ -521,9 +579,19 @@ export const MonthlyFortune2026 = ({ monthly }: MonthlyFortune2026Props) => {
               onClick={() => setSelectedMonth(activeMonth)}
             >
               <div className={styles.mobileMonthTitle}>
-                <span className={styles.mobileGanZhi}>
-                  {activeMonth.ganZhi}월
-                </span>
+                <div className={styles.mobileGanZhi}>
+                  <span>{activeMonth.ganZhi}월</span>
+                  <div className={styles.mobileStars}>
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <span
+                        key={i}
+                        className={`${styles.star} ${i < gradeStars(activeMonth.grade) ? styles.active : ""}`}
+                      >
+                        ★
+                      </span>
+                    ))}
+                  </div>
+                </div>
                 <h4 className={styles.mobileSummaryTitle}>
                   {getSummaryTitle(activeMonth.score)}
                 </h4>
@@ -546,35 +614,95 @@ export const MonthlyFortune2026 = ({ monthly }: MonthlyFortune2026Props) => {
         >
           <div className={styles.monthContent}>
             <div className={styles.monthSection}>
-              <div className={styles.monthSectionLabel}>총운</div>
+              <div className={styles.monthSectionLabel}>
+                총운
+                <div className={styles.monthSectionStars}>
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <span
+                      key={i}
+                      className={`${styles.star} ${i < gradeStars(selectedMonth.grade) ? styles.active : ""}`}
+                    >
+                      ★
+                    </span>
+                  ))}
+                </div>
+              </div>
               <p className={styles.monthSectionText}>
                 {selectedMonth.analysis.total}
               </p>
             </div>
 
             <div className={styles.monthSection}>
-              <div className={styles.monthSectionLabel}>재물운</div>
+              <div className={styles.monthSectionLabel}>
+                재물운
+                <div className={styles.monthSectionStars}>
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <span
+                      key={i}
+                      className={`${styles.star} ${i < scoreToStars(selectedMonth.scores?.wealth ?? selectedMonth.score) ? styles.active : ""}`}
+                    >
+                      ★
+                    </span>
+                  ))}
+                </div>
+              </div>
               <p className={styles.monthSectionText}>
                 {selectedMonth.analysis.wealth}
               </p>
             </div>
 
             <div className={styles.monthSection}>
-              <div className={styles.monthSectionLabel}>애정운</div>
+              <div className={styles.monthSectionLabel}>
+                애정운
+                <div className={styles.monthSectionStars}>
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <span
+                      key={i}
+                      className={`${styles.star} ${i < scoreToStars(selectedMonth.scores?.love ?? selectedMonth.score) ? styles.active : ""}`}
+                    >
+                      ★
+                    </span>
+                  ))}
+                </div>
+              </div>
               <p className={styles.monthSectionText}>
                 {selectedMonth.analysis.love}
               </p>
             </div>
 
             <div className={styles.monthSection}>
-              <div className={styles.monthSectionLabel}>직장운</div>
+              <div className={styles.monthSectionLabel}>
+                직장운
+                <div className={styles.monthSectionStars}>
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <span
+                      key={i}
+                      className={`${styles.star} ${i < scoreToStars(selectedMonth.scores?.career ?? selectedMonth.score) ? styles.active : ""}`}
+                    >
+                      ★
+                    </span>
+                  ))}
+                </div>
+              </div>
               <p className={styles.monthSectionText}>
                 {selectedMonth.analysis.career}
               </p>
             </div>
 
             <div className={styles.monthSection}>
-              <div className={styles.monthSectionLabel}>건강운</div>
+              <div className={styles.monthSectionLabel}>
+                건강운
+                <div className={styles.monthSectionStars}>
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <span
+                      key={i}
+                      className={`${styles.star} ${i < scoreToStars(selectedMonth.scores?.health ?? selectedMonth.score) ? styles.active : ""}`}
+                    >
+                      ★
+                    </span>
+                  ))}
+                </div>
+              </div>
               <p className={styles.monthSectionText}>
                 {selectedMonth.analysis.health}
               </p>

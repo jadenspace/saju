@@ -187,9 +187,26 @@
 }
 
 .monthSectionLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   font-size: 0.875rem;
   font-weight: 600;
   color: var(--primary);
+}
+
+.monthSectionStars {
+  display: flex;
+  gap: 2px;
+}
+
+.monthSectionStars .star {
+  font-size: 0.75rem;
+  color: var(--border);
+}
+
+.monthSectionStars .star.active {
+  color: #f59e0b;
 }
 
 .monthSectionText {
@@ -276,10 +293,27 @@
   }
 
   .mobileGanZhi {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     font-size: 0.875rem;
     font-weight: 600;
     color: var(--primary);
     text-transform: uppercase;
+  }
+
+  .mobileStars {
+    display: flex;
+    gap: 2px;
+  }
+
+  .mobileStars .star {
+    font-size: 0.75rem;
+    color: var(--border);
+  }
+
+  .mobileStars .star.active {
+    color: #f59e0b;
   }
 
   .mobileSummaryTitle {

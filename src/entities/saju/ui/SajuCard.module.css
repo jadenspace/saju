@@ -11,7 +11,7 @@
 }
 
 .card::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -23,8 +23,7 @@
 
 .header {
   text-align: center;
-  margin-bottom: 2rem;
-  border-bottom: 1px solid var(--border);
+  margin-bottom: 1rem;
   padding-bottom: 1rem;
   position: relative;
 }
@@ -143,9 +142,15 @@
 }
 
 .daeunPeriod.active {
-  background: linear-gradient(135deg, rgba(212, 165, 116, 0.15) 0%, rgba(212, 165, 116, 0.05) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(212, 165, 116, 0.15) 0%,
+    rgba(212, 165, 116, 0.05) 100%
+  );
   border-color: var(--primary);
-  box-shadow: 0 0 15px rgba(212, 165, 116, 0.2), var(--shadow-sm);
+  box-shadow:
+    0 0 15px rgba(212, 165, 116, 0.2),
+    var(--shadow-sm);
 }
 
 .daeunAge {
@@ -472,9 +477,8 @@
 
 /* Section Header with Title and Buttons */
 .sectionHeader {
-  margin-top: 1rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--border);
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
 }
 
 /* Analysis Buttons */
@@ -592,7 +596,7 @@
   }
 
   .header {
-    margin-bottom: 1.25rem;
+    margin-bottom: 0;
     padding-bottom: 0.75rem;
   }
 
@@ -620,7 +624,7 @@
 
   .analysisButtons {
     gap: 0.5rem;
-    margin-top: 1.25rem;
+    margin-top: 0;
     padding-top: 1rem;
   }
 }

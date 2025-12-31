@@ -1,5 +1,5 @@
 /* Pretendard 폰트 */
-@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css');
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css");
 
 /* ============================================
    다크 테마 (기본값)
@@ -16,14 +16,24 @@
   --primary-light: #f5d9b8;
   --primary-dark: #a67c52;
   --primary-hover: #e8c08e;
-  --primary-gradient: linear-gradient(135deg, #d4a574 0%, #f5d9b8 50%, #d4a574 100%);
+  --primary-gradient: linear-gradient(
+    135deg,
+    #d4a574 0%,
+    #f5d9b8 50%,
+    #d4a574 100%
+  );
   --primary-rgb: 212, 165, 116;
 
   /* 실버 그라데이션 */
-  --silver: #C0C0C0;
-  --silver-light: #E8E8E8;
-  --silver-dark: #A0A0A0;
-  --silver-gradient: linear-gradient(135deg, #A8A8A8 0%, #E0E0E0 50%, #A8A8A8 100%);
+  --silver: #c0c0c0;
+  --silver-light: #e8e8e8;
+  --silver-dark: #a0a0a0;
+  --silver-gradient: linear-gradient(
+    135deg,
+    #a8a8a8 0%,
+    #e0e0e0 50%,
+    #a8a8a8 100%
+  );
   --silver-rgb: 192, 192, 192;
   --shadow-silver-glow: 0 0 25px rgba(192, 192, 192, 0.4);
 
@@ -31,7 +41,7 @@
   --secondary: #27272a;
   --secondary-light: #3f3f46;
   --secondary-hover: #52525b;
-  
+
   /* 추가 배경 변수 */
   --bg-light: #1f1f23;
   --bg-lighter: #27272a;
@@ -42,14 +52,19 @@
   --accent: #9ca3af;
   --accent-light: #d1d5db;
   --accent-dark: #6b7280;
-  --accent-gradient: linear-gradient(135deg, #9ca3af 0%, #d1d5db 50%, #e5e7eb 100%);
+  --accent-gradient: linear-gradient(
+    135deg,
+    #9ca3af 0%,
+    #d1d5db 50%,
+    #e5e7eb 100%
+  );
 
   /* 오행 색상 (오방색 기준) */
-  --ohaeng-wood: #4ade80;   /* 청/녹 - 녹색 */
-  --ohaeng-fire: #f87171;   /* 적 - 빨강 */
-  --ohaeng-earth: #fbbf24;  /* 황 - 노랑 */
-  --ohaeng-metal: #cbd5e1;  /* 백 - 밝은 실버/회색 */
-  --ohaeng-water: #4b5563;  /* 흑 - 남색/어두운 회색 (다크모드용 밝기 조정) */
+  --ohaeng-wood: #4ade80; /* 청/녹 - 녹색 */
+  --ohaeng-fire: #f87171; /* 적 - 빨강 */
+  --ohaeng-earth: #fbbf24; /* 황 - 노랑 */
+  --ohaeng-metal: #cbd5e1; /* 백 - 밝은 실버/회색 */
+  --ohaeng-water: #4b5563; /* 흑 - 남색/어두운 회색 (다크모드용 밝기 조정) */
 
   /* 추가 컬러 */
   --success: #22c55e;
@@ -61,7 +76,7 @@
   --info: #60a5fa;
 
   /* 테두리 & 그림자 */
-  --border: rgba(255, 255, 255, 0.1);
+  --border: rgba(255, 255, 255, 0.15);
   --border-light: rgba(255, 255, 255, 0.06);
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
@@ -76,8 +91,10 @@
   --glass-blur: 12px;
 
   /* 폰트 */
-  --font-sans: 'Pretendard Variable', var(--font-geist-sans), -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), 'SF Mono', Consolas, monospace;
+  --font-sans:
+    "Pretendard Variable", var(--font-geist-sans), -apple-system,
+    BlinkMacSystemFont, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), "SF Mono", Consolas, monospace;
 
   /* 간격 & 크기 */
   --radius-sm: 0.5rem;
@@ -104,7 +121,9 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
   word-break: keep-all;
 }
 
