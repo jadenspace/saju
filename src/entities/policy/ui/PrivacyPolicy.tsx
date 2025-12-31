@@ -12,7 +12,7 @@ export const PrivacyPolicy = () => {
       <h1 className={styles.title}>개인정보처리방침</h1>
       
       <p className={styles.intro}>
-        ㈜제이든스페이스(이하 “회사”)는 「개인정보 보호법」 등 관련 법령을 준수하며, 이용자의 개인정보를 보호하고 권익을 보호하기 위하여 다음과 같은 개인정보처리방침을 수립·공개합니다.
+        ㈜오늘의운세는(이하 “회사”)는 「개인정보 보호법」 등 관련 법령을 준수하며, 이용자의 개인정보를 보호하고 권익을 보호하기 위하여 다음과 같은 개인정보처리방침을 수립·공개합니다.
       </p>
 
       <section className={styles.section}>
