@@ -29,11 +29,15 @@
   max-width: 600px;
   width: 100%;
   max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
   animation: slideUp 0.3s ease-out;
   position: relative;
   border: 1px solid #333;
+  overflow: hidden;
 }
 
 @keyframes slideUp {
@@ -68,6 +72,7 @@
 .header {
   margin-bottom: 1.5rem;
   padding-right: 3rem;
+  flex-shrink: 0;
 }
 
 .title {
@@ -81,6 +86,9 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
 }
 
 @media (max-width: 600px) {

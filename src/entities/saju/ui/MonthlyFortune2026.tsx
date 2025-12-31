@@ -1,16 +1,17 @@
-'use client';
+"use client";
 
-import { MonthlyFortune2026 as MonthlyFortune2026Type } from '@/entities/saju/model/types';
-import styles from './MonthlyFortune2026.module.css';
-import { useState, useRef, useMemo, useEffect } from 'react';
-import { Modal } from '@/shared/ui/Modal';
+import { MonthlyFortune2026 as MonthlyFortune2026Type } from "@/entities/saju/model/types";
+import styles from "./MonthlyFortune2026.module.css";
+import { useState, useRef, useMemo, useEffect, useCallback } from "react";
+import { Modal } from "@/shared/ui/Modal";
 
 interface MonthlyFortune2026Props {
   monthly: MonthlyFortune2026Type[];
 }
 
 export const MonthlyFortune2026 = ({ monthly }: MonthlyFortune2026Props) => {
-  const [selectedMonth, setSelectedMonth] = useState<MonthlyFortune2026Type | null>(null);
+  const [selectedMonth, setSelectedMonth] =
+    useState<MonthlyFortune2026Type | null>(null);
   // activeIndex가 유효한 범위 내에 있도록 보장
   const [activeIndex, setActiveIndex] = useState(() => {
     return monthly.length > 0 ? 0 : -1;
@@ -20,6 +21,9 @@ export const MonthlyFortune2026 = ({ monthly }: MonthlyFortune2026Props) => {
   const [startY, setStartY] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
   const detailsRef = useRef<HTMLDivElement>(null);
+  const monthWheelRef = useRef<HTMLDivElement>(null);
+  const isDraggingRef = useRef(false);
+  const startYRef = useRef(0);
 
   // monthly 배열이 변경되거나 activeIndex가 범위를 벗어났을 때 보정
   useEffect(() => {
@@ -29,7 +33,7 @@ export const MonthlyFortune2026 = ({ monthly }: MonthlyFortune2026Props) => {
       }
       return;
     }
-    
+
     // activeIndex가 유효한 범위를 벗어났을 때만 보정
     if (activeIndex < 0) {
       setActiveIndex(0);
@@ -40,12 +44,12 @@ export const MonthlyFortune2026 = ({ monthly }: MonthlyFortune2026Props) => {
 
   const gradeStars = (grade: string) => {
     const starMap: Record<string, number> = {
-      '상상': 5,  // 5개 별
-      '상': 4,
-      '중상': 3,
-      '중': 2,
-      '중하': 1,
-      '하': 0,
+      상상: 5, // 5개 별
+      상: 4,
+      중상: 3,
+      중: 2,
+      중하: 1,
+      하: 0,
     };
     return starMap[grade] || 0;
   };
@@ -53,8 +57,18 @@ export const MonthlyFortune2026 = ({ monthly }: MonthlyFortune2026Props) => {
   // 지지 한글 변환
   const convertJiToKorean = (jiHan: string): string => {
     const map: Record<string, string> = {
-      '子': '자', '丑': '축', '寅': '인', '卯': '묘', '辰': '진', '巳': '사',
-      '午': '오', '未': '미', '申': '신', '酉': '유', '戌': '술', '亥': '해'
+      子: "자",
+      丑: "축",
+      寅: "인",
+      卯: "묘",
+      辰: "진",
+      巳: "사",
+      午: "오",
+      未: "미",
+      申: "신",
+      酉: "유",
+      戌: "술",
+      亥: "해",
     };
     return map[jiHan] || jiHan;
   };
@@ -62,12 +76,30 @@ export const MonthlyFortune2026 = ({ monthly }: MonthlyFortune2026Props) => {
   // 간지 한글 변환 (간+지)
   const convertGanZhiToKorean = (ganZhi: string): string => {
     const ganMap: Record<string, string> = {
-      '甲': '갑', '乙': '을', '丙': '병', '丁': '정', '戊': '무',
-      '己': '기', '庚': '경', '辛': '신', '壬': '임', '癸': '계'
+      甲: "갑",
+      乙: "을",
+      丙: "병",
+      丁: "정",
+      戊: "무",
+      己: "기",
+      庚: "경",
+      辛: "신",
+      壬: "임",
+      癸: "계",
     };
     const jiMap: Record<string, string> = {
-      '子': '자', '丑': '축', '寅': '인', '卯': '묘', '辰': '진', '巳': '사',
-      '午': '오', '未': '미', '申': '신', '酉': '유', '戌': '술', '亥': '해'
+      子: "자",
+      丑: "축",
+      寅: "인",
+      卯: "묘",
+      辰: "진",
+      巳: "사",
+      午: "오",
+      未: "미",
+      申: "신",
+      酉: "유",
+      戌: "술",
+      亥: "해",
     };
     if (ganZhi.length === 2) {
       const gan = ganMap[ganZhi[0]] || ganZhi[0];
@@ -79,14 +111,13 @@ export const MonthlyFortune2026 = ({ monthly }: MonthlyFortune2026Props) => {
 
   // 점수에 따른 요약 제목 생성
   const getSummaryTitle = (score: number): string => {
-    if (score >= 4.5) return '최고의 달';
-    if (score >= 4.0) return '좋은 달';
-    if (score >= 3.0) return '보통의 달';
-    if (score >= 2.5) return '주의의 달';
-    if (score >= 2.0) return '조심의 달';
-    return '조심의 달';
+    if (score >= 4.5) return "최고의 달";
+    if (score >= 4.0) return "좋은 달";
+    if (score >= 3.0) return "보통의 달";
+    if (score >= 2.5) return "주의의 달";
+    if (score >= 2.0) return "조심의 달";
+    return "조심의 달";
   };
-
 
   // 선형그래프를 위한 좌표 계산 (useMemo로 메모이제이션하여 hydration 에러 방지)
   const chartData = useMemo(() => {
@@ -97,29 +128,30 @@ export const MonthlyFortune2026 = ({ monthly }: MonthlyFortune2026Props) => {
     const chartHeight = height - padding.top - padding.bottom;
 
     if (monthly.length === 0) {
-      return { points: [], pathData: '', width, height, padding };
+      return { points: [], pathData: "", width, height, padding };
     }
 
     const points = monthly.map((month, index) => {
       const divisor = monthly.length > 1 ? monthly.length - 1 : 1;
       const x = padding.left + (index / divisor) * chartWidth;
-      const y = padding.top + chartHeight - ((month.score - 1) / 4) * chartHeight;
+      const y =
+        padding.top + chartHeight - ((month.score - 1) / 4) * chartHeight;
       // 숫자 포맷팅을 미리 계산하여 hydration 일관성 보장
       const scoreFixed = Number(month.score.toFixed(1));
-      return { 
-        x: Number(x.toFixed(2)), 
-        y: Number(y.toFixed(2)), 
-        month, 
-        score: scoreFixed, 
-        grade: month.grade, 
-        ganZhi: month.ganZhi 
+      return {
+        x: Number(x.toFixed(2)),
+        y: Number(y.toFixed(2)),
+        month,
+        score: scoreFixed,
+        grade: month.grade,
+        ganZhi: month.ganZhi,
       };
     });
 
     // 선 경로 생성
     const pathData = points
-      .map((point, index) => `${index === 0 ? 'M' : 'L'} ${point.x} ${point.y}`)
-      .join(' ');
+      .map((point, index) => `${index === 0 ? "M" : "L"} ${point.x} ${point.y}`)
+      .join(" ");
 
     return { points, pathData, width, height, padding };
   }, [monthly]);
@@ -152,7 +184,10 @@ export const MonthlyFortune2026 = ({ monthly }: MonthlyFortune2026Props) => {
   };
 
   // 카드 클릭 시 드래그와 구분 (데스크탑 버전)
-  const handleDesktopCardClick = (month: MonthlyFortune2026Type, e: React.MouseEvent) => {
+  const handleDesktopCardClick = (
+    month: MonthlyFortune2026Type,
+    e: React.MouseEvent,
+  ) => {
     if (isDragging) {
       e.preventDefault();
       return;
@@ -160,47 +195,87 @@ export const MonthlyFortune2026 = ({ monthly }: MonthlyFortune2026Props) => {
     setSelectedMonth(month);
   };
 
-  // 모바일 터치 처리
-  const handleTouchStart = (e: React.TouchEvent) => {
-    setStartY(e.touches[0].pageY);
+  // 모바일 터치 처리 (네이티브 이벤트로 passive: false 설정)
+  const handleTouchStart = useCallback((e: Event) => {
+    const touchEvent = e as TouchEvent;
+    touchEvent.preventDefault(); // 기본 스크롤 방지
+    startYRef.current = touchEvent.touches[0].pageY;
+    isDraggingRef.current = true;
     setIsDragging(true);
-  };
+  }, []);
 
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isDragging) return;
-    if (monthly.length === 0) return;
-    const currentY = e.touches[0].pageY;
-    const diff = startY - currentY;
+  const handleTouchMove = useCallback(
+    (e: Event) => {
+      if (!isDraggingRef.current) return;
+      if (monthly.length === 0) return;
+      const touchEvent = e as TouchEvent;
+      touchEvent.preventDefault(); // 기본 스크롤 방지
+      const currentY = touchEvent.touches[0].pageY;
+      const diff = startYRef.current - currentY;
 
-    if (Math.abs(diff) > 30) {
-      if (diff > 0 && activeIndex < monthly.length - 1) {
-        setActiveIndex(prev => Math.min(prev + 1, monthly.length - 1));
-        setStartY(currentY);
-      } else if (diff < 0 && activeIndex > 0) {
-        setActiveIndex(prev => Math.max(prev - 1, 0));
-        setStartY(currentY);
+      if (Math.abs(diff) > 30) {
+        setActiveIndex((prev) => {
+          if (diff > 0 && prev < monthly.length - 1) {
+            startYRef.current = currentY;
+            return Math.min(prev + 1, monthly.length - 1);
+          } else if (diff < 0 && prev > 0) {
+            startYRef.current = currentY;
+            return Math.max(prev - 1, 0);
+          }
+          return prev;
+        });
       }
-    }
-  };
+    },
+    [monthly.length],
+  );
 
-  const handleTouchEnd = () => {
+  const handleTouchEnd = useCallback(() => {
+    isDraggingRef.current = false;
     setIsDragging(false);
-  };
+  }, []);
+
+  // 네이티브 터치 이벤트 리스너 등록 (passive: false) - monthWheel에만 적용
+  useEffect(() => {
+    const monthWheelElement = monthWheelRef.current;
+
+    if (monthWheelElement) {
+      monthWheelElement.addEventListener("touchstart", handleTouchStart, {
+        passive: false,
+      });
+      monthWheelElement.addEventListener("touchmove", handleTouchMove, {
+        passive: false,
+      });
+      monthWheelElement.addEventListener("touchend", handleTouchEnd, {
+        passive: false,
+      });
+    }
+
+    return () => {
+      if (monthWheelElement) {
+        monthWheelElement.removeEventListener("touchstart", handleTouchStart);
+        monthWheelElement.removeEventListener("touchmove", handleTouchMove);
+        monthWheelElement.removeEventListener("touchend", handleTouchEnd);
+      }
+    };
+  }, [handleTouchStart, handleTouchMove, handleTouchEnd]);
 
   // 휠 이벤트 처리 (모바일 시뮬레이션 및 터치패드 대응)
   const handleWheel = (e: React.WheelEvent) => {
     if (Math.abs(e.deltaY) < 10) return;
     if (monthly.length === 0) return;
-    
+
     if (e.deltaY > 0 && activeIndex < monthly.length - 1) {
-      setActiveIndex(prev => Math.min(prev + 1, monthly.length - 1));
+      setActiveIndex((prev) => Math.min(prev + 1, monthly.length - 1));
     } else if (e.deltaY < 0 && activeIndex > 0) {
-      setActiveIndex(prev => Math.max(prev - 1, 0));
+      setActiveIndex((prev) => Math.max(prev - 1, 0));
     }
   };
 
   // activeMonth를 안전하게 가져오기
-  const activeMonth = activeIndex >= 0 && activeIndex < monthly.length ? monthly[activeIndex] : null;
+  const activeMonth =
+    activeIndex >= 0 && activeIndex < monthly.length
+      ? monthly[activeIndex]
+      : null;
 
   return (
     <div className={styles.container}>
@@ -215,16 +290,36 @@ export const MonthlyFortune2026 = ({ monthly }: MonthlyFortune2026Props) => {
           >
             {/* 그리드 라인 */}
             <defs>
-              <linearGradient id="lineGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="var(--primary)" stopOpacity="0.8" />
-                <stop offset="100%" stopColor="var(--primary)" stopOpacity="0.3" />
+              <linearGradient
+                id="lineGradient"
+                x1="0%"
+                y1="0%"
+                x2="0%"
+                y2="100%"
+              >
+                <stop
+                  offset="0%"
+                  stopColor="var(--primary)"
+                  stopOpacity="0.8"
+                />
+                <stop
+                  offset="100%"
+                  stopColor="var(--primary)"
+                  stopOpacity="0.3"
+                />
               </linearGradient>
             </defs>
-            
+
             {/* Y축 그리드 라인 */}
             {[1, 2, 3, 4, 5].map((score) => {
-              const chartHeight = chartData.height - chartData.padding.top - chartData.padding.bottom;
-              const y = chartData.padding.top + chartHeight - ((score - 1) / 4) * chartHeight;
+              const chartHeight =
+                chartData.height -
+                chartData.padding.top -
+                chartData.padding.bottom;
+              const y =
+                chartData.padding.top +
+                chartHeight -
+                ((score - 1) / 4) * chartHeight;
               return (
                 <g key={score}>
                   <line
@@ -318,7 +413,7 @@ export const MonthlyFortune2026 = ({ monthly }: MonthlyFortune2026Props) => {
         {/* 월별 상세 */}
         <div
           ref={detailsRef}
-          className={`${styles.details} ${isDragging ? styles.dragging : ''}`}
+          className={`${styles.details} ${isDragging ? styles.dragging : ""}`}
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
@@ -330,8 +425,8 @@ export const MonthlyFortune2026 = ({ monthly }: MonthlyFortune2026Props) => {
             const summaryTitle = getSummaryTitle(month.score);
 
             return (
-              <div 
-                key={month.month} 
+              <div
+                key={month.month}
                 className={styles.monthCard}
                 onClick={(e) => handleDesktopCardClick(month, e)}
               >
@@ -343,8 +438,13 @@ export const MonthlyFortune2026 = ({ monthly }: MonthlyFortune2026Props) => {
 
                 {/* 간지 표시 */}
                 <div className={styles.ganZhi}>
-                  <span className={styles.hanja}>{month.ganHan}{month.jiHan}</span>
-                  <span className={styles.hangul}>{convertGanZhiToKorean(month.ganZhi)}</span>
+                  <span className={styles.hanja}>
+                    {month.ganHan}
+                    {month.jiHan}
+                  </span>
+                  <span className={styles.hangul}>
+                    {convertGanZhiToKorean(month.ganZhi)}
+                  </span>
                 </div>
 
                 {/* 별점과 테마 */}
@@ -353,7 +453,7 @@ export const MonthlyFortune2026 = ({ monthly }: MonthlyFortune2026Props) => {
                     {Array.from({ length: 5 }).map((_, i) => (
                       <span
                         key={i}
-                        className={`${styles.star} ${i < stars ? styles.active : ''}`}
+                        className={`${styles.star} ${i < stars ? styles.active : ""}`}
                       >
                         ★
                       </span>
@@ -371,27 +471,21 @@ export const MonthlyFortune2026 = ({ monthly }: MonthlyFortune2026Props) => {
       </div>
 
       {/* 모바일 뷰: 세로 드래그 휠 UI */}
-      <div 
-        className={styles.mobileView}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-        onWheel={handleWheel}
-      >
+      <div className={styles.mobileView} onWheel={handleWheel}>
         <div className={styles.wheelContainer}>
           {/* 왼쪽 곡선 가이드 (SVG) */}
           <svg className={styles.wheelArc} viewBox="0 0 100 400">
-            <path 
-              d="M 120,0 Q 20,200 120,400" 
-              fill="none" 
-              stroke="var(--card-border)" 
-              strokeWidth="1" 
+            <path
+              d="M 120,0 Q 20,200 120,400"
+              fill="none"
+              stroke="var(--card-border)"
+              strokeWidth="1"
               opacity="0.3"
             />
           </svg>
 
           {/* 월별 숫자들 */}
-          <div className={styles.monthWheel}>
+          <div ref={monthWheelRef} className={styles.monthWheel}>
             {monthly.map((month, idx) => {
               const offset = idx - activeIndex;
               const opacity = Math.max(0, 1 - Math.abs(offset) * 0.3);
@@ -403,7 +497,7 @@ export const MonthlyFortune2026 = ({ monthly }: MonthlyFortune2026Props) => {
               return (
                 <div
                   key={month.month}
-                  className={`${styles.wheelItem} ${idx === activeIndex ? styles.active : ''}`}
+                  className={`${styles.wheelItem} ${idx === activeIndex ? styles.active : ""}`}
                   style={{
                     transform: `translate(${translateX}px, ${translateY}px) scale(${scale})`,
                     opacity,
@@ -422,16 +516,22 @@ export const MonthlyFortune2026 = ({ monthly }: MonthlyFortune2026Props) => {
 
           {/* 현재 활성화된 월의 콘텐츠 */}
           {activeMonth && (
-            <div 
+            <div
               className={styles.activeContent}
               onClick={() => setSelectedMonth(activeMonth)}
             >
               <div className={styles.mobileMonthTitle}>
-                <span className={styles.mobileGanZhi}>{activeMonth.ganZhi}월</span>
-                <h4 className={styles.mobileSummaryTitle}>{getSummaryTitle(activeMonth.score)}</h4>
+                <span className={styles.mobileGanZhi}>
+                  {activeMonth.ganZhi}월
+                </span>
+                <h4 className={styles.mobileSummaryTitle}>
+                  {getSummaryTitle(activeMonth.score)}
+                </h4>
               </div>
               <p className={styles.mobileDesc}>{activeMonth.analysis.total}</p>
-              <div className={styles.mobileMore}>자세히 보기 <span>→</span></div>
+              <div className={styles.mobileMore}>
+                자세히 보기 <span>→</span>
+              </div>
             </div>
           )}
         </div>
@@ -446,33 +546,45 @@ export const MonthlyFortune2026 = ({ monthly }: MonthlyFortune2026Props) => {
         >
           <div className={styles.monthContent}>
             <div className={styles.monthSection}>
-              <div className={styles.monthSectionLabel}>총평</div>
-              <p className={styles.monthSectionText}>{selectedMonth.analysis.total}</p>
+              <div className={styles.monthSectionLabel}>총운</div>
+              <p className={styles.monthSectionText}>
+                {selectedMonth.analysis.total}
+              </p>
             </div>
 
             <div className={styles.monthSection}>
-              <div className={styles.monthSectionLabel}>💰 재물</div>
-              <p className={styles.monthSectionText}>{selectedMonth.analysis.wealth}</p>
+              <div className={styles.monthSectionLabel}>재물운</div>
+              <p className={styles.monthSectionText}>
+                {selectedMonth.analysis.wealth}
+              </p>
             </div>
 
             <div className={styles.monthSection}>
-              <div className={styles.monthSectionLabel}>💕 애정</div>
-              <p className={styles.monthSectionText}>{selectedMonth.analysis.love}</p>
+              <div className={styles.monthSectionLabel}>애정운</div>
+              <p className={styles.monthSectionText}>
+                {selectedMonth.analysis.love}
+              </p>
             </div>
 
             <div className={styles.monthSection}>
-              <div className={styles.monthSectionLabel}>💼 직장</div>
-              <p className={styles.monthSectionText}>{selectedMonth.analysis.career}</p>
+              <div className={styles.monthSectionLabel}>직장운</div>
+              <p className={styles.monthSectionText}>
+                {selectedMonth.analysis.career}
+              </p>
             </div>
 
             <div className={styles.monthSection}>
-              <div className={styles.monthSectionLabel}>🏥 건강</div>
-              <p className={styles.monthSectionText}>{selectedMonth.analysis.health}</p>
+              <div className={styles.monthSectionLabel}>건강운</div>
+              <p className={styles.monthSectionText}>
+                {selectedMonth.analysis.health}
+              </p>
             </div>
 
             <div className={styles.monthSection}>
-              <div className={styles.monthSectionLabel}>💡 조언</div>
-              <p className={styles.monthSectionText}>{selectedMonth.analysis.advice}</p>
+              <div className={styles.monthSectionLabel}>조언</div>
+              <p className={styles.monthSectionText}>
+                {selectedMonth.analysis.advice}
+              </p>
             </div>
           </div>
         </Modal>
@@ -480,4 +592,3 @@ export const MonthlyFortune2026 = ({ monthly }: MonthlyFortune2026Props) => {
     </div>
   );
 };
-
