@@ -50,6 +50,6 @@ export default async function Page({ searchParams }: PageProps) {
   console.log('sajuData:', sajuData);
   console.log('fortuneData:', fortuneData);
 
-  return <NewYearFortune2026View sajuData={sajuData} fortuneData={fortuneData} />;
+  return <NewYearFortune2026View sajuData={sajuData} fortuneData={fortuneData} searchParams={params} />;
 }
 

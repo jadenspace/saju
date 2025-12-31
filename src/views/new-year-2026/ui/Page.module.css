@@ -211,6 +211,12 @@
   gap: 1.5rem;
 }
 
+.monthlySection .disclaimer {
+  margin-top: 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
 /* Footer */
 .footer {
   display: flex;
@@ -219,6 +225,14 @@
   gap: 1.5rem;
   margin-top: 1rem;
   padding-bottom: 2rem;
+}
+
+.footerActions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: stretch;
+  width: 100%;
 }
 
 .disclaimer {
@@ -239,6 +253,14 @@
 
   .title {
     font-size: 1.5rem;
+  }
+
+  .footerActions {
+    width: 100%;
+  }
+
+  .footerActions > * {
+    width: 100%;
   }
 }
 

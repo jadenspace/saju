@@ -10,10 +10,20 @@ import { MonthlyFortune2026 } from '@/entities/saju/ui/MonthlyFortune2026';
 interface NewYearFortune2026ViewProps {
   sajuData: SajuData;
   fortuneData: NewYearFortune2026;
+  searchParams: { [key: string]: string | string[] | undefined };
 }
 
-export const NewYearFortune2026View = ({ sajuData, fortuneData }: NewYearFortune2026ViewProps) => {
+export const NewYearFortune2026View = ({ sajuData, fortuneData, searchParams }: NewYearFortune2026ViewProps) => {
   const router = useRouter();
+
+  const searchParamsString = new URLSearchParams(
+    Object.entries(searchParams).reduce((acc, [key, value]) => {
+      if (value !== undefined) {
+        acc[key] = Array.isArray(value) ? value[0] : value;
+      }
+      return acc;
+    }, {} as Record<string, string>)
+  ).toString();
 
   return (
     <main className={styles.main}>
@@ -47,6 +57,10 @@ export const NewYearFortune2026View = ({ sajuData, fortuneData }: NewYearFortune
             <p className={styles.sectionDesc}>절기(입춘 등) 기준으로 구분된 월별 기운입니다.</p>
           </div>
           <MonthlyFortune2026 monthly={fortuneData.monthly} />
+          <p className={styles.disclaimer}>
+            본 운세 결과는 명리학적 규칙에 기반한 분석이며, <br />
+            삶의 참고 자료로만 활용하시기 바랍니다.
+          </p>
         </section>
 
         {/* 유료 전환 CTA */}
@@ -67,13 +81,14 @@ export const NewYearFortune2026View = ({ sajuData, fortuneData }: NewYearFortune
         </section>
 
         <footer className={styles.footer}>
-          <Button onClick={() => router.push('/')} variant="outline" fullWidth>
-            다시 입력하기
-          </Button>
-          <p className={styles.disclaimer}>
-            본 운세 결과는 명리학적 규칙에 기반한 분석이며, <br />
-            삶의 참고 자료로만 활용하시기 바랍니다.
-          </p>
+          <div className={styles.footerActions}>
+            <Button onClick={() => router.push('/result?' + searchParamsString)} variant="outline" fullWidth>
+              정통 사주 보기
+            </Button>
+            <Button onClick={() => router.push('/')} variant="outline" fullWidth>
+              다시 입력하기
+            </Button>
+          </div>
         </footer>
       </div>
     </main>
