@@ -1,54 +1,61 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/navigation';
-import { Input } from '@/shared/ui/Input';
-import { Button } from '@/shared/ui/Button';
-import styles from './SajuForm.module.css';
-import KoreanLunarCalendar from 'korean-lunar-calendar';
+import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
+import { Input } from "@/shared/ui/Input";
+import { Button } from "@/shared/ui/Button";
+import styles from "./SajuForm.module.css";
+import KoreanLunarCalendar from "korean-lunar-calendar";
 
 // 로컬스토리지 키
-const STORAGE_KEY_TRUE_SOLAR_TIME = 'saju_useTrueSolarTime';
-const STORAGE_KEY_MIDNIGHT_MODE = 'saju_midnightMode';
+const STORAGE_KEY_TRUE_SOLAR_TIME = "saju_useTrueSolarTime";
+const STORAGE_KEY_MIDNIGHT_MODE = "saju_midnightMode";
 
 export const SajuForm = () => {
   const router = useRouter();
-  
+
   // 로컬스토리지에서 초기값을 읽어오는 lazy initialization 함수
   const getInitialFormData = () => {
-    if (typeof window === 'undefined') {
+    if (typeof window === "undefined") {
       return {
-        birthDate: '', // YYYYMMDD
-        birthTime: '', // HHMM
-        gender: 'male',
+        birthDate: "", // YYYYMMDD
+        birthTime: "", // HHMM
+        gender: "male",
         unknownTime: false,
         isLunar: false,
         isLeapMonth: false,
         useTrueSolarTime: true,
         applyDST: true,
-        midnightMode: 'late' as 'early' | 'late',
+        midnightMode: "late" as "early" | "late",
       };
     }
 
-    const savedUseTrueSolarTime = localStorage.getItem(STORAGE_KEY_TRUE_SOLAR_TIME);
+    const savedUseTrueSolarTime = localStorage.getItem(
+      STORAGE_KEY_TRUE_SOLAR_TIME,
+    );
     const savedMidnightMode = localStorage.getItem(STORAGE_KEY_MIDNIGHT_MODE);
 
     return {
-      birthDate: '', // YYYYMMDD
-      birthTime: '', // HHMM
-      gender: 'male',
+      birthDate: "", // YYYYMMDD
+      birthTime: "", // HHMM
+      gender: "male",
       unknownTime: false,
       isLunar: false,
       isLeapMonth: false,
-      useTrueSolarTime: savedUseTrueSolarTime !== null ? savedUseTrueSolarTime === 'true' : true,
+      useTrueSolarTime:
+        savedUseTrueSolarTime !== null
+          ? savedUseTrueSolarTime === "true"
+          : true,
       applyDST: true,
-      midnightMode: (savedMidnightMode as 'early' | 'late') || 'late',
+      midnightMode: (savedMidnightMode as "early" | "late") || "late",
     };
   };
 
   const [formData, setFormData] = useState(getInitialFormData);
-  const [loading, setLoading] = useState<'fortune' | 'result' | 'yongshin' | null>(null);
-  const [error, setError] = useState<string>('');
+  const [loading, setLoading] = useState<
+    "fortune" | "result" | "yongshin" | null
+  >(null);
+  const [error, setError] = useState<string>("");
   const [showSettings, setShowSettings] = useState(false);
 
   // 초기 마운트 여부 추적
@@ -61,26 +68,31 @@ export const SajuForm = () => {
       return;
     }
 
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(STORAGE_KEY_TRUE_SOLAR_TIME, String(formData.useTrueSolarTime));
+    if (typeof window !== "undefined") {
+      localStorage.setItem(
+        STORAGE_KEY_TRUE_SOLAR_TIME,
+        String(formData.useTrueSolarTime),
+      );
       localStorage.setItem(STORAGE_KEY_MIDNIGHT_MODE, formData.midnightMode);
     }
   }, [formData.useTrueSolarTime, formData.midnightMode]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
     const { name, value, type } = e.target;
-    if (type === 'checkbox') {
+    if (type === "checkbox") {
       const checked = (e.target as HTMLInputElement).checked;
-      setFormData(prev => {
+      setFormData((prev) => {
         const next = { ...prev, [name]: checked };
 
         // Clear birthTime if unknown time is checked
-        if (name === 'unknownTime' && checked) {
-          next.birthTime = '';
+        if (name === "unknownTime" && checked) {
+          next.birthTime = "";
         }
 
         // Reset leap month if lunar is unchecked
-        if (name === 'isLunar' && !checked) {
+        if (name === "isLunar" && !checked) {
           next.isLeapMonth = false;
         }
 
@@ -88,23 +100,26 @@ export const SajuForm = () => {
       });
     } else {
       // Validate numeric input for date and time
-      if (name === 'birthDate' || name === 'birthTime') {
+      if (name === "birthDate" || name === "birthTime") {
         if (!/^\d*$/.test(value)) return;
       }
-      setFormData(prev => ({ ...prev, [name]: value }));
+      setFormData((prev) => ({ ...prev, [name]: value }));
     }
     // Clear error when user makes changes
-    if (error) setError('');
+    if (error) setError("");
   };
 
-  const handleSubmit = (e: React.FormEvent, destination: 'fortune' | 'result' | 'yongshin' | 'new-year-2026') => {
+  const handleSubmit = (
+    e: React.FormEvent,
+    destination: "fortune" | "result" | "yongshin" | "new-year-2026",
+  ) => {
     e.preventDefault();
-    setLoading(destination === 'new-year-2026' ? 'fortune' : destination);
-    setError('');
+    setLoading(destination === "new-year-2026" ? "fortune" : destination);
+    setError("");
 
     // Check Date format (YYYYMMDD)
     if (formData.birthDate.length !== 8) {
-      setError('생년월일 8자리를 정확히 입력해주세요. (예: 19901225)');
+      setError("생년월일 8자리를 정확히 입력해주세요. (예: 19901225)");
       setLoading(null);
       return;
     }
@@ -114,26 +129,31 @@ export const SajuForm = () => {
     const day = parseInt(formData.birthDate.substring(6, 8));
 
     if (month < 1 || month > 12 || day < 1 || day > 31) {
-      setError('유효하지 않은 날짜입니다.');
+      setError("유효하지 않은 날짜입니다.");
       setLoading(null);
       return;
     }
 
     // Check Time format (HHMM) if time is known
-    let hour = '0';
-    let minute = '0';
+    let hour = "0";
+    let minute = "0";
 
     if (!formData.unknownTime) {
       if (formData.birthTime.length !== 4) {
-        setError('출생시간 4자리를 정확히 입력해주세요. (예: 1430)');
+        setError("출생시간 4자리를 정확히 입력해주세요. (예: 1430)");
         setLoading(null);
         return;
       }
       hour = String(parseInt(formData.birthTime.substring(0, 2)));
       minute = String(parseInt(formData.birthTime.substring(2, 4)));
 
-      if (parseInt(hour) < 0 || parseInt(hour) > 23 || parseInt(minute) < 0 || parseInt(minute) > 59) {
-        setError('유효하지 않은 시간입니다.');
+      if (
+        parseInt(hour) < 0 ||
+        parseInt(hour) > 23 ||
+        parseInt(minute) < 0 ||
+        parseInt(minute) > 59
+      ) {
+        setError("유효하지 않은 시간입니다.");
         setLoading(null);
         return;
       }
@@ -153,7 +173,7 @@ export const SajuForm = () => {
           year,
           month,
           day,
-          formData.isLeapMonth // 윤달 여부 반영
+          formData.isLeapMonth, // 윤달 여부 반영
         );
 
         // 2. Initial Conversion
@@ -172,8 +192,12 @@ export const SajuForm = () => {
         }
 
         // Additional check: Ensure dates match exactly (catches invalid days like Feb 30)
-        if (resultLunar.year !== year || resultLunar.month !== month || resultLunar.day !== day) {
-          setError('유효하지 않은 음력 날짜입니다.');
+        if (
+          resultLunar.year !== year ||
+          resultLunar.month !== month ||
+          resultLunar.day !== day
+        ) {
+          setError("유효하지 않은 음력 날짜입니다.");
           setLoading(null);
           return;
         }
@@ -182,7 +206,9 @@ export const SajuForm = () => {
         finalMonth = String(solarDate.month);
         finalDay = String(solarDate.day);
       } catch (err) {
-        setError('유효하지 않은 음력 날짜입니다. 윤달 여부와 날짜를 확인해주세요.');
+        setError(
+          "유효하지 않은 음력 날짜입니다. 윤달 여부와 날짜를 확인해주세요.",
+        );
         setLoading(null);
         return;
       }
@@ -211,7 +237,7 @@ export const SajuForm = () => {
       <div className={styles.settingsToggle}>
         <button
           type="button"
-          className={`${styles.settingsButton} ${showSettings ? styles.active : ''}`}
+          className={`${styles.settingsButton} ${showSettings ? styles.active : ""}`}
           onClick={() => setShowSettings(!showSettings)}
           aria-label="설정"
         >
@@ -230,111 +256,152 @@ export const SajuForm = () => {
 
       {/* Collapsible Settings Panel */}
       {showSettings && (
-        <div className={styles.settingsPanel}>
-          <button
-            type="button"
-            className={styles.closeButton}
+        <>
+          <div
+            className={styles.settingsOverlay}
             onClick={() => setShowSettings(false)}
-            aria-label="닫기"
-          >
-            ×
-          </button>
+          />
+          <div className={styles.settingsPanel}>
+            <button
+              type="button"
+              className={styles.closeButton}
+              onClick={() => setShowSettings(false)}
+              aria-label="닫기"
+            >
+              ×
+            </button>
 
-          {/* 썸머타임 - 필수 적용 안내 */}
-          <div className={styles.field}>
-            <div className={styles.labelWithTooltip}>
-              <label className={styles.label}>썸머타임 (일광절약시간)</label>
-              <div className={styles.tooltip}>
-                <span className={styles.infoIcon}>ⓘ</span>
-                <div className={styles.tooltipContent}>
-                  <strong>본 사이트에서는 썸머타임 적용이 필수입니다.</strong><br />
-                  1948-1960, 1987-1988년 한국에서 시행된 일광절약시간을 자동으로 반영합니다.
+            {/* 썸머타임 - 필수 적용 안내 */}
+            <div className={styles.field}>
+              <div className={styles.labelWithTooltip}>
+                <label className={styles.label}>썸머타임 (일광절약시간)</label>
+                <div className={styles.tooltip}>
+                  <span className={styles.infoIcon}>ⓘ</span>
+                  <div className={styles.tooltipContent}>
+                    <strong>본 사이트에서는 썸머타임 적용이 필수입니다.</strong>
+                    <br />
+                    1948-1960, 1987-1988년 한국에서 시행된 일광절약시간을
+                    자동으로 반영합니다.
+                  </div>
                 </div>
               </div>
+              <p className={styles.helperText}>
+                ✓ 1948-1960, 1987-1988년 출생자에게 자동 적용
+              </p>
             </div>
-            <p className={styles.helperText}>
-              ✓ 1948-1960, 1987-1988년 출생자에게 자동 적용
-            </p>
-          </div>
 
-          {/* 시간 기준 */}
-          <div className={styles.field}>
-            <div className={styles.labelWithTooltip}>
-              <label className={styles.label}>시간 기준</label>
-              <div className={styles.tooltip}>
-                <span className={styles.infoIcon}>ⓘ</span>
-                <div className={styles.tooltipContent}>
-                  <strong>기본값: 진태양시</strong><br />
-                  한국 중심 경도(127.5°)와 표준 경도(135°) 차이를 보정합니다. 대부분의 사주명리학자들이 권장합니다.
+            {/* 시간 기준 */}
+            <div className={styles.field}>
+              <div className={styles.labelWithTooltip}>
+                <label className={styles.label}>시간 기준</label>
+                <div className={styles.tooltip}>
+                  <span className={styles.infoIcon}>ⓘ</span>
+                  <div className={styles.tooltipContent}>
+                    <strong>기본값: 진태양시</strong>
+                    <br />
+                    한국 중심 경도(127.5°)와 표준 경도(135°) 차이를 보정합니다.
+                    대부분의 사주명리학자들이 권장합니다.
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className={styles.radioGroup}>
-              <label className={styles.radioLabel}>
-                <input
-                  type="radio"
-                  name="useTrueSolarTime"
-                  value="true"
-                  checked={formData.useTrueSolarTime === true}
-                  onChange={(e) => setFormData(prev => ({ ...prev, useTrueSolarTime: true }))}
-                  disabled={formData.unknownTime}
-                />
-                <p className={styles.radioLabelText}>진태양시 <br />(경도보정)</p>
-              </label>
-              <label className={styles.radioLabel}>
-                <input
-                  type="radio"
-                  name="useTrueSolarTime"
-                  value="false"
-                  checked={formData.useTrueSolarTime === false}
-                  onChange={(e) => setFormData(prev => ({ ...prev, useTrueSolarTime: false }))}
-                  disabled={formData.unknownTime}
-                />
-                <p className={styles.radioLabelText}>표준시 <br className={styles.mobileBr} />(KST)</p>
-              </label>
-            </div>
-          </div>
-
-          {/* 자시구분 */}
-          <div className={styles.field}>
-            <div className={styles.labelWithTooltip}>
-              <label className={styles.label}>야자시 (夜子時) 설정</label>
-              <div className={styles.tooltip}>
-                <span className={styles.infoIcon}>ⓘ</span>
-                <div className={styles.tooltipContent}>
-                  <strong>기본값: 미적용</strong><br />
-                  {formData.useTrueSolarTime ? '진태양시(23:30~)' : '표준시(23:00~)'} 기준<br />
-                  • 적용: 23시부터 내일로 간주 (일주 변경)<br />
-                  • 미적용: 23시도 오늘로 간주 (일주 유지)
-                </div>
+              <div className={styles.radioGroup}>
+                <label className={styles.radioLabel}>
+                  <input
+                    type="radio"
+                    name="useTrueSolarTime"
+                    value="true"
+                    checked={formData.useTrueSolarTime === true}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        useTrueSolarTime: true,
+                      }))
+                    }
+                    disabled={formData.unknownTime}
+                  />
+                  <p className={styles.radioLabelText}>
+                    진태양시 <br />
+                    (경도보정)
+                  </p>
+                </label>
+                <label className={styles.radioLabel}>
+                  <input
+                    type="radio"
+                    name="useTrueSolarTime"
+                    value="false"
+                    checked={formData.useTrueSolarTime === false}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        useTrueSolarTime: false,
+                      }))
+                    }
+                    disabled={formData.unknownTime}
+                  />
+                  <p className={styles.radioLabelText}>
+                    표준시 <br className={styles.mobileBr} />
+                    (KST)
+                  </p>
+                </label>
               </div>
             </div>
-            <div className={styles.radioGroup}>
-              <label className={styles.radioLabel}>
-                <input
-                  type="radio"
-                  name="midnightMode"
-                  value="early"
-                  checked={formData.midnightMode === 'early'}
-                  onChange={(e) => setFormData(prev => ({ ...prev, midnightMode: 'early' as 'early' | 'late' }))}
-                  disabled={formData.unknownTime}
-                />
-                야자시 적용
-              </label>
-              <label className={styles.radioLabel}>
-                <input
-                  type="radio"
-                  name="midnightMode"
-                  value="late"
-                  checked={formData.midnightMode === 'late'}
-                  onChange={(e) => setFormData(prev => ({ ...prev, midnightMode: 'late' as 'early' | 'late' }))}
-                  disabled={formData.unknownTime}
-                />
-                야자시 미적용
-              </label>
+
+            {/* 자시구분 */}
+            <div className={styles.field}>
+              <div className={styles.labelWithTooltip}>
+                <label className={styles.label}>야자시 (夜子時) 설정</label>
+                <div className={styles.tooltip}>
+                  <span className={styles.infoIcon}>ⓘ</span>
+                  <div className={styles.tooltipContent}>
+                    <strong>기본값: 미적용</strong>
+                    <br />
+                    {formData.useTrueSolarTime
+                      ? "진태양시(23:30~)"
+                      : "표준시(23:00~)"}{" "}
+                    기준
+                    <br />
+                    • 적용: 23시부터 내일로 간주 (일주 변경)
+                    <br />• 미적용: 23시도 오늘로 간주 (일주 유지)
+                  </div>
+                </div>
+              </div>
+              <div className={styles.radioGroup}>
+                <label className={styles.radioLabel}>
+                  <input
+                    type="radio"
+                    name="midnightMode"
+                    value="early"
+                    checked={formData.midnightMode === "early"}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        midnightMode: "early" as "early" | "late",
+                      }))
+                    }
+                    disabled={formData.unknownTime}
+                  />
+                  야자시 적용
+                </label>
+                <label className={styles.radioLabel}>
+                  <input
+                    type="radio"
+                    name="midnightMode"
+                    value="late"
+                    checked={formData.midnightMode === "late"}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        midnightMode: "late" as "early" | "late",
+                      }))
+                    }
+                    disabled={formData.unknownTime}
+                  />
+                  야자시 미적용
+                </label>
+              </div>
             </div>
           </div>
-        </div>
+        </>
       )}
 
       {/* Date Input */}
@@ -414,7 +481,7 @@ export const SajuForm = () => {
               type="radio"
               name="gender"
               value="male"
-              checked={formData.gender === 'male'}
+              checked={formData.gender === "male"}
               onChange={handleChange}
             />
             남성
@@ -424,7 +491,7 @@ export const SajuForm = () => {
               type="radio"
               name="gender"
               value="female"
-              checked={formData.gender === 'female'}
+              checked={formData.gender === "female"}
               onChange={handleChange}
             />
             여성
@@ -434,7 +501,21 @@ export const SajuForm = () => {
 
       {error && (
         <div className={styles.errorMessage}>
-          {error}
+          {error === "생년월일 8자리를 정확히 입력해주세요. (예: 19901225)" ? (
+            <>
+              생년월일 8자리를 정확히 입력해주세요.{" "}
+              <br className={styles.mobileOnlyBr} />
+              (예: 19901225)
+            </>
+          ) : error === "출생시간 4자리를 정확히 입력해주세요. (예: 1430)" ? (
+            <>
+              출생시간 4자리를 정확히 입력해주세요.{" "}
+              <br className={styles.mobileOnlyBr} />
+              (예: 1430)
+            </>
+          ) : (
+            error
+          )}
         </div>
       )}
 
@@ -443,25 +524,28 @@ export const SajuForm = () => {
           type="button"
           disabled={loading !== null}
           className={styles.primaryButton}
-          onClick={(e: React.MouseEvent) => handleSubmit(e as unknown as React.FormEvent, 'new-year-2026')}
+          onClick={(e: React.MouseEvent) =>
+            handleSubmit(e as unknown as React.FormEvent, "new-year-2026")
+          }
           id="btn-saju-2026"
         >
-          {loading === 'fortune' ? '분석 중...' : '2026 신년운세'}
+          {loading === "fortune" ? "분석 중..." : "2026 신년운세"}
         </Button>
         <Button
           type="button"
           disabled={loading !== null}
           className={styles.secondaryButton}
-          onClick={(e: React.MouseEvent) => handleSubmit(e as unknown as React.FormEvent, 'result')}
+          onClick={(e: React.MouseEvent) =>
+            handleSubmit(e as unknown as React.FormEvent, "result")
+          }
           id="btn-saju-all"
         >
-          {loading === 'result' ? '분석 중...' : '정통 사주'}
+          {loading === "result" ? "분석 중..." : "정통 사주"}
         </Button>
         <Button
           type="button"
-          disabled={loading !== null}
+          disabled={true}
           className={styles.tertiaryButton}
-          onClick={() => alert('준비중입니다')}
           id="btn-yongshin"
         >
           용신 분석

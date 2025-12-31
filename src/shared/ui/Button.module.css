@@ -10,6 +10,14 @@
   cursor: pointer;
   position: relative;
   overflow: hidden;
+  line-height: 1.5;
+}
+
+.button span {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  line-height: inherit;
 }
 
 .button::before {
