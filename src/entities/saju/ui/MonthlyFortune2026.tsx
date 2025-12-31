@@ -2,7 +2,7 @@
 
 import { MonthlyFortune2026 as MonthlyFortune2026Type } from '@/entities/saju/model/types';
 import styles from './MonthlyFortune2026.module.css';
-import { useState, useRef, useMemo } from 'react';
+import { useState, useRef, useMemo, useEffect } from 'react';
 import { Modal } from '@/shared/ui/Modal';
 
 interface MonthlyFortune2026Props {
@@ -11,12 +11,32 @@ interface MonthlyFortune2026Props {
 
 export const MonthlyFortune2026 = ({ monthly }: MonthlyFortune2026Props) => {
   const [selectedMonth, setSelectedMonth] = useState<MonthlyFortune2026Type | null>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
+  // activeIndex가 유효한 범위 내에 있도록 보장
+  const [activeIndex, setActiveIndex] = useState(() => {
+    return monthly.length > 0 ? 0 : -1;
+  });
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [startY, setStartY] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
   const detailsRef = useRef<HTMLDivElement>(null);
+
+  // monthly 배열이 변경되거나 activeIndex가 범위를 벗어났을 때 보정
+  useEffect(() => {
+    if (monthly.length === 0) {
+      if (activeIndex !== -1) {
+        setActiveIndex(-1);
+      }
+      return;
+    }
+    
+    // activeIndex가 유효한 범위를 벗어났을 때만 보정
+    if (activeIndex < 0) {
+      setActiveIndex(0);
+    } else if (activeIndex >= monthly.length) {
+      setActiveIndex(monthly.length - 1);
+    }
+  }, [monthly.length, activeIndex]);
 
   const gradeStars = (grade: string) => {
     const starMap: Record<string, number> = {
@@ -148,15 +168,16 @@ export const MonthlyFortune2026 = ({ monthly }: MonthlyFortune2026Props) => {
 
   const handleTouchMove = (e: React.TouchEvent) => {
     if (!isDragging) return;
+    if (monthly.length === 0) return;
     const currentY = e.touches[0].pageY;
     const diff = startY - currentY;
 
     if (Math.abs(diff) > 30) {
       if (diff > 0 && activeIndex < monthly.length - 1) {
-        setActiveIndex(prev => prev + 1);
+        setActiveIndex(prev => Math.min(prev + 1, monthly.length - 1));
         setStartY(currentY);
       } else if (diff < 0 && activeIndex > 0) {
-        setActiveIndex(prev => prev - 1);
+        setActiveIndex(prev => Math.max(prev - 1, 0));
         setStartY(currentY);
       }
     }
@@ -169,15 +190,17 @@ export const MonthlyFortune2026 = ({ monthly }: MonthlyFortune2026Props) => {
   // 휠 이벤트 처리 (모바일 시뮬레이션 및 터치패드 대응)
   const handleWheel = (e: React.WheelEvent) => {
     if (Math.abs(e.deltaY) < 10) return;
+    if (monthly.length === 0) return;
     
     if (e.deltaY > 0 && activeIndex < monthly.length - 1) {
-      setActiveIndex(prev => prev + 1);
+      setActiveIndex(prev => Math.min(prev + 1, monthly.length - 1));
     } else if (e.deltaY < 0 && activeIndex > 0) {
-      setActiveIndex(prev => prev - 1);
+      setActiveIndex(prev => Math.max(prev - 1, 0));
     }
   };
 
-  const activeMonth = monthly[activeIndex];
+  // activeMonth를 안전하게 가져오기
+  const activeMonth = activeIndex >= 0 && activeIndex < monthly.length ? monthly[activeIndex] : null;
 
   return (
     <div className={styles.container}>
@@ -385,7 +408,11 @@ export const MonthlyFortune2026 = ({ monthly }: MonthlyFortune2026Props) => {
                     transform: `translate(${translateX}px, ${translateY}px) scale(${scale})`,
                     opacity,
                   }}
-                  onClick={() => setActiveIndex(idx)}
+                  onClick={() => {
+                    if (idx >= 0 && idx < monthly.length) {
+                      setActiveIndex(idx);
+                    }
+                  }}
                 >
                   {month.month < 10 ? `0${month.month}` : month.month}
                 </div>
