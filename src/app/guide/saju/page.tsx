@@ -89,7 +89,7 @@ export default function SajuGuidePage() {
                 <div className={styles.section}>
                     <h2 className={styles.sectionTitle}>사주의 구조</h2>
                     <div className={styles.description} style={{ borderLeft: 'none', textAlign: 'center' }}>
-                        <pre style={{ fontFamily: 'monospace', fontSize: '1rem', lineHeight: 1.8 }}>
+                        <pre style={{ fontFamily: 'monospace', fontSize: '0.9rem', lineHeight: 1.8 }}>
 {`        시주    일주    월주    년주
         ─────────────────────────
 천간 →   ○      ○      ○      ○
@@ -135,7 +135,7 @@ export default function SajuGuidePage() {
                         <tbody>
                             {cheongan.map((item) => (
                                 <tr key={item.han}>
-                                    <td style={{ fontFamily: '"Noto Serif KR", serif', fontSize: '1.2rem' }}>{item.han}</td>
+                                    <td style={{ fontFamily: '"Noto Serif KR", serif', fontSize: '1.1rem' }}>{item.han}</td>
                                     <td>{item.kor}</td>
                                     <td>{item.element}</td>
                                     <td>{item.desc}</td>
@@ -163,7 +163,7 @@ export default function SajuGuidePage() {
                         <tbody>
                             {jiji.map((item) => (
                                 <tr key={item.han}>
-                                    <td style={{ fontFamily: '"Noto Serif KR", serif', fontSize: '1.2rem' }}>{item.han}</td>
+                                    <td style={{ fontFamily: '"Noto Serif KR", serif', fontSize: '1.1rem' }}>{item.han}</td>
                                     <td>{item.kor}</td>
                                     <td>{item.animal}</td>
                                     <td>{item.time}</td>

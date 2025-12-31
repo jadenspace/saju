@@ -70,7 +70,7 @@ export default function GongmangGuidePage() {
                             </p>
                         </div>
                     </div>
-                    <p style={{ marginTop: '1rem', opacity: 0.7, fontSize: '0.9rem' }}>
+                    <p style={{ marginTop: '1rem', opacity: 0.7, fontSize: '0.85rem' }}>
                         * 대운에서 오는 공망은 공망으로 보지 않습니다. 세운 공망은 원국에 공망이 있을 때 해공 여부 확인용으로만 사용합니다.
                     </p>
                 </div>
@@ -125,7 +125,7 @@ export default function GongmangGuidePage() {
                             <div key={item.type} className={styles.item}>
                                 <div className={styles.itemTitle} style={{ marginBottom: '0.5rem' }}>{item.type}</div>
                                 <p className={styles.itemDescription}>{item.desc}</p>
-                                <p style={{ marginTop: '0.5rem', opacity: 0.6, fontSize: '0.85rem' }}>
+                                <p style={{ marginTop: '0.5rem', opacity: 0.6, fontSize: '0.8rem' }}>
                                     예: {item.example}
                                 </p>
                             </div>
@@ -137,10 +137,10 @@ export default function GongmangGuidePage() {
                     <h2 className={styles.sectionTitle}>공망의 긍정적 해석</h2>
                     <div className={styles.description} style={{ borderLeftColor: '#4ade80' }}>
                         <p>
-                            공망은 단순히 "비어서 힘이 없다"는 부정적 의미만 있는 것이 아닙니다.
+                            공망은 단순히 &quot;비어서 힘이 없다&quot;는 부정적 의미만 있는 것이 아닙니다.
                         </p>
                         <br />
-                        <ul style={{ marginLeft: '1.5rem', lineHeight: 1.8 }}>
+                        <ul style={{ lineHeight: 1.8 }}>
                             <li><strong>물질적 욕심에서 벗어남</strong> - 세속적 집착이 적어 정신적으로 자유로움</li>
                             <li><strong>창의적이고 독창적</strong> - 기존 틀에 얽매이지 않는 새로운 시각</li>
                             <li><strong>종교, 철학, 예술적 성향</strong> - 내면세계가 풍요로움</li>
