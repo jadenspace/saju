@@ -194,7 +194,7 @@
 .wood { background: #4ade80; }
 .fire { background: #f87171; }
 .earth { background: #fbbf24; color: var(--text-on-light); }
-.metal { background: #94a3b8; color: var(--text-on-light); }
+.metal { background: #cbd5e1; color: #000; }
 .water { background: #374151; color: white; }
 
 .strong { color: #16a34a; }

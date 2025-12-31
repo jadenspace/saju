@@ -59,7 +59,7 @@ const ohaengData = [
     {
         name: "금 (金)",
         hanja: "金",
-        color: "#94a3b8",
+        color: "#cbd5e1",
         season: "가을",
         direction: "서쪽",
         organ: "폐, 대장",

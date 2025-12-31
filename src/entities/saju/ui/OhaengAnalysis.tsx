@@ -26,7 +26,7 @@ const ELEMENT_INFO = {
   metal: { 
     name: '금', 
     hanja: '金', 
-    color: '#94a3b8'  // 백
+    color: '#cbd5e1'  // 백 (더 밝은 회색)
   },
   water: { 
     name: '수', 

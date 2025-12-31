@@ -197,9 +197,9 @@
 }
 
 .jijangganCharMetal {
-    background-color: #94a3b8 !important;
-    color: #fff !important;
-    border: 1px solid #64748b !important;
+    background-color: #cbd5e1 !important;
+    color: #000 !important;
+    border: 1px solid #94a3b8 !important;
 }
 
 .jijangganCharWater {
@@ -281,8 +281,9 @@
 }
 
 .metal {
-    background-color: #94a3b8;
-    border: 1px solid #64748b;
+    background-color: #cbd5e1;
+    border: 1px solid #94a3b8;
+    color: #000;
 }
 
 .water {
