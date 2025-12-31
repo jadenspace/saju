@@ -260,15 +260,15 @@ export const MonthlyFortune2026 = ({ monthly }: MonthlyFortune2026Props) => {
         }
         // preventDefault() 제거 - 기본 동작 막지 않음
 
-        // 임계값을 낮춰서 더 빠르게 반응하도록 (30 -> 5)
-        if (diff > 5) {
+        // 임계값을 높여서 부드럽게 이동하도록 (5 -> 40)
+        if (diff > 40) {
           setActiveIndex((prev) => {
             const moveDiff = startYRef.current - currentY;
             if (moveDiff > 0 && prev < monthly.length - 1) {
-              startYRef.current = currentY;
+              startYRef.current = currentY; // 위치 업데이트로 연속 이동 방지
               return Math.min(prev + 1, monthly.length - 1);
             } else if (moveDiff < 0 && prev > 0) {
-              startYRef.current = currentY;
+              startYRef.current = currentY; // 위치 업데이트로 연속 이동 방지
               return Math.max(prev - 1, 0);
             }
             return prev;
