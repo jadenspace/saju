@@ -34,14 +34,14 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   font-weight: 700;
 }
 
 .header p {
   margin: 0;
   color: var(--foreground-muted);
-  font-size: 0.9rem;
+  font-size: 0.95rem;
 }
 
 /* Daeun Section */
@@ -60,12 +60,12 @@
 
 .daeunHeader h3 {
   margin: 0;
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   color: var(--primary);
 }
 
 .daeunDirection {
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   color: var(--foreground);
   opacity: 0.7;
 }
@@ -87,7 +87,7 @@
 }
 
 .daeunDirectionBadge {
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   color: var(--foreground);
   opacity: 0.9;
   padding-right: 0.5rem;
@@ -95,7 +95,7 @@
 }
 
 .daeunSuBadge {
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   color: var(--foreground);
   opacity: 0.8;
 }
@@ -163,13 +163,13 @@
 }
 
 .daeunAge {
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   color: var(--primary);
   font-weight: 500;
 }
 
 .daeunYears {
-  font-size: 0.65rem;
+  font-size: 0.7rem;
   color: var(--foreground);
   opacity: 0.5;
   margin-top: -0.25rem;
@@ -185,14 +185,14 @@
 .daeunHan {
   display: flex;
   gap: 0.25rem;
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   font-weight: bold;
   color: var(--foreground);
   font-family: "Noto Serif KR", serif;
 }
 
 .daeunKor {
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   color: var(--primary);
   opacity: 0.8;
 }
@@ -217,7 +217,7 @@
 }
 
 .twelveStageTag {
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   color: #0d9488;
   background: rgba(13, 148, 136, 0.1);
   padding: 0.15rem 0.4rem;
@@ -226,7 +226,7 @@
 }
 
 .sinsalTag {
-  font-size: 0.65rem;
+  font-size: 0.7rem;
   color: #d97706;
   background: rgba(217, 119, 6, 0.1);
   padding: 0.1rem 0.3rem;
@@ -262,7 +262,7 @@
 
 .seunHeader h3 {
   margin: 0;
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   color: var(--primary);
 }
 
@@ -273,7 +273,7 @@
 }
 
 .seunAgeRange {
-  font-size: 0.875rem;
+  font-size: 0.9rem;
   color: var(--foreground-muted);
   font-weight: 500;
 }
@@ -320,13 +320,13 @@
 }
 
 .seunAge {
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   color: var(--primary);
   font-weight: 500;
 }
 
 .seunYear {
-  font-size: 0.65rem;
+  font-size: 0.7rem;
   color: var(--foreground);
   opacity: 0.5;
   margin-top: -0.25rem;
@@ -342,13 +342,13 @@
 .seunHan {
   display: flex;
   gap: 0.2rem;
-  font-size: 1.1rem;
+  font-size: 1.6rem;
   font-weight: bold;
   font-family: "Noto Serif KR", serif;
 }
 
 .seunKor {
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   color: var(--primary);
 }
 
@@ -371,7 +371,7 @@
 }
 
 .twelveStageTagSmall {
-  font-size: 0.55rem;
+  font-size: 0.6875rem;
   color: #0d9488;
   background: rgba(13, 148, 136, 0.1);
   padding: 0.1rem 0.25rem;
@@ -380,7 +380,7 @@
 }
 
 .sinsalTagSmall {
-  font-size: 0.5rem;
+  font-size: 0.6875rem;
   color: #d97706;
   background: rgba(217, 119, 6, 0.1);
   padding: 0.08rem 0.2rem;
@@ -389,7 +389,7 @@
 }
 
 .sipsinMini {
-  font-size: 0.6rem;
+  font-size: 0.6875rem;
   color: var(--foreground);
   opacity: 0.5;
   background: rgba(0, 0, 0, 0.04);
@@ -413,7 +413,7 @@
 
 .wolunHeader h3 {
   margin: 0;
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   color: var(--primary);
 }
 
@@ -424,7 +424,7 @@
 }
 
 .wolunYear {
-  font-size: 0.875rem;
+  font-size: 0.9rem;
   color: var(--foreground-muted);
   font-weight: 500;
 }
@@ -463,13 +463,13 @@
 }
 
 .wolunMonth {
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   color: var(--primary);
   font-weight: 500;
 }
 
 .wolunSolar {
-  font-size: 0.6rem;
+  font-size: 0.7rem;
   color: var(--foreground);
   opacity: 0.5;
   margin-top: -0.15rem;
@@ -485,13 +485,13 @@
 .wolunHan {
   display: flex;
   gap: 0.15rem;
-  font-size: 0.95rem;
+  font-size: 1.6rem;
   font-weight: bold;
   font-family: "Noto Serif KR", serif;
 }
 
 .wolunKor {
-  font-size: 0.65rem;
+  font-size: 0.85rem;
   color: var(--primary);
 }
 
@@ -525,7 +525,7 @@
 
 .wongukHeader h3 {
   margin: 0;
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   color: var(--primary);
 }
 
@@ -550,7 +550,7 @@
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   color: var(--foreground);
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -591,7 +591,7 @@
   border-radius: 50%;
   background: rgba(212, 165, 116, 0.15);
   color: var(--primary);
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.2s;
@@ -614,7 +614,7 @@
   line-height: 1.6;
   color: var(--foreground);
   white-space: pre-line;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
 }
 
 /* Element Colors (for Daeun/Seun Hanja) - Enhanced */
@@ -655,7 +655,7 @@
   }
 
   .header h2 {
-    font-size: 1.25rem;
+    font-size: 1.3rem;
   }
 
   .daeunSection {
