@@ -23,7 +23,7 @@ const ELEMENT_COLOR_MAP: Record<Element, { bg: string; color: string; border: st
     wood: { bg: '#4ade80', color: '#fff', border: '#22c55e' },
     fire: { bg: '#f87171', color: '#fff', border: '#ef4444' },
     earth: { bg: '#fbbf24', color: '#000', border: '#f59e0b' },
-    metal: { bg: '#94a3b8', color: '#fff', border: '#64748b' },
+    metal: { bg: '#cbd5e1', color: '#000', border: '#94a3b8' }, // 더 밝은 회색으로 변경
     water: { bg: '#374151', color: '#fff', border: '#1f2937' },
 };
 

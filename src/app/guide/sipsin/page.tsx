@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import styles from '../guide.module.css';
 
 export const metadata: Metadata = {
-    title: "십신(十神)이란? - 사주 명리학 가이드 | 운명의 나침반",
+    title: "십신(十神)이란? - 사주 명리학 가이드 | 오늘의 운세는",
     description: "십신(十神)의 의미와 종류를 알아봅니다. 비견, 겁재, 식신, 상관, 편재, 정재, 편관, 정관, 편인, 정인의 10가지 관계를 설명합니다.",
 };
 

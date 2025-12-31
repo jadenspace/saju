@@ -455,16 +455,24 @@ export const SajuForm = () => {
           onClick={(e: React.MouseEvent) => handleSubmit(e as unknown as React.FormEvent, 'result')}
           id="btn-saju-all"
         >
-          {loading === 'result' ? '분석 중...' : '종합 사주'}
+          {loading === 'result' ? '분석 중...' : '정통 사주'}
         </Button>
         <Button
           type="button"
           disabled={loading !== null}
           className={styles.tertiaryButton}
-          onClick={(e: React.MouseEvent) => handleSubmit(e as unknown as React.FormEvent, 'yongshin')}
+          onClick={() => alert('준비중입니다')}
           id="btn-yongshin"
         >
-          {loading === 'yongshin' ? '분석 중...' : '용신 찾기'}
+          용신 분석
+        </Button>
+        <Button
+          type="button"
+          disabled={true}
+          className={styles.tertiaryButton}
+          id="btn-compatibility"
+        >
+          사주 궁합
         </Button>
       </div>
     </form>

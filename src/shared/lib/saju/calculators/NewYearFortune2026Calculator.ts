@@ -302,10 +302,9 @@ export class NewYearFortune2026Calculator {
       keywords.push('협력', '경쟁', '동료', '자신감');
     }
     
-    // 용신 정보로 조언 생성
-    const yongshin = sajuData.yongshin;
-    const direction = yongshin ? this.getDirectionFromElement(yongshin.primary) : '동';
-    const color = yongshin ? this.getColorFromElement(yongshin.primary) : '빨강';
+    // 기본값 사용
+    const direction = '동';
+    const color = '빨강';
     
     // 템플릿으로 분석 텍스트 생성 (나중에 월별운 계산 후)
     const analysis = generateTotalFortuneText(
@@ -405,7 +404,7 @@ export class NewYearFortune2026Calculator {
   }
 
   /**
-   * 애정운 분석
+   * 연애운 분석
    * 문서 3.3.2 알고리즘
    */
   private static calculateLoveFortune(seun: Seun, sajuData: SajuData): FortuneCategory2026 {
@@ -698,25 +697,5 @@ export class NewYearFortune2026Calculator {
   /**
    * 용신 오행에서 방위 추출
    */
-  private static getDirectionFromElement(yongshin: string): string {
-    if (yongshin.includes('목')) return '동';
-    if (yongshin.includes('화')) return '남';
-    if (yongshin.includes('토')) return '중앙';
-    if (yongshin.includes('금')) return '서';
-    if (yongshin.includes('수')) return '북';
-    return '동';
-  }
-
-  /**
-   * 용신 오행에서 색상 추출
-   */
-  private static getColorFromElement(yongshin: string): string {
-    if (yongshin.includes('목')) return '녹색';
-    if (yongshin.includes('화')) return '빨강';
-    if (yongshin.includes('토')) return '노랑';
-    if (yongshin.includes('금')) return '흰색';
-    if (yongshin.includes('수')) return '검정';
-    return '빨강';
-  }
 }
 

@@ -275,7 +275,7 @@ export function generateWealthFortuneText(
 }
 
 /**
- * 애정운 텍스트 생성
+ * 연애운 텍스트 생성
  */
 export function generateLoveFortuneText(
   love: FortuneCategory2026,

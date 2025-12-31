@@ -9,7 +9,11 @@
       "Bash(timeout 15 npx tsx:*)",
       "Bash(./node_modules/.bin/tsx:*)",
       "Bash(npm exec:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "mcp__serena__list_dir",
+      "Bash(rm:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ]
   }
 }

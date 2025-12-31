@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import styles from '../guide.module.css';
 
 export const metadata: Metadata = {
-    title: "공망(空亡)이란? - 사주 명리학 가이드 | 운명의 나침반",
+    title: "공망(空亡)이란? - 사주 명리학 가이드 | 오늘의 운세는",
     description: "공망(空亡)의 의미와 해공(解空)을 알아봅니다. 60갑자에서 비어있는 지지의 의미와 공망이 해제되는 조건을 설명합니다.",
 };
 

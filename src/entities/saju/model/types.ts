@@ -447,42 +447,6 @@ export interface LuckyInfo {
   number: number[];
 }
 
-export interface TotalScoreEvidence {
-  seunTenGods: {
-    gan: string; // 세운 천간의 십신
-    ji: string; // 세운 지지의 십신
-    evaluation: '긍정' | '중립' | '부정';
-    point: number;
-    details?: string[]; // 상세 설명
-  };
-  yongshinMatch: {
-    yongshin: string; // 용신
-    seunGanElement: string; // 세운 천간 오행
-    seunJiElement: string; // 세운 지지 오행
-    isMatch: boolean; // 용신과 일치 여부
-    isControlling: boolean; // 용신을 극하는지
-    point: number;
-    details?: string[]; // 상세 설명
-  };
-  jiRelationships: {
-    hasHap: boolean; // 합 관계
-    hasChung: boolean; // 충 관계
-    hasHyung: boolean; // 형 관계
-    details: string[];
-    point: number;
-    calculationDetails?: string[]; // 계산 상세
-  };
-  basePoint: number;
-  totalPoint: number;
-  finalScore: number;
-  calculationSteps?: Array<{
-    step: string;
-    description: string;
-    formula?: string; // 콘솔에만 출력할 공식
-    result: string;
-  }>;
-}
-
 export interface NewYearFortune {
   year: number;
   ganZhi: string;
@@ -498,7 +462,6 @@ export interface NewYearFortune {
   monthly: MonthlyFortune[];
   keyMonths?: KeyMonth[];
   luckyInfo?: LuckyInfo;
-  totalScoreEvidence?: TotalScoreEvidence;
 }
 
 // ===== 2026 신년운세 타입 정의 =====
@@ -544,7 +507,7 @@ export interface FortuneCategory2026 {
   analysis: string; // 핵심 해석
   details: {
     // 재물운: 수입, 부수입, 투자, 사업 등
-    // 애정운: 솔로, 연애중, 기혼자 등
+    // 연애운: 솔로, 연애중, 기혼자 등
     // 직장운: 취업, 승진, 이직, 창업 등
     // 건강운: 주의 부위, 주의 시기 등
     [key: string]: string | string[];
