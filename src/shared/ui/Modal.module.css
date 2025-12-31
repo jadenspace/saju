@@ -70,9 +70,11 @@
 }
 
 .header {
-  margin-bottom: 1.5rem;
+  margin-bottom: 0;
   padding-right: 3rem;
+  padding-bottom: 1.5rem;
   flex-shrink: 0;
+  border-bottom: 1px solid var(--card-border);
 }
 
 .title {
@@ -89,12 +91,13 @@
   overflow-y: auto;
   flex: 1;
   min-height: 0;
+  padding-top: 1.5rem;
 }
 
 @media (max-width: 600px) {
   .modal {
     padding: 1.5rem;
-    max-height: 95vh;
+    max-height: 95svh;
   }
 
   .header {

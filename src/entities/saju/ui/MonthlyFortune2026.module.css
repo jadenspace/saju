@@ -184,9 +184,9 @@
 .monthContent {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--card-border);
+  gap: 1.5rem;
+  padding-top: 0.5rem;
+  padding-bottom: 1rem;
 }
 
 .monthSection {

@@ -17,11 +17,24 @@ export const MonthlyFortune2026 = ({ monthly }: MonthlyFortune2026Props) => {
   const [activeIndex, setActiveIndex] = useState(() => {
     if (monthly.length === 0) return -1;
     const now = new Date();
-    const currentMonth = now.getMonth() + 1; // 1-12
-    const currentMonthIndex = monthly.findIndex(
-      (m) => m.month === currentMonth,
-    );
-    return currentMonthIndex !== -1 ? currentMonthIndex : 0;
+    const currentYear = now.getFullYear();
+
+    // 2025년이면 1월(index 0)로 설정
+    if (currentYear < 2026) {
+      return 0;
+    }
+
+    // 2026년이면 현재 월을 찾아서 설정
+    if (currentYear === 2026) {
+      const currentMonth = now.getMonth() + 1; // 1-12
+      const currentMonthIndex = monthly.findIndex(
+        (m) => m.month === currentMonth,
+      );
+      return currentMonthIndex !== -1 ? currentMonthIndex : 0;
+    }
+
+    // 2026년 이후면 1월로 설정
+    return 0;
   });
   const monthWheelRef = useRef<HTMLDivElement>(null);
   const isDraggingRef = useRef(false);
