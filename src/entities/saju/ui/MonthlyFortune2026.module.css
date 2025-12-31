@@ -47,6 +47,15 @@
   scroll-behavior: auto;
 }
 
+.monthlySwiper {
+  padding: 0.5rem 0;
+}
+
+.monthSlide {
+  width: auto;
+  height: auto;
+}
+
 .details::-webkit-scrollbar {
   height: 8px;
 }

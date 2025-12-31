@@ -59,3 +59,9 @@ export const SAJU_PALJA_EXPLANATION = '태어난 년·월·일·시의 천간지
 
 // 사주원국 (Four Pillars Original Constitution)에 대한 설명
 export const SAJU_WONGUK_EXPLANATION = '사주원국(四柱原局)은 태어난 순간의 고정된 사주팔자를 의미해요.\n\n년주, 월주, 일주, 시주의 네 기둥으로 구성되며, 이는 타고난 성격, 재능, 기본 성향을 나타냅니다.\n\n원국은 변하지 않는 타고난 본질이며, 대운(大運), 세운(歲運), 월운(月運) 등은 이 원국을 바탕으로 흘러가는 시간의 흐름입니다.\n\n원국을 통해 자신의 근본적인 특성을 파악하고, 대운·세운·월운을 통해 인생의 흐름을 읽을 수 있어요.';
+
+// 세운 (Yearly Fortune Cycles)에 대한 설명
+export const SEUN_EXPLANATION = '1년 단위로 흘러가는 운세예요.\n대운 안에서 매년 바뀌는 세부적인 흐름을 보여줍니다.\n각 해의 천간지지를 보고 그 해의 운세를 파악할 수 있어요.';
+
+// 월운 (Monthly Fortune Cycles)에 대한 설명
+export const WOLUN_EXPLANATION = '한 달 단위로 흘러가는 운세예요.\n세운 안에서 매달 바뀌는 세부적인 흐름을 보여줍니다.\n각 달의 천간지지를 보고 그 달의 운세를 파악할 수 있어요.';
