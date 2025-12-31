@@ -586,6 +586,8 @@ export class SajuCalculator {
 
   /**
    * 월운 계산 (양력 1월~12월 기준)
+   * 정통사주에서는 절기 기준으로 월이 바뀌므로, 각 양력 월의 말일을 기준으로 월주를 계산합니다.
+   * (말일 기준으로 하면 해당 월의 대부분 기간을 차지하는 월주를 정확히 반영할 수 있습니다)
    * @param year 년도
    * @param dayMaster 일간 (십신 계산용)
    * @param yearJi 년지 (12신살 계산용)
@@ -614,7 +616,9 @@ export class SajuCalculator {
     const result: any[] = [];
 
     for (let m = 1; m <= 12; m++) {
-      // 해당 양력 월의 15일을 기준으로 그 달의 주요 기운(월건)을 추출
+      // 해당 양력 월의 중간일(15일)을 기준으로 그 달의 월주를 추출
+      // 정통사주에서는 절기 기준으로 월이 바뀌지만, 양력 월을 표시할 때는 해당 월의 대부분 기간을 차지하는 월주를 사용합니다
+      // 중간일(15일) 기준으로 하면 해당 양력 월의 대부분 기간을 정확히 반영할 수 있습니다
       const solar = Solar.fromYmdHms(year, m, 15, 12, 0, 0);
       const lunar = solar.getLunar();
       

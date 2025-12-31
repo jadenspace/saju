@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 import { useState, useMemo } from 'react';
+import { Solar } from 'lunar-javascript';
 import { DAEUN_EXPLANATION, DAEUN_DIRECTION_EXPLANATION, SAJU_PALJA_EXPLANATION } from '../../../shared/lib/saju/data/SajuExplanations';
 import { Pillar, SajuData } from '../model/types';
 import { SajuCalculator } from '../../../shared/lib/saju/calculators/SajuCalculator';
@@ -207,12 +208,20 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
               <h4>월운 (月運) - {selectedSeunYear}년</h4>
             </div>
             <div className={styles.wolunGrid}>
-              {/* 1~12월 순서로 표시 (절기 기준 재배열) */}
-              {[11, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((idx) => {
-                const monthFortune = monthlyFortune[idx];
-                const displayMonth = idx === 11 ? 1 : idx + 2; // 축월=1월, 인월=2월, ...
+              {/* 양력 순서로 표시 (만세력과 동일) */}
+              {monthlyFortune.map((monthFortune) => {
+                // 양력 월을 그대로 표시
+                const displayMonth = monthFortune.month;
+                // 현재 절기 월과 비교하여 활성화 여부 결정
                 const currentJieqiMonth = SajuCalculator.getCurrentJieqiMonth();
-                const isCurrentMonth = selectedSeunYear === currentYear && monthFortune.month === currentJieqiMonth;
+                const currentJieqiJiHan = (() => {
+                  const now = new Date();
+                  const solar = Solar.fromYmdHms(now.getFullYear(), now.getMonth() + 1, now.getDate(), 12, 0, 0);
+                  const lunar = solar.getLunar();
+                  return lunar.getMonthInGanZhiExact().charAt(1);
+                })();
+                const isCurrentMonth = selectedSeunYear === currentYear && 
+                  monthFortune.jiHan === currentJieqiJiHan;
 
                 return (
                   <div
