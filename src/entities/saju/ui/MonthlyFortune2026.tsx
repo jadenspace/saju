@@ -13,19 +13,23 @@ export const MonthlyFortune2026 = ({ monthly }: MonthlyFortune2026Props) => {
   const [selectedMonth, setSelectedMonth] =
     useState<MonthlyFortune2026Type | null>(null);
   // activeIndex가 유효한 범위 내에 있도록 보장
+  // 현재 월을 찾아서 초기값으로 설정
   const [activeIndex, setActiveIndex] = useState(() => {
-    return monthly.length > 0 ? 0 : -1;
+    if (monthly.length === 0) return -1;
+    const now = new Date();
+    const currentMonth = now.getMonth() + 1; // 1-12
+    const currentMonthIndex = monthly.findIndex(
+      (m) => m.month === currentMonth,
+    );
+    return currentMonthIndex !== -1 ? currentMonthIndex : 0;
   });
-  const [isDragging, setIsDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [startY, setStartY] = useState(0);
-  const [scrollLeft, setScrollLeft] = useState(0);
-  const dragStartRef = useRef<{ x: number; time: number } | null>(null);
-  const detailsRef = useRef<HTMLDivElement>(null);
   const monthWheelRef = useRef<HTMLDivElement>(null);
   const isDraggingRef = useRef(false);
   const startYRef = useRef(0);
-  const monthCardRefs = useRef<Map<number, HTMLDivElement>>(new Map());
+  const detailsRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const startXRef = useRef(0);
+  const scrollLeftRef = useRef(0);
 
   // monthly 배열이 변경되거나 activeIndex가 범위를 벗어났을 때 보정
   useEffect(() => {
@@ -167,74 +171,6 @@ export const MonthlyFortune2026 = ({ monthly }: MonthlyFortune2026Props) => {
 
     return { points, pathData, width, height, padding };
   }, [monthly]);
-
-  // 드래그 시작
-  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!detailsRef.current) return;
-    setIsDragging(false);
-    setStartX(e.pageX - detailsRef.current.offsetLeft);
-    setScrollLeft(detailsRef.current.scrollLeft);
-    dragStartRef.current = {
-      x: e.pageX,
-      time: Date.now(),
-    };
-  };
-
-  // 드래그 중
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!detailsRef.current || !dragStartRef.current) return;
-    const x = e.pageX - detailsRef.current.offsetLeft;
-    const walk = Math.abs(x - startX);
-
-    // 일정 거리 이상 움직였을 때만 드래그로 판단
-    if (walk > 5) {
-      if (!isDragging) {
-        setIsDragging(true);
-      }
-      e.preventDefault();
-      const scrollWalk = (x - startX) * 2; // 스크롤 속도 조절
-      detailsRef.current.scrollLeft = scrollLeft - scrollWalk;
-    }
-  };
-
-  // 드래그 종료
-  const handleMouseUp = () => {
-    setIsDragging(false);
-    dragStartRef.current = null;
-  };
-
-  // 마우스가 영역을 벗어날 때 드래그 종료
-  const handleMouseLeave = () => {
-    setIsDragging(false);
-  };
-
-  // 카드 클릭 처리 (드래그가 아닐 때만)
-  const handleDesktopCardClick = (
-    month: MonthlyFortune2026Type,
-    e: React.MouseEvent,
-  ) => {
-    // 드래그 중이면 클릭 무시
-    if (isDragging) {
-      return;
-    }
-
-    // 해당 카드로 스크롤
-    const cardElement = monthCardRefs.current.get(month.month);
-    if (cardElement && detailsRef.current) {
-      const container = detailsRef.current;
-      const cardLeft = cardElement.offsetLeft;
-      const cardWidth = cardElement.offsetWidth;
-      const containerWidth = container.offsetWidth;
-      const scrollPosition = cardLeft - containerWidth / 2 + cardWidth / 2;
-
-      container.scrollTo({
-        left: scrollPosition,
-        behavior: "smooth",
-      });
-    }
-
-    setSelectedMonth(month);
-  };
 
   // 모바일 터치 처리 (네이티브 이벤트로 passive: false 설정)
   const handleTouchStart = useCallback((e: Event) => {
@@ -465,10 +401,26 @@ export const MonthlyFortune2026 = ({ monthly }: MonthlyFortune2026Props) => {
         <div
           ref={detailsRef}
           className={`${styles.details} ${isDragging ? styles.dragging : ""}`}
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseLeave}
+          onMouseDown={(e) => {
+            if (!detailsRef.current) return;
+            setIsDragging(true);
+            startXRef.current = e.pageX - detailsRef.current.offsetLeft;
+            scrollLeftRef.current = detailsRef.current.scrollLeft;
+            e.preventDefault();
+          }}
+          onMouseLeave={() => {
+            setIsDragging(false);
+          }}
+          onMouseUp={() => {
+            setIsDragging(false);
+          }}
+          onMouseMove={(e) => {
+            if (!isDragging || !detailsRef.current) return;
+            e.preventDefault();
+            const x = e.pageX - detailsRef.current.offsetLeft;
+            const walk = (x - startXRef.current) * 2; // 스크롤 속도 조절
+            detailsRef.current.scrollLeft = scrollLeftRef.current - walk;
+          }}
         >
           {monthly.map((month) => {
             const stars = gradeStars(month.grade);
@@ -478,15 +430,8 @@ export const MonthlyFortune2026 = ({ monthly }: MonthlyFortune2026Props) => {
             return (
               <div
                 key={month.month}
-                ref={(el) => {
-                  if (el) {
-                    monthCardRefs.current.set(month.month, el);
-                  } else {
-                    monthCardRefs.current.delete(month.month);
-                  }
-                }}
                 className={styles.monthCard}
-                onClick={(e) => handleDesktopCardClick(month, e)}
+                onClick={() => setSelectedMonth(month)}
               >
                 {/* 헤더: 월과 월명 */}
                 <div className={styles.monthHeader}>
