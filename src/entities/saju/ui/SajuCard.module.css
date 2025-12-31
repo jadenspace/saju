@@ -5,7 +5,6 @@
   padding: 2rem;
   box-shadow: var(--shadow-md);
   width: 100%;
-  max-width: 600px;
   margin: 0 auto;
   position: relative;
   overflow: visible;
@@ -518,33 +517,46 @@
 .tooltipContainer {
   position: relative;
   display: inline-block;
-  cursor: help;
+  cursor: pointer;
+  -webkit-tap-highlight-color: rgba(212, 165, 116, 0.2);
 }
 
-.tooltip {
-  visibility: hidden;
-  opacity: 0;
+.infoIcon {
   position: absolute;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  margin-bottom: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  background: var(--card-bg);
-  color: var(--foreground);
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
+  top: 0.25rem;
+  right: 0.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background: rgba(212, 165, 116, 0.15);
+  color: var(--primary);
   font-size: 0.75rem;
-  white-space: nowrap;
-  z-index: 1000;
-  pointer-events: none;
-  transition: all 0.2s ease-in-out;
-  box-shadow: var(--shadow-md);
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+  z-index: 10;
+  flex-shrink: 0;
 }
 
-.tooltipContainer:hover .tooltip {
-  visibility: visible;
-  opacity: 1;
+.infoIcon:hover {
+  background: var(--primary);
+  color: white;
+  transform: scale(1.1);
+}
+
+.daeunInfoPill .infoIcon {
+  top: 0.25rem;
+  right: 0.25rem;
+}
+
+.modalContent {
+  line-height: 1.6;
+  color: var(--foreground);
+  white-space: pre-line;
+  font-size: 0.85rem;
 }
 
 /* Element Colors (for Daeun/Seun Hanja) - Enhanced */

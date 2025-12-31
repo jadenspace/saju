@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import { useState } from 'react';
 import { SajuData, Pillar } from '../model/types';
 import {
     CHEONGAN_EXPLANATIONS,
@@ -7,9 +8,11 @@ import {
     PILLAR_EXPLANATIONS
 } from '../../../shared/lib/saju/data/SajuExplanations';
 import { TWELVE_STAGES_DESCRIPTIONS } from '../../../shared/lib/saju/data/TwelveStages';
-import { SINSAL_DESCRIPTIONS, TwelveSinsal } from '../../../shared/lib/saju/data/TwelveSinsal';
-import { GONGMANG_MEANING } from '../../../shared/lib/saju/data/Gongmang';
+import { SINSAL_DESCRIPTIONS, TwelveSinsal, TWELVE_SINSAL_MEANING } from '../../../shared/lib/saju/data/TwelveSinsal';
+import { GONGMANG_MEANING, GONGMANG_BASIS_INFO } from '../../../shared/lib/saju/data/Gongmang';
+import { JIJANGGAN_MAP, JIJANGGAN_WEIGHTS } from '../../../shared/lib/saju/data/JijangganData';
 import { getPolarity, getOhaeng, Element } from '../../../shared/lib/saju/calculators/TenGod';
+import { Modal } from '../../../shared/ui/Modal';
 import styles from './ManseuryeokSection.module.css';
 
 // 한글 천간을 한자로 변환하는 매핑
@@ -31,19 +34,43 @@ interface ManseuryeokSectionProps {
     data: SajuData;
 }
 
-const Tooltip = ({ content, children }: { content: string; children: React.ReactNode }) => {
+const Tooltip = ({ content, children, title }: { content: string; children: React.ReactNode; title?: string }) => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const handleClick = (e: React.MouseEvent) => {
+        if (content) {
+            e.preventDefault();
+            e.stopPropagation();
+            setIsModalOpen(true);
+        }
+    };
+
+    if (!content) {
+        return <>{children}</>;
+    }
+
     return (
-        <div className={styles.tooltipContainer}>
-            {children}
-            <div className={styles.tooltip}>
-                {content.split('\n').map((line, i, arr) => (
-                    <span key={i}>
-                        {line}
-                        {i < arr.length - 1 && <br />}
-                    </span>
-                ))}
+        <>
+            <div className={styles.tooltipContainer} onClick={handleClick}>
+                {children}
             </div>
-        </div>
+            {isModalOpen && (
+                <Modal
+                    isOpen={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                    title={title || '정보'}
+                >
+                    <div className={styles.modalContent}>
+                        {content.split('\n').map((line, i, arr) => (
+                            <span key={i}>
+                                {line}
+                                {i < arr.length - 1 && <br />}
+                            </span>
+                        ))}
+                    </div>
+                </Modal>
+            )}
+        </>
     );
 };
 
@@ -62,7 +89,7 @@ const PillarColumn = ({
 }) => {
     return (
         <div className={styles.column}>
-            <Tooltip content={PILLAR_EXPLANATIONS[label] || ''}>
+            <Tooltip content={PILLAR_EXPLANATIONS[label] || ''} title={label}>
                 <div className={styles.headerPill}>
                     <span className={styles.headerLabel}>{label}</span>
                     <span className={styles.headerGanZhi}>
@@ -71,13 +98,16 @@ const PillarColumn = ({
                 </div>
             </Tooltip>
 
-            <Tooltip content={isIlju ? '나 자신의 일간입니다.' : (SIPSIN_EXPLANATIONS[pillar.tenGodsGan || ''] || '')}>
+            <Tooltip 
+                content={isIlju ? '나 자신의 일간입니다.' : `${SIPSIN_EXPLANATIONS[pillar.tenGodsGan || ''] || ''}`} 
+                title={isIlju ? '일간(나)' : pillar.tenGodsGan || ''}
+            >
                 <div className={clsx(styles.sipsin, isIlju && styles.ilgan)}>
                     {isIlju ? '일간(나)' : pillar.tenGodsGan}
                 </div>
             </Tooltip>
 
-            <Tooltip content={CHEONGAN_EXPLANATIONS[pillar.ganHan] || ''}>
+            <Tooltip content={CHEONGAN_EXPLANATIONS[pillar.ganHan] || ''} title={pillar.ganHan}>
                 <div className={styles.characterWrapper}>
                     <div className={clsx(
                         styles.characterContainer, 
@@ -90,7 +120,7 @@ const PillarColumn = ({
                 </div>
             </Tooltip>
 
-            <Tooltip content={JIJI_EXPLANATIONS[pillar.jiHan] || ''}>
+            <Tooltip content={JIJI_EXPLANATIONS[pillar.jiHan] || ''} title={pillar.jiHan}>
                 <div className={styles.characterWrapper}>
                     <div className={clsx(
                         styles.characterContainer, 
@@ -103,7 +133,10 @@ const PillarColumn = ({
                 </div>
             </Tooltip>
 
-            <Tooltip content={SIPSIN_EXPLANATIONS[pillar.tenGodsJi || ''] || ''}>
+            <Tooltip 
+                content={pillar.tenGodsJi ? `${SIPSIN_EXPLANATIONS[pillar.tenGodsJi] || ''}` : ''} 
+                title={pillar.tenGodsJi || ''}
+            >
                 <div className={styles.sipsin}>
                     {pillar.tenGodsJi}
                 </div>
@@ -118,8 +151,61 @@ const PillarColumn = ({
                     const colorStyle = element ? ELEMENT_COLOR_MAP[element] : null;
                     // 음양에 따른 텍스트 색상 적용
                     const textColor = polarity === 'yang' ? '#fff' : '#000';
+                    
+                    // 지장간 여기/중기/본기 정보 생성
+                    const jiHan = pillar.jiHan;
+                    const jijangganList = JIJANGGAN_MAP[jiHan] || [];
+                    const weights = JIJANGGAN_WEIGHTS[jiHan] || [];
+                    const currentIndex = jijangganList.indexOf(hanChar);
+                    
+                    let jijangganInfo = '';
+                    if (currentIndex !== -1 && weights[currentIndex] !== undefined) {
+                        const weight = weights[currentIndex];
+                        let type = '';
+                        const totalCount = jijangganList.length;
+                        
+                        if (totalCount === 1) {
+                            type = '정기(本氣)';
+                        } else if (currentIndex === totalCount - 1) {
+                            // 마지막 = 정기(本氣)
+                            type = '정기(本氣)';
+                        } else if (totalCount === 2) {
+                            // 2개인 경우: 첫 번째가 여기, 두 번째가 정기
+                            type = currentIndex === 0 ? '여기(餘氣)' : '정기(本氣)';
+                        } else {
+                            // 3개인 경우: 첫 번째가 여기, 두 번째가 중기, 세 번째가 정기
+                            if (currentIndex === 0) {
+                                type = '여기(餘氣)';
+                            } else if (currentIndex === 1) {
+                                type = '중기(中氣)';
+                            } else {
+                                type = '정기(本氣)';
+                            }
+                        }
+                        jijangganInfo = `\n\n[${type}]\n지장간 중 ${(weight * 100).toFixed(0)}%의 기운을 차지합니다.`;
+                    }
+                    
+                    const tenGod = pillar.jijangganTenGods?.[i];
+                    const tenGodExplanation = tenGod ? SIPSIN_EXPLANATIONS[tenGod] || '' : '';
+                    const jiExplanation = JIJI_EXPLANATIONS[pillar.jiHan] || '';
+                    
+                    // 본문 구성: 지지 설명 → 십성 설명 → 지장간 정보
+                    let content = '';
+                    if (jiExplanation) {
+                        content += jiExplanation;
+                    }
+                    if (tenGodExplanation) {
+                        content += content ? `\n\n${tenGodExplanation}` : tenGodExplanation;
+                    }
+                    if (jijangganInfo) {
+                        content += content ? jijangganInfo : jijangganInfo.trim();
+                    }
+                    
+                    // 타이틀: "지장간 | 십성" 형식
+                    const title = tenGod ? `${char} | ${tenGod}` : char;
+                    
                     return (
-                        <Tooltip key={i} content={pillar.jijangganTenGods?.[i] ? `${pillar.jijangganTenGods[i]} - ${SIPSIN_EXPLANATIONS[pillar.jijangganTenGods[i]] || ''}` : ''}>
+                        <Tooltip key={i} content={content} title={title}>
                             <div className={styles.jijangganRow}>
                                 <span 
                                     className={styles.jijangganChar}
@@ -132,35 +218,48 @@ const PillarColumn = ({
                                         color: 'var(--foreground)'
                                     }}
                                 >{char}</span>
-                                <span>{pillar.jijangganTenGods?.[i]}</span>
+                                <span>{tenGod}</span>
                             </div>
                         </Tooltip>
                     );
                 })}
             </div>
 
-            <Tooltip content={pillar.twelveStage ? (TWELVE_STAGES_DESCRIPTIONS[pillar.twelveStage as keyof typeof TWELVE_STAGES_DESCRIPTIONS] || '') : ''}>
+            <Tooltip content={pillar.twelveStage ? (TWELVE_STAGES_DESCRIPTIONS[pillar.twelveStage as keyof typeof TWELVE_STAGES_DESCRIPTIONS] || '') : ''} title={pillar.twelveStage || ''}>
                 <div className={styles.twelveStage}>
                     {pillar.twelveStage}
                 </div>
             </Tooltip>
 
             <div className={styles.sinsalContainer}>
-                {sinsals.map((s, i) => (
-                    <Tooltip key={i} content={SINSAL_DESCRIPTIONS[s as TwelveSinsal] || ''}>
-                        <span className={styles.sinsalItem}>{s}</span>
-                    </Tooltip>
-                ))}
+                {sinsals.map((s, i) => {
+                    const sinsal = s as TwelveSinsal;
+                    const meaning = TWELVE_SINSAL_MEANING[sinsal] || '';
+                    const description = SINSAL_DESCRIPTIONS[sinsal] || '';
+                    const content = `${meaning ? `의미: ${meaning}` : ''}${description ? `${meaning ? '\n\n' : ''}${description}` : ''}`;
+                    return (
+                        <Tooltip key={i} content={content} title={sinsal}>
+                            <span className={styles.sinsalItem}>{sinsal}</span>
+                        </Tooltip>
+                    );
+                })}
             </div>
 
             <div className={styles.gongmangContainer}>
                 {gongmangs.map((g, i) => {
-                    const meaning = GONGMANG_MEANING[label.replace('주', '지')] || '해당 주가 비어있음을 뜻합니다.';
-                    const tooltipContent = g.isHaegong
-                        ? `${meaning}\n\n※ ${g.reason}으로 해공됨`
-                        : meaning;
+                    const jiKey = label.replace('주', '지');
+                    const meaning = GONGMANG_MEANING[jiKey] || '해당 주가 비어있음을 뜻합니다.';
+                    const basisInfo = g.type === '일' ? GONGMANG_BASIS_INFO.dayBased : GONGMANG_BASIS_INFO.yearBased;
+                    
+                    let tooltipContent = `${meaning}\n\n${basisInfo.description}\n(${basisInfo.weight})`;
+                    if (g.isHaegong) {
+                        tooltipContent += `\n\n※ ${g.reason}으로 해공됨`;
+                    } else {
+                        tooltipContent += '\n\n공망은 비어있어 힘을 못 쓰는 상태를 의미합니다.\n해공(解空) 조건이 충족되면 공망의 영향이 해소됩니다.';
+                    }
+                    
                     return (
-                        <Tooltip key={i} content={tooltipContent}>
+                        <Tooltip key={i} content={tooltipContent} title={`[${g.type}]공망`}>
                             <div className={clsx(styles.gongmangTag, g.isHaegong && styles.haegong)}>
                                 [{g.type}]공망
                             </div>

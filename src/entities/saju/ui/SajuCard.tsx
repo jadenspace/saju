@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import { useState, useMemo } from 'react';
 import { Solar } from 'lunar-javascript';
-import { DAEUN_EXPLANATION, DAEUN_DIRECTION_EXPLANATION, SAJU_PALJA_EXPLANATION } from '../../../shared/lib/saju/data/SajuExplanations';
+import { DAEUN_EXPLANATION, DAEUN_DIRECTION_EXPLANATION, SAJU_PALJA_EXPLANATION, SAJU_WONGUK_EXPLANATION } from '../../../shared/lib/saju/data/SajuExplanations';
 import { SajuData } from '../model/types';
 import { SajuCalculator } from '../../../shared/lib/saju/calculators/SajuCalculator';
 import { ManseuryeokSection } from './ManseuryeokSection';
@@ -10,6 +10,7 @@ import { OhaengAnalysis } from './OhaengAnalysis';
 import { TwelveStagesAnalysis } from './TwelveStagesAnalysis';
 import { TwelveSinsalAnalysis } from './TwelveSinsalAnalysis';
 import { GongmangAnalysis } from './GongmangAnalysis';
+import { Modal } from '../../../shared/ui/Modal';
 import styles from './SajuCard.module.css';
 
 interface SajuCardProps {
@@ -28,6 +29,9 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
   const [showTwelveStages, setShowTwelveStages] = useState(false);
   const [showTwelveSinsal, setShowTwelveSinsal] = useState(false);
   const [showGongmang, setShowGongmang] = useState(false);
+  
+  // 모달 상태 관리
+  const [modalContent, setModalContent] = useState<{ title: string; content: string } | null>(null);
 
   // Calculate current age and default Daeun index
   const getCurrentAge = () => {
@@ -54,19 +58,18 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
     return SajuCalculator.calculateMonthlyFortune(selectedSeunYear, data.day.ganHan, data.year.jiHan, data.day.jiHan);
   }, [selectedSeunYear, data.day.ganHan, data.year.jiHan, data.day.jiHan]);
 
+  // 툴팁 클릭 시 모달 표시 (모든 디바이스)
+  const handleTooltipClick = (title: string, content: string) => (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setModalContent({ title, content });
+  };
+
   return (
     <div className={clsx(styles.card, className)}>
       <div className={styles.header}>
-        <div className={styles.tooltipContainer}>
+        <div className={styles.tooltipContainer} onClick={handleTooltipClick('사주팔자 (四柱八字)', SAJU_PALJA_EXPLANATION)}>
           <h2>사주팔자 (四柱八字)</h2>
-          <div className={styles.tooltip}>
-            {SAJU_PALJA_EXPLANATION.split('\n').map((line, i, arr) => (
-              <span key={i}>
-                {line}
-                {i < arr.length - 1 && <br />}
-              </span>
-            ))}
-          </div>
         </div>
         <p>
           {data.birthDate} {data.birthTime} {data.useTrueSolarTime ? '(-30)' : ''} {data.gender === 'male' ? '남' : '여'} {data.solar ? '(양력)' : '(음력)'}
@@ -174,25 +177,19 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
         <div className={styles.manseuryeokSection}>
           {/* 사주원국 타이틀 */}
           <div className={styles.wongukHeader}>
-            <h3>사주원국 (四柱原局)</h3>
+            <div className={styles.tooltipContainer} onClick={handleTooltipClick('사주원국 (四柱原局)', SAJU_WONGUK_EXPLANATION)}>
+              <h3>사주원국 (四柱原局)</h3>
+            </div>
           </div>
           <ManseuryeokSection data={data} />
 
           {/* Daeun Section */}
           <div className={styles.daeunSection}>
         <div className={styles.daeunHeader}>
-          <div className={styles.tooltipContainer}>
+          <div className={styles.tooltipContainer} onClick={handleTooltipClick('대운 (大運)', DAEUN_EXPLANATION)}>
             <h3>대운 (大運)</h3>
-            <div className={styles.tooltip}>
-              {DAEUN_EXPLANATION.split('\n').map((line, i, arr) => (
-                <span key={i}>
-                  {line}
-                  {i < arr.length - 1 && <br />}
-                </span>
-              ))}
-            </div>
           </div>
-          <div className={styles.tooltipContainer}>
+          <div className={styles.tooltipContainer} onClick={handleTooltipClick('대운 정보', `${DAEUN_DIRECTION_EXPLANATION} \n\n * 대운수(${data.daeun[0].startAge}): 10년마다 바뀌는 대운이 시작되는 나이입니다.`)}>
             <div className={styles.daeunInfoPill}>
               <span className={styles.daeunDirectionBadge}>
                 {data.daeunDirection === 'forward' ? '순행(順行)' : '역행(逆行)'}
@@ -200,15 +197,6 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
               <span className={styles.daeunSuBadge}>
                 대운수 <span className={styles.highlight}>{data.daeun[0].startAge}</span>
               </span>
-            </div>
-            <div className={styles.tooltip}>
-              <div className={styles.tooltipTitle}>대운 정보</div>
-              {`${DAEUN_DIRECTION_EXPLANATION} \n\n * 대운수(${data.daeun[0].startAge}): 10년마다 바뀌는 대운이 시작되는 나이입니다.`.split('\n').map((line, i, arr) => (
-                <span key={i}>
-                  {line}
-                  {i < arr.length - 1 && <br />}
-                </span>
-              ))}
             </div>
           </div>
         </div>
@@ -374,6 +362,24 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
       {showTwelveStages && <TwelveStagesAnalysis data={data} />}
       {showTwelveSinsal && <TwelveSinsalAnalysis data={data} />}
       {showGongmang && <GongmangAnalysis data={data} />}
+      
+      {/* 모달 */}
+      {modalContent && (
+        <Modal
+          isOpen={!!modalContent}
+          onClose={() => setModalContent(null)}
+          title={modalContent.title}
+        >
+          <div className={styles.modalContent}>
+            {modalContent.content.split('\n').map((line, i, arr) => (
+              <span key={i}>
+                {line}
+                {i < arr.length - 1 && <br />}
+              </span>
+            ))}
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };

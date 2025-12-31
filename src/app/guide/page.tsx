@@ -76,7 +76,12 @@ export default function GuidePage() {
                         {guides.map((guide) => (
                             <Link key={guide.href} href={guide.href} className={styles.cardLink}>
                                 <div className={styles.card}>
-                                    <h3 className={styles.cardTitle}>{guide.title}</h3>
+                                    <div className={styles.cardHeader}>
+                                        <h3 className={styles.cardTitle}>{guide.title}</h3>
+                                        <svg className={styles.cardArrow} width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                        </svg>
+                                    </div>
                                     <p className={styles.cardHanja}>{guide.hanja}</p>
                                     <p className={styles.cardDescription}>{guide.description}</p>
                                 </div>
@@ -92,16 +97,11 @@ export default function GuidePage() {
                         생년월일시를 입력하면 만세력 기반의 정확한 사주팔자와
                         상세한 분석 결과를 무료로 확인할 수 있습니다.
                     </p>
-                    <Link href="/" style={{
-                        display: 'inline-block',
-                        padding: '0.75rem 1.5rem',
-                        background: 'var(--primary)',
-                        color: '#000',
-                        borderRadius: '0.5rem',
-                        textDecoration: 'none',
-                        fontWeight: 'bold'
-                    }}>
+                    <Link href="/" className={styles.actionButton}>
                         무료 사주 분석하기
+                        <svg className={styles.actionArrow} width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
                     </Link>
                 </div>
             </div>

@@ -176,7 +176,7 @@ export default function TwelveSinsalGuidePage() {
                                     </div>
                                 </div>
                                 <p className={styles.itemDescription}>{sinsal.description}</p>
-                                <p style={{ marginTop: '0.5rem', opacity: 0.7, fontSize: '0.9rem' }}>
+                                <p style={{ marginTop: '0.5rem', opacity: 0.7, fontSize: '0.85rem' }}>
                                     <strong>조언:</strong> {sinsal.advice}
                                 </p>
                             </div>
