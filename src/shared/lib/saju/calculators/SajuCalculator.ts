@@ -1,15 +1,35 @@
-import { Lunar, Solar } from 'lunar-javascript';
-import { DaeunPeriod, Pillar, SajuData, Seun } from '../../../../entities/saju/model/types';
-import { JIJANGGAN_MAP, JIJANGGAN_WEIGHTS } from '../data/JijangganData';
-import { calculateSipsin, getOhaeng, getPolarity } from './TenGod';
-import { addMinutes, getKoreaHistoricalOffset, getLongitudeOffset } from './TimeCorrection';
-import { getTwelveStage } from '../data/TwelveStages';
-import { getTwelveSinsal } from '../data/TwelveSinsal';
-import { getGongmang, isGongmang, checkHaegong } from '../data/Gongmang';
-import { calculateIlganStrength } from './IlganStrength';
+import { Lunar, Solar } from "lunar-javascript";
+import {
+  DaeunPeriod,
+  Pillar,
+  SajuData,
+  Seun,
+} from "../../../../entities/saju/model/types";
+import { JIJANGGAN_MAP, JIJANGGAN_WEIGHTS } from "../data/JijangganData";
+import { calculateSipsin, getOhaeng, getPolarity } from "./TenGod";
+import {
+  addMinutes,
+  getKoreaHistoricalOffset,
+  getLongitudeOffset,
+} from "./TimeCorrection";
+import { getTwelveStage } from "../data/TwelveStages";
+import { getTwelveSinsal } from "../data/TwelveSinsal";
+import { getGongmang, isGongmang, checkHaegong } from "../data/Gongmang";
+import { calculateIlganStrength } from "./IlganStrength";
 
 export class SajuCalculator {
-  static calculate(year: number, month: number, day: number, hour: number, minute: number, gender: 'male' | 'female' = 'male', unknownTime: boolean = false, useTrueSolarTime: boolean = true, applyDST: boolean = true, midnightMode: 'early' | 'late' = 'late'): SajuData {
+  static calculate(
+    year: number,
+    month: number,
+    day: number,
+    hour: number,
+    minute: number,
+    gender: "male" | "female" = "male",
+    unknownTime: boolean = false,
+    useTrueSolarTime: boolean = true,
+    applyDST: boolean = true,
+    midnightMode: "early" | "late" = "late",
+  ): SajuData {
     // 1. Base Time (User Input)
     const baseTime = { year, month, day, hour, minute };
 
@@ -42,26 +62,40 @@ export class SajuCalculator {
 
     // 3. Create Solar Object
     // We use the adjusted date/time.
-    const solar = Solar.fromYmdHms(current.year, current.month, current.day, unknownTime ? 12 : current.hour, unknownTime ? 0 : current.minute, 0);
+    const solar = Solar.fromYmdHms(
+      current.year,
+      current.month,
+      current.day,
+      unknownTime ? 12 : current.hour,
+      unknownTime ? 0 : current.minute,
+      0,
+    );
     const lunar = solar.getLunar();
 
     // 4. Calculate Pillars
     let yearGanZhi = lunar.getYearInGanZhiByLiChun();
     let monthGanZhi = lunar.getMonthInGanZhiExact();
     let dayGanZhi = lunar.getDayInGanZhiExact();
-    let timeGanZhi = unknownTime ? '??' : lunar.getTimeInGanZhi();
+    let timeGanZhi = unknownTime ? "??" : lunar.getTimeInGanZhi();
 
     // 5. Apply Yajasi (Midnight Mode) Logic
     // If we are in the "Evening Rat" period (23:00 <= hour < 24:00) of the calculated Solar Time.
     if (!unknownTime && current.hour === 23) {
-      if (midnightMode === 'early') {
+      if (midnightMode === "early") {
         // Mode: Apply Yajasi (야자시 적용)
         // Rule: 23:00 ~ 23:59 should belong to the Current Day (Day N).
         // However, standard lunar-javascript behavior switches to Day N+1 at 23:00.
         // We must rollback the Day Pillar to Day N.
 
         // Strategy: Get Day Pillar from 12:00 (Noon) of the same solar day.
-        const noonSolar = Solar.fromYmdHms(current.year, current.month, current.day, 12, 0, 0);
+        const noonSolar = Solar.fromYmdHms(
+          current.year,
+          current.month,
+          current.day,
+          12,
+          0,
+          0,
+        );
         const noonLunar = noonSolar.getLunar();
         dayGanZhi = noonLunar.getDayInGanZhiExact();
 
@@ -78,7 +112,6 @@ export class SajuCalculator {
         // Day戊/癸 -> Hour壬子
         const dayStem = dayGanZhi.charAt(0);
         timeGanZhi = this.calculateRatHourGanZhi(dayStem);
-
       } else {
         // Mode: Not Apply Yajasi (Standard / 야자시 미적용)
         // Rule: 23:00 ~ 23:59 belongs to Next Day (Day N+1).
@@ -95,17 +128,29 @@ export class SajuCalculator {
     const yearJiHan = yearGanZhi.charAt(1);
     const dayJiHan = dayGanZhi.charAt(1);
     const daeunDirection = this.getDaeunDirection(yearGan, gender);
-    const daeunStartAge = this.calculateDaeunStartAge(lunar, daeunDirection, solar);
+    const daeunStartAge = this.calculateDaeunStartAge(
+      lunar,
+      daeunDirection,
+      solar,
+    );
     const birthYear = baseTime.year;
-    const daeun = this.generateDaeunSequence(monthGanZhi, daeunDirection, daeunStartAge, dayMaster, birthYear, yearJiHan, dayJiHan);
+    const daeun = this.generateDaeunSequence(
+      monthGanZhi,
+      daeunDirection,
+      daeunStartAge,
+      dayMaster,
+      birthYear,
+      yearJiHan,
+      dayJiHan,
+    );
 
     // Calculate Ohaeng distribution
     const pillars = [
       this.createPillar(yearGanZhi, dayMaster),
       this.createPillar(monthGanZhi, dayMaster),
       this.createPillar(dayGanZhi, dayMaster),
-      unknownTime ? null : this.createPillar(timeGanZhi, dayMaster)
-    ].filter(p => p !== null) as Pillar[];
+      unknownTime ? null : this.createPillar(timeGanZhi, dayMaster),
+    ].filter((p) => p !== null) as Pillar[];
 
     const ohaengDistribution = this.calculateOhaengDistribution(pillars);
     const ohaengAnalysis = this.analyzeOhaeng(ohaengDistribution);
@@ -117,38 +162,62 @@ export class SajuCalculator {
 
     // 년공망: 년주 기준으로 월지/일지/시지 확인 (년지 자체는 제외)
     const yearGongmangJi = getGongmang(yearGanZhi);
-    const yearBasedAffected: Array<{ pillar: string; haegong?: { isHaegong: boolean; reason: string | null } }> = [];
+    const yearBasedAffected: Array<{
+      pillar: string;
+      haegong?: { isHaegong: boolean; reason: string | null };
+    }> = [];
     if (yearGongmangJi) {
       if (isGongmang(yearGanZhi, pillars[1].jiHan)) {
-        yearBasedAffected.push({ pillar: '월주', haegong: checkHaegong(pillars[1].jiHan, allJi) });
+        yearBasedAffected.push({
+          pillar: "월주",
+          haegong: checkHaegong(pillars[1].jiHan, allJi),
+        });
       }
       if (isGongmang(yearGanZhi, pillars[2].jiHan)) {
-        yearBasedAffected.push({ pillar: '일주', haegong: checkHaegong(pillars[2].jiHan, allJi) });
+        yearBasedAffected.push({
+          pillar: "일주",
+          haegong: checkHaegong(pillars[2].jiHan, allJi),
+        });
       }
       if (!unknownTime && isGongmang(yearGanZhi, pillars[3].jiHan)) {
-        yearBasedAffected.push({ pillar: '시주', haegong: checkHaegong(pillars[3].jiHan, allJi) });
+        yearBasedAffected.push({
+          pillar: "시주",
+          haegong: checkHaegong(pillars[3].jiHan, allJi),
+        });
       }
     }
 
     // 일공망: 일주 기준으로 년지/월지/시지 확인 (일지 자체는 제외)
     const dayGongmangJi = getGongmang(dayGanZhi);
-    const dayBasedAffected: Array<{ pillar: string; haegong?: { isHaegong: boolean; reason: string | null } }> = [];
+    const dayBasedAffected: Array<{
+      pillar: string;
+      haegong?: { isHaegong: boolean; reason: string | null };
+    }> = [];
     if (dayGongmangJi) {
       if (isGongmang(dayGanZhi, pillars[0].jiHan)) {
-        dayBasedAffected.push({ pillar: '년주', haegong: checkHaegong(pillars[0].jiHan, allJi) });
+        dayBasedAffected.push({
+          pillar: "년주",
+          haegong: checkHaegong(pillars[0].jiHan, allJi),
+        });
       }
       if (isGongmang(dayGanZhi, pillars[1].jiHan)) {
-        dayBasedAffected.push({ pillar: '월주', haegong: checkHaegong(pillars[1].jiHan, allJi) });
+        dayBasedAffected.push({
+          pillar: "월주",
+          haegong: checkHaegong(pillars[1].jiHan, allJi),
+        });
       }
       if (!unknownTime && isGongmang(dayGanZhi, pillars[3].jiHan)) {
-        dayBasedAffected.push({ pillar: '시주', haegong: checkHaegong(pillars[3].jiHan, allJi) });
+        dayBasedAffected.push({
+          pillar: "시주",
+          haegong: checkHaegong(pillars[3].jiHan, allJi),
+        });
       }
     }
 
     // Calculate 12신살 Analysis
     const yearJi = pillars[0].jiHan;
     const dayJi = pillars[2].jiHan;
-    const pillarNames = ['년주', '월주', '일주', '시주'];
+    const pillarNames = ["년주", "월주", "일주", "시주"];
 
     const yearBasedSinsal: Array<{ pillar: string; sinsal: string }> = [];
     const dayBasedSinsal: Array<{ pillar: string; sinsal: string }> = [];
@@ -173,9 +242,20 @@ export class SajuCalculator {
       year: pillars[0],
       month: pillars[1],
       day: pillars[2],
-      hour: unknownTime ? { gan: '?', ji: '?', ganHan: '?', jiHan: '?', ganElement: 'unknown', jiElement: 'unknown' } : pillars[3],
-      birthDate: `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`,
-      birthTime: unknownTime ? '시간 모름' : `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`,
+      hour: unknownTime
+        ? {
+            gan: "?",
+            ji: "?",
+            ganHan: "?",
+            jiHan: "?",
+            ganElement: "unknown",
+            jiElement: "unknown",
+          }
+        : pillars[3],
+      birthDate: `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`,
+      birthTime: unknownTime
+        ? "시간 모름"
+        : `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`,
       gender,
       solar: true,
       unknownTime,
@@ -186,16 +266,19 @@ export class SajuCalculator {
       daeunDirection,
       ohaengDistribution,
       ohaengAnalysis,
-      gongmang: (yearGongmangJi || dayGongmangJi) ? {
-        yearBased: {
-          gongmangJi: yearGongmangJi || ['', ''],
-          affectedPillars: yearBasedAffected,
-        },
-        dayBased: {
-          gongmangJi: dayGongmangJi || ['', ''],
-          affectedPillars: dayBasedAffected,
-        },
-      } : undefined,
+      gongmang:
+        yearGongmangJi || dayGongmangJi
+          ? {
+              yearBased: {
+                gongmangJi: yearGongmangJi || ["", ""],
+                affectedPillars: yearBasedAffected,
+              },
+              dayBased: {
+                gongmangJi: dayGongmangJi || ["", ""],
+                affectedPillars: dayBasedAffected,
+              },
+            }
+          : undefined,
       twelveSinsalAnalysis: {
         yearBased: yearBasedSinsal,
         dayBased: dayBasedSinsal,
@@ -204,77 +287,128 @@ export class SajuCalculator {
     };
   }
 
-
   private static calculateRatHourGanZhi(dayStem: string): string {
     const map: Record<string, string> = {
-      '甲': '甲子', '己': '甲子',
-      '乙': '丙子', '庚': '丙子',
-      '丙': '戊子', '辛': '戊子',
-      '丁': '庚子', '壬': '庚자',
-      '戊': '壬子', '癸': '壬子'
+      甲: "甲子",
+      己: "甲子",
+      乙: "丙子",
+      庚: "丙子",
+      丙: "戊子",
+      辛: "戊子",
+      丁: "庚子",
+      壬: "庚子",
+      戊: "壬子",
+      癸: "壬子",
     };
-    return map[dayStem] || '??';
+    return map[dayStem] || "??";
   }
-
 
   private static createPillar(ganZhi: string, dayMaster: string): Pillar {
     const ganHan = ganZhi.charAt(0);
     const jiHan = ganZhi.charAt(1);
     const jijangganHan = JIJANGGAN_MAP[jiHan] || [];
-    const jijangganKor = jijangganHan.map(h => this.convertHanToKoreanGan(h));
+    const jijangganKor = jijangganHan.map((h) => this.convertHanToKoreanGan(h));
 
     return {
       gan: this.convertHanToKoreanGan(ganHan),
       ji: this.convertHanToKoreanJi(jiHan),
       ganHan,
       jiHan,
-      ganElement: getOhaeng(ganHan) || '',
-      jiElement: getOhaeng(jiHan) || '',
+      ganElement: getOhaeng(ganHan) || "",
+      jiElement: getOhaeng(jiHan) || "",
       tenGodsGan: calculateSipsin(dayMaster, ganHan),
       tenGodsJi: calculateSipsin(dayMaster, jiHan),
       jijanggan: jijangganKor,
-      jijangganTenGods: jijangganHan.map(char => calculateSipsin(dayMaster, char)),
+      jijangganTenGods: jijangganHan.map((char) =>
+        calculateSipsin(dayMaster, char),
+      ),
       twelveStage: getTwelveStage(dayMaster, jiHan) || undefined,
     };
   }
 
-
   // Daeun (Grand Fortune) calculations
-  private static getDaeunDirection(yearGan: string, gender: 'male' | 'female'): 'forward' | 'backward' {
-    const yangGans = new Set(['甲', '丙', '戊', '庚', '壬']);
+  private static getDaeunDirection(
+    yearGan: string,
+    gender: "male" | "female",
+  ): "forward" | "backward" {
+    const yangGans = new Set(["甲", "丙", "戊", "庚", "壬"]);
     const isYangYear = yangGans.has(yearGan);
 
     // 양남음녀(陽男陰女): forward, 음남양녀(陰男陽女): backward
-    if ((isYangYear && gender === 'male') || (!isYangYear && gender === 'female')) {
-      return 'forward';
+    if (
+      (isYangYear && gender === "male") ||
+      (!isYangYear && gender === "female")
+    ) {
+      return "forward";
     } else {
-      return 'backward';
+      return "backward";
     }
   }
 
-  private static calculateDaeunStartAge(lunar: Lunar, direction: 'forward' | 'backward', birthSolar: Solar): number {
+  private static calculateDaeunStartAge(
+    lunar: Lunar,
+    direction: "forward" | "backward",
+    birthSolar: Solar,
+  ): number {
     const jieqiTable = (lunar as any).getJieQiTable();
-    const jieTerms = ['立春', '惊蛰', '清明', '立夏', '芒种', '小暑', '立秋', '白露', '寒露', '立冬', '大雪', '小寒'];
+    const jieTerms = [
+      "立春",
+      "惊蛰",
+      "清明",
+      "立夏",
+      "芒种",
+      "小暑",
+      "立秋",
+      "白露",
+      "寒露",
+      "立冬",
+      "大雪",
+      "小寒",
+    ];
     // Normalize terminology (some libs use simplified/traditional)
     const jieTermsMap: Record<string, string> = {
-      '立春': '立春', '惊蛰': '惊蛰', '清明': '清明', '立夏': '立夏', '芒종': '芒종', '小暑': '小暑',
-      '立秋': '立秋', '白露': '白露', '寒露': '寒露', '立冬': '立冬', '大雪': '大雪', '小寒': '小寒'
+      立春: "立春",
+      惊蛰: "惊蛰",
+      清明: "清明",
+      立夏: "立夏",
+      芒종: "芒종",
+      小暑: "小暑",
+      立秋: "立秋",
+      白露: "白露",
+      寒露: "寒露",
+      立冬: "立冬",
+      大雪: "大雪",
+      小寒: "小寒",
     };
 
     let closestJieDays = Infinity;
-    const birthTime = new Date((birthSolar as any).getYear(), (birthSolar as any).getMonth() - 1, (birthSolar as any).getDay(), (birthSolar as any).getHour(), (birthSolar as any).getMinute()).getTime();
+    const birthTime = new Date(
+      (birthSolar as any).getYear(),
+      (birthSolar as any).getMonth() - 1,
+      (birthSolar as any).getDay(),
+      (birthSolar as any).getHour(),
+      (birthSolar as any).getMinute(),
+    ).getTime();
 
     const findInTable = (table: any) => {
       for (const [name, jieqiData] of Object.entries(table)) {
         if (!jieTerms.includes(name)) continue;
         const jieqiDate = (jieqiData as any)._p;
-        const jieqiTime = new Date(jieqiDate.year, jieqiDate.month - 1, jieqiDate.day, jieqiDate.hour, jieqiDate.minute).getTime();
+        const jieqiTime = new Date(
+          jieqiDate.year,
+          jieqiDate.month - 1,
+          jieqiDate.day,
+          jieqiDate.hour,
+          jieqiDate.minute,
+        ).getTime();
         const diffDays = (jieqiTime - birthTime) / (1000 * 60 * 60 * 24);
 
-        if (direction === 'forward') {
-          if (diffDays > 0 && diffDays < closestJieDays) closestJieDays = diffDays;
+        if (direction === "forward") {
+          if (diffDays > 0 && diffDays < closestJieDays)
+            closestJieDays = diffDays;
         } else {
-          if (diffDays < 0 && Math.abs(diffDays) < closestJieDays) closestJieDays = Math.abs(diffDays);
+          if (diffDays < 0 && Math.abs(diffDays) < closestJieDays)
+            closestJieDays = Math.abs(diffDays);
         }
       }
     };
@@ -282,7 +416,10 @@ export class SajuCalculator {
     findInTable(jieqiTable);
 
     if (closestJieDays === Infinity) {
-      const checkYear = direction === 'backward' ? (birthSolar as any).getYear() - 1 : (birthSolar as any).getYear() + 1;
+      const checkYear =
+        direction === "backward"
+          ? (birthSolar as any).getYear() - 1
+          : (birthSolar as any).getYear() + 1;
       const checkSolar = Solar.fromYmdHms(checkYear, 1, 1, 0, 0, 0);
       findInTable((checkSolar.getLunar() as any).getJieQiTable());
     }
@@ -291,9 +428,30 @@ export class SajuCalculator {
     return Math.max(1, Math.floor(closestJieDays / 3));
   }
 
-  private static generateDaeunSequence(monthGanZhi: string, direction: 'forward' | 'backward', startAge: number, dayMaster: string, birthYear: number, yearJi: string, dayJi: string): DaeunPeriod[] {
-    const gans = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'];
-    const jis = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'];
+  private static generateDaeunSequence(
+    monthGanZhi: string,
+    direction: "forward" | "backward",
+    startAge: number,
+    dayMaster: string,
+    birthYear: number,
+    yearJi: string,
+    dayJi: string,
+  ): DaeunPeriod[] {
+    const gans = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"];
+    const jis = [
+      "子",
+      "丑",
+      "寅",
+      "卯",
+      "辰",
+      "巳",
+      "午",
+      "未",
+      "申",
+      "酉",
+      "戌",
+      "亥",
+    ];
 
     const currentGan = monthGanZhi.charAt(0);
     const currentJi = monthGanZhi.charAt(1);
@@ -302,7 +460,7 @@ export class SajuCalculator {
     let jiIndex = jis.indexOf(currentJi);
 
     const daeunPeriods: DaeunPeriod[] = [];
-    const increment = direction === 'forward' ? 1 : -1;
+    const increment = direction === "forward" ? 1 : -1;
 
     for (let i = 0; i < 8; i++) {
       ganIndex = (ganIndex + increment + gans.length) % gans.length;
@@ -325,26 +483,39 @@ export class SajuCalculator {
         jiHan,
         gan: this.convertHanToKoreanGan(ganHan),
         ji: this.convertHanToKoreanJi(jiHan),
-        ganElement: getOhaeng(ganHan) || '',
-        jiElement: getOhaeng(jiHan) || '',
+        ganElement: getOhaeng(ganHan) || "",
+        jiElement: getOhaeng(jiHan) || "",
         startAge: startAge + i * 10,
         endAge: startAge + i * 10 + 9, // 10-year period: start + 9 years
         tenGodsGan: calculateSipsin(dayMaster, ganHan),
         tenGodsJi: calculateSipsin(dayMaster, jiHan),
         twelveStage,
-        sinsal: (yearBasedSinsal || dayBasedSinsal) ? {
-          yearBased: yearBasedSinsal || undefined,
-          dayBased: dayBasedSinsal || undefined,
-        } : undefined,
+        sinsal:
+          yearBasedSinsal || dayBasedSinsal
+            ? {
+                yearBased: yearBasedSinsal || undefined,
+                dayBased: dayBasedSinsal || undefined,
+              }
+            : undefined,
         // 한국 나이 기준: N세가 되는 해 = birthYear + N - 1
-        seun: this.generateSeunSequence(birthYear + startAge - 1 + i * 10, dayMaster, yearJi, dayJi),
+        seun: this.generateSeunSequence(
+          birthYear + startAge - 1 + i * 10,
+          dayMaster,
+          yearJi,
+          dayJi,
+        ),
       });
     }
 
     return daeunPeriods;
   }
 
-  private static generateSeunSequence(startYear: number, dayMaster: string, yearJi: string, dayJi: string): Seun[] {
+  private static generateSeunSequence(
+    startYear: number,
+    dayMaster: string,
+    yearJi: string,
+    dayJi: string,
+  ): Seun[] {
     const seunSequence: Seun[] = [];
 
     for (let i = 0; i < 10; i++) {
@@ -353,7 +524,7 @@ export class SajuCalculator {
       // 정확한 입춘 날짜를 찾아 그 해의 간지를 계산 (기존 코드 패턴 유지)
       const yearLunar = Solar.fromYmdHms(year, 1, 1, 12, 0, 0).getLunar();
       const jieqiTable = (yearLunar as any).getJieQiTable();
-      const ipchunData = jieqiTable['立春'];
+      const ipchunData = jieqiTable["立春"];
 
       if (!ipchunData) {
         // Fallback or error handling if 입춘 is not found
@@ -379,15 +550,18 @@ export class SajuCalculator {
           jiHan,
           gan: this.convertHanToKoreanGan(ganHan),
           ji: this.convertHanToKoreanJi(jiHan),
-          ganElement: getOhaeng(ganHan) || '',
-          jiElement: getOhaeng(jiHan) || '',
+          ganElement: getOhaeng(ganHan) || "",
+          jiElement: getOhaeng(jiHan) || "",
           tenGodsGan: calculateSipsin(dayMaster, ganHan),
           tenGodsJi: calculateSipsin(dayMaster, jiHan),
           twelveStage,
-          sinsal: (yearBasedSinsal || dayBasedSinsal) ? {
-            yearBased: yearBasedSinsal || undefined,
-            dayBased: dayBasedSinsal || undefined,
-          } : undefined,
+          sinsal:
+            yearBasedSinsal || dayBasedSinsal
+              ? {
+                  yearBased: yearBasedSinsal || undefined,
+                  dayBased: dayBasedSinsal || undefined,
+                }
+              : undefined,
         });
         continue;
       }
@@ -396,7 +570,14 @@ export class SajuCalculator {
       const ipchunDateParts = (ipchunData as any)._p;
 
       // 입춘 당일의 정오를 기준으로 Solar 객체 생성
-      const solar = Solar.fromYmdHms(ipchunDateParts.year, ipchunDateParts.month, ipchunDateParts.day, 12, 0, 0);
+      const solar = Solar.fromYmdHms(
+        ipchunDateParts.year,
+        ipchunDateParts.month,
+        ipchunDateParts.day,
+        12,
+        0,
+        0,
+      );
       const lunar = solar.getLunar();
       const ganZhi = lunar.getYearInGanZhiByLiChun();
 
@@ -417,15 +598,18 @@ export class SajuCalculator {
         jiHan,
         gan: this.convertHanToKoreanGan(ganHan),
         ji: this.convertHanToKoreanJi(jiHan),
-        ganElement: getOhaeng(ganHan) || '',
-        jiElement: getOhaeng(jiHan) || '',
+        ganElement: getOhaeng(ganHan) || "",
+        jiElement: getOhaeng(jiHan) || "",
         tenGodsGan: calculateSipsin(dayMaster, ganHan),
         tenGodsJi: calculateSipsin(dayMaster, jiHan),
         twelveStage,
-        sinsal: (yearBasedSinsal || dayBasedSinsal) ? {
-          yearBased: yearBasedSinsal || undefined,
-          dayBased: dayBasedSinsal || undefined,
-        } : undefined,
+        sinsal:
+          yearBasedSinsal || dayBasedSinsal
+            ? {
+                yearBased: yearBasedSinsal || undefined,
+                dayBased: dayBasedSinsal || undefined,
+              }
+            : undefined,
       });
     }
 
@@ -433,7 +617,10 @@ export class SajuCalculator {
   }
 
   // Ohaeng (Five Elements) analysis
-  private static calculateOhaengDistribution(pillars: Pillar[], options: { includeHiddenStems?: boolean } = {}): {
+  private static calculateOhaengDistribution(
+    pillars: Pillar[],
+    options: { includeHiddenStems?: boolean } = {},
+  ): {
     wood: number;
     fire: number;
     earth: number;
@@ -442,13 +629,13 @@ export class SajuCalculator {
   } {
     const distribution = { wood: 0, fire: 0, earth: 0, metal: 0, water: 0 };
 
-    pillars.forEach(pillar => {
+    pillars.forEach((pillar) => {
       // 1. Gan/Ji (Surface characters)
-      if (pillar.ganElement && pillar.ganElement !== 'unknown') {
+      if (pillar.ganElement && pillar.ganElement !== "unknown") {
         const key = pillar.ganElement as keyof typeof distribution;
         distribution[key] += 1;
       }
-      if (pillar.jiElement && pillar.jiElement !== 'unknown') {
+      if (pillar.jiElement && pillar.jiElement !== "unknown") {
         const key = pillar.jiElement as keyof typeof distribution;
         distribution[key] += 1;
       }
@@ -468,7 +655,7 @@ export class SajuCalculator {
     });
 
     // Round values for display if they became decimals
-    Object.keys(distribution).forEach(key => {
+    Object.keys(distribution).forEach((key) => {
       const k = key as keyof typeof distribution;
       distribution[k] = Math.round(distribution[k] * 100) / 100;
     });
@@ -490,64 +677,78 @@ export class SajuCalculator {
     interpretation: string;
   } {
     const OHAENG_DATA: Record<string, Record<string, string>> = {
-      "목": {
-        "결핍": "목 기운이 거의 드러나지 않아 활력과 동기가 약하게 나타날 수 있습니다. 새로운 것을 시작하거나 방향을 잡는 데 어려움을 느낄 수 있습니다.",
-        "부족": "목 기운이 약하여 추진력과 결단력이 떨어지고, 아이디어나 시작 에너지가 부족하게 느껴질 수 있습니다.",
-        "균형": "목 기운이 적당해 창의성과 성장 에너지가 살아 있으며, 유연하게 새로운 방향을 탐색하고 발전을 이끌어 갈 수 있습니다.",
-        "강함": "목 기운이 강해 진취성·비전·창의성이 두드러지며, 사람들을 이끄는 힘이 있습니다. 단, 다소 조급하거나 산만해질 수 있습니다.",
-        "과다": "목 기운이 지나치게 강해 충동적이고 안정감을 찾기 어렵고, 금·토가 약해지면서 재물·현실 기반이 약해질 수 있습니다."
+      목: {
+        결핍: "목 기운이 거의 드러나지 않아 활력과 동기가 약하게 나타날 수 있습니다. 새로운 것을 시작하거나 방향을 잡는 데 어려움을 느낄 수 있습니다.",
+        부족: "목 기운이 약하여 추진력과 결단력이 떨어지고, 아이디어나 시작 에너지가 부족하게 느껴질 수 있습니다.",
+        균형: "목 기운이 적당해 창의성과 성장 에너지가 살아 있으며, 유연하게 새로운 방향을 탐색하고 발전을 이끌어 갈 수 있습니다.",
+        강함: "목 기운이 강해 진취성·비전·창의성이 두드러지며, 사람들을 이끄는 힘이 있습니다. 단, 다소 조급하거나 산만해질 수 있습니다.",
+        과다: "목 기운이 지나치게 강해 충동적이고 안정감을 찾기 어렵고, 금·토가 약해지면서 재물·현실 기반이 약해질 수 있습니다.",
       },
-      "화": {
-        "결핍": "화 기운이 거의 없어 열정이나 생동감이 부족해지고, 감정 표현이 차갑거나 동기부여가 잘 되지 않을 수 있습니다.",
-        "부족": "화 기운이 약하여 피로감을 느끼기 쉽고, 활력·사교성·리더십 등이 부족하게 나타날 수 있습니다.",
-        "균형": "화 기운이 적당하여 열정과 긍정성이 살아 있고, 주변을 밝게 하며 사람들을 이끄는 따뜻한 에너지가 나타납니다.",
-        "강함": "화 기운이 강해 추진력과 리더십이 강하고 활력이 넘칩니다. 다만 감정 기복이나 조급함이 나타날 수 있습니다.",
-        "과다": "화 기운이 지나치게 강해 충동적이고 성급하며, 과도한 열정으로 쉽게 지치거나 감정적으로 폭발할 수 있습니다."
+      화: {
+        결핍: "화 기운이 거의 없어 열정이나 생동감이 부족해지고, 감정 표현이 차갑거나 동기부여가 잘 되지 않을 수 있습니다.",
+        부족: "화 기운이 약하여 피로감을 느끼기 쉽고, 활력·사교성·리더십 등이 부족하게 나타날 수 있습니다.",
+        균형: "화 기운이 적당하여 열정과 긍정성이 살아 있고, 주변을 밝게 하며 사람들을 이끄는 따뜻한 에너지가 나타납니다.",
+        강함: "화 기운이 강해 추진력과 리더십이 강하고 활력이 넘칩니다. 다만 감정 기복이나 조급함이 나타날 수 있습니다.",
+        과다: "화 기운이 지나치게 강해 충동적이고 성급하며, 과도한 열정으로 쉽게 지치거나 감정적으로 폭발할 수 있습니다.",
       },
-      "토": {
-        "결핍": "토 기운이 거의 없어 안정감·현실감이 약해지고, 생활·재정 기반이 불안하게 느껴질 수 있습니다.",
-        "부족": "토 기운이 부족하여 집중력이 떨어지고 걱정·불안이 많아지며, 삶의 기반이 흔들리는 듯한 느낌이 들 수 있습니다.",
-        "균형": "토 기운이 적당하여 안정·인내·신뢰감을 바탕으로 현실적인 판단과 꾸준함이 살아 있습니다.",
-        "강함": "토 기운이 강해 책임감·성실함이 두드러지며, 현실 감각이 뛰어나고, 고집·보수성·변화 둔감함이 나타날 수 있습니다.",
-        "과다": "토 기운이 지나치게 강해 걱정·집착·과도한 책임감이 생기고, 변화에 대한 두려움으로 정체가 나타날 수 있습니다."
+      토: {
+        결핍: "토 기운이 거의 없어 안정감·현실감이 약해지고, 생활·재정 기반이 불안하게 느껴질 수 있습니다.",
+        부족: "토 기운이 부족하여 집중력이 떨어지고 걱정·불안이 많아지며, 삶의 기반이 흔들리는 듯한 느낌이 들 수 있습니다.",
+        균형: "토 기운이 적당하여 안정·인내·신뢰감을 바탕으로 현실적인 판단과 꾸준함이 살아 있습니다.",
+        강함: "토 기운이 강해 책임감·성실함이 두드러지며, 현실 감각이 뛰어나고, 고집·보수성·변화 둔감함이 나타날 수 있습니다.",
+        과다: "토 기운이 지나치게 강해 걱정·집착·과도한 책임감이 생기고, 변화에 대한 두려움으로 정체가 나타날 수 있습니다.",
       },
-      "금": {
-        "결핍": "금 기운이 거의 없어 결단력·자기 확신이 부족하고, 타인의 평가나 분위기에 쉽게 흔들릴 수 있습니다.",
-        "부족": "금 기운이 약해 자신감·의지·자기 통제력 등이 약하고, 우유부단함이나 불안이 나타날 수 있습니다.",
-        "균형": "금 기운이 적당하여 규율·판단력·결단력이 건강하게 나타나고, 우아하고 명확한 커뮤니케이션이 가능합니다.",
-        "강함": "금 기운이 강해 규율·용기·판단력이 뛰어나며 정확한 기준을 세울 수 있습니다. 하지만 완벽주의·경직이 동반될 수 있습니다.",
-        "과다": "금 기운이 지나치게 강하면 냉정·비판·경직 성향이 두드러지고, 자신과 타인에게 잣대가 과하게 엄격해질 수 있습니다."
+      금: {
+        결핍: "금 기운이 거의 없어 결단력·자기 확신이 부족하고, 타인의 평가나 분위기에 쉽게 흔들릴 수 있습니다.",
+        부족: "금 기운이 약해 자신감·의지·자기 통제력 등이 약하고, 우유부단함이나 불안이 나타날 수 있습니다.",
+        균형: "금 기운이 적당하여 규율·판단력·결단력이 건강하게 나타나고, 우아하고 명확한 커뮤니케이션이 가능합니다.",
+        강함: "금 기운이 강해 규율·용기·판단력이 뛰어나며 정확한 기준을 세울 수 있습니다. 하지만 완벽주의·경직이 동반될 수 있습니다.",
+        과다: "금 기운이 지나치게 강하면 냉정·비판·경직 성향이 두드러지고, 자신과 타인에게 잣대가 과하게 엄격해질 수 있습니다.",
       },
-      "수": {
-        "결핍": "수 기운이 거의 없어 감정 표현이 메마르거나 사고가 경직될 수 있으며, 변화 적응력이 낮아질 수 있습니다.",
-        "부족": "수 기운이 부족해 상상력·직관·융통성이 떨어지고, 변화나 상황 흐름을 따르기 어려울 수 있습니다.",
-        "균형": "수 기운이 적당해 지혜·직관·감수성이 살아 있으며, 감정과 사고가 깊고 유연한 상태가 유지됩니다.",
-        "강함": "수 기운이 강해 통찰력과 적응력이 뛰어나며 지혜로운 판단이 가능합니다. 단, 지나친 신중함·위축이 나타날 수 있습니다.",
-        "과다": "수 기운이 지나치게 많아 불안·과도한 생각·감정적 압도감이 나타나고, 현실 실행력이 분산될 수 있습니다."
-      }
+      수: {
+        결핍: "수 기운이 거의 없어 감정 표현이 메마르거나 사고가 경직될 수 있으며, 변화 적응력이 낮아질 수 있습니다.",
+        부족: "수 기운이 부족해 상상력·직관·융통성이 떨어지고, 변화나 상황 흐름을 따르기 어려울 수 있습니다.",
+        균형: "수 기운이 적당해 지혜·직관·감수성이 살아 있으며, 감정과 사고가 깊고 유연한 상태가 유지됩니다.",
+        강함: "수 기운이 강해 통찰력과 적응력이 뛰어나며 지혜로운 판단이 가능합니다. 단, 지나친 신중함·위축이 나타날 수 있습니다.",
+        과다: "수 기운이 지나치게 많아 불안·과도한 생각·감정적 압도감이 나타나고, 현실 실행력이 분산될 수 있습니다.",
+      },
     };
 
     const elementNames: Record<string, string> = {
-      wood: '목', fire: '화', earth: '토', metal: '금', water: '수'
+      wood: "목",
+      fire: "화",
+      earth: "토",
+      metal: "금",
+      water: "수",
     };
 
     const elementNamesWithHanja: Record<string, string> = {
-      wood: '목(木)', fire: '화(火)', earth: '토(土)', metal: '금(金)', water: '수(水)'
+      wood: "목(木)",
+      fire: "화(火)",
+      earth: "토(土)",
+      metal: "금(金)",
+      water: "수(水)",
     };
 
     const getOhaengLevel = (count: number): string => {
-      if (count === 0) return '결핍';
-      if (count === 1) return '부족';
-      if (count === 2) return '균형';
-      if (count === 3) return '강함';
-      return '과다';
+      if (count === 0) return "결핍";
+      if (count === 1) return "부족";
+      if (count === 2) return "균형";
+      if (count === 3) return "강함";
+      return "과다";
     };
 
     const elements = Object.entries(distribution).map(([element, count]) => {
       const koreanName = elementNames[element];
       const level = getOhaengLevel(Math.floor(count)); // Use floor for level mapping if weights are used
-      const description = OHAENG_DATA[koreanName]?.[level] || '';
-      return { element, name: elementNamesWithHanja[element], count, level, description };
+      const description = OHAENG_DATA[koreanName]?.[level] || "";
+      return {
+        element,
+        name: elementNamesWithHanja[element],
+        count,
+        level,
+        description,
+      };
     });
 
     const excess: string[] = [];
@@ -560,26 +761,48 @@ export class SajuCalculator {
       else if (count === 0) missing.push(elementNamesWithHanja[element]);
     });
 
-    let interpretation = '';
-    if (excess.length > 0) interpretation += `${excess.join(', ')} 기운이 강합니다. `;
-    if (missing.length > 0) interpretation += `${missing.join(', ')} 기운이 부족합니다. `;
-    if (excess.length === 0 && missing.length === 0) interpretation = '오행이 비교적 균형있게 분포되어 있습니다.';
-    else if (excess.length > 0 && missing.length > 0) interpretation += '불균형을 보완하는 것이 중요합니다.';
+    let interpretation = "";
+    if (excess.length > 0)
+      interpretation += `${excess.join(", ")} 기운이 강합니다. `;
+    if (missing.length > 0)
+      interpretation += `${missing.join(", ")} 기운이 부족합니다. `;
+    if (excess.length === 0 && missing.length === 0)
+      interpretation = "오행이 비교적 균형있게 분포되어 있습니다.";
+    else if (excess.length > 0 && missing.length > 0)
+      interpretation += "불균형을 보완하는 것이 중요합니다.";
 
     return { elements, excess, deficient, missing, interpretation };
   }
   private static convertHanToKoreanGan(han: string): string {
     const map: Record<string, string> = {
-      '甲': '갑', '乙': '을', '丙': '병', '丁': '정', '戊': '무',
-      '己': '기', '庚': '경', '辛': '신', '壬': '임', '癸': '계'
+      甲: "갑",
+      乙: "을",
+      丙: "병",
+      丁: "정",
+      戊: "무",
+      己: "기",
+      庚: "경",
+      辛: "신",
+      壬: "임",
+      癸: "계",
     };
     return map[han] || han;
   }
 
   private static convertHanToKoreanJi(han: string): string {
     const map: Record<string, string> = {
-      '子': '자', '丑': '축', '寅': '인', '卯': '묘', '辰': '진', '巳': '사',
-      '午': '오', '未': '미', '申': '신', '酉': '유', '戌': '술', '亥': '해'
+      子: "자",
+      丑: "축",
+      寅: "인",
+      卯: "묘",
+      辰: "진",
+      巳: "사",
+      午: "오",
+      未: "미",
+      申: "신",
+      酉: "유",
+      戌: "술",
+      亥: "해",
     };
     return map[han] || han;
   }
@@ -594,7 +817,12 @@ export class SajuCalculator {
    * @param dayJi 일지 (12신살 계산용)
    * @returns 12개월의 월운 배열 (양력 기준)
    */
-  static calculateMonthlyFortune(year: number, dayMaster: string, yearJi?: string, dayJi?: string): Array<{
+  static calculateMonthlyFortune(
+    year: number,
+    dayMaster: string,
+    yearJi?: string,
+    dayJi?: string,
+  ): Array<{
     month: number;
     monthName: string;
     solarMonth: string;
@@ -621,7 +849,7 @@ export class SajuCalculator {
       // 중간일(15일) 기준으로 하면 해당 양력 월의 대부분 기간을 정확히 반영할 수 있습니다
       const solar = Solar.fromYmdHms(year, m, 15, 12, 0, 0);
       const lunar = solar.getLunar();
-      
+
       // getMonthInGanZhiExact()는 절기 기준의 정확한 월주를 반환함
       const ganZhi = lunar.getMonthInGanZhiExact();
       const ganHan = ganZhi.charAt(0);
@@ -638,20 +866,24 @@ export class SajuCalculator {
         month: m,
         monthName: `${this.convertHanToKoreanJi(jiHan)}월`, // e.g. 인월, 묘월...
         solarMonth: `${m}월`,
-        ganZhi: this.convertHanToKoreanGan(ganHan) + this.convertHanToKoreanJi(jiHan),
+        ganZhi:
+          this.convertHanToKoreanGan(ganHan) + this.convertHanToKoreanJi(jiHan),
         gan: this.convertHanToKoreanGan(ganHan),
         ji: this.convertHanToKoreanJi(jiHan),
         ganHan,
         jiHan,
-        ganElement: getOhaeng(ganHan) || '',
-        jiElement: getOhaeng(jiHan) || '',
+        ganElement: getOhaeng(ganHan) || "",
+        jiElement: getOhaeng(jiHan) || "",
         tenGodsGan: calculateSipsin(dayMaster, ganHan),
         tenGodsJi: calculateSipsin(dayMaster, jiHan),
         twelveStage,
-        sinsal: (yearBasedSinsal || dayBasedSinsal) ? {
-          yearBased: yearBasedSinsal || undefined,
-          dayBased: dayBasedSinsal || undefined,
-        } : undefined,
+        sinsal:
+          yearBasedSinsal || dayBasedSinsal
+            ? {
+                yearBased: yearBasedSinsal || undefined,
+                dayBased: dayBasedSinsal || undefined,
+              }
+            : undefined,
       });
     }
 
@@ -664,13 +896,30 @@ export class SajuCalculator {
    */
   static getCurrentJieqiMonth(): number {
     const now = new Date();
-    const solar = Solar.fromYmdHms(now.getFullYear(), now.getMonth() + 1, now.getDate(), 12, 0, 0);
+    const solar = Solar.fromYmdHms(
+      now.getFullYear(),
+      now.getMonth() + 1,
+      now.getDate(),
+      12,
+      0,
+      0,
+    );
     const lunar = solar.getLunar();
     const monthZhi = lunar.getMonthInGanZhiExact().charAt(1);
 
     const JIJI_TO_MONTH: Record<string, number> = {
-      '寅': 1, '卯': 2, '辰': 3, '巳': 4, '午': 5, '未': 6,
-      '申': 7, '酉': 8, '戌': 9, '亥': 10, '子': 11, '丑': 12
+      寅: 1,
+      卯: 2,
+      辰: 3,
+      巳: 4,
+      午: 5,
+      未: 6,
+      申: 7,
+      酉: 8,
+      戌: 9,
+      亥: 10,
+      子: 11,
+      丑: 12,
     };
 
     return JIJI_TO_MONTH[monthZhi] || 1;
