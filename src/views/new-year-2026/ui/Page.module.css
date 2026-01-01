@@ -29,7 +29,6 @@
 .year {
   font-size: 1.5rem;
   background: var(--primary-gradient);
-  background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
@@ -168,12 +167,14 @@
 }
 
 .ctaTitle {
+  margin-bottom: 0;
   font-size: 1.125rem;
   font-weight: 700;
   color: var(--primary);
 }
 
 .ctaText {
+  font-size: 0.9375rem;
   line-height: 1.6;
   color: var(--foreground-muted);
 }
@@ -262,5 +263,9 @@
 
   .footerActions > * {
     width: 100%;
+  }
+
+  .ctaText {
+    font-size: 0.8125rem;
   }
 }

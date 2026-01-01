@@ -26,7 +26,6 @@
   line-height: 1.2;
   text-align: center;
   background: var(--silver-gradient);
-  background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
@@ -62,7 +61,7 @@
   left: 0;
   height: 4px;
   background: var(--silver-gradient);
-  content: '';
+  content: "";
 }
 
 /* CTA 섹션 */
@@ -80,12 +79,14 @@
 }
 
 .ctaTitle {
+  margin-bottom: 0;
   font-size: 1.125rem;
   font-weight: 700;
   color: var(--primary);
 }
 
 .ctaText {
+  font-size: 0.9375rem;
   line-height: 1.6;
   color: var(--foreground-muted);
 }
@@ -102,7 +103,9 @@
 
 .tertiaryButton {
   border: 1px solid rgb(156 163 175 / 30%) !important;
-  box-shadow: var(--shadow-sm), 0 0 20px rgb(156 163 175 / 20%);
+  box-shadow:
+    var(--shadow-sm),
+    0 0 20px rgb(156 163 175 / 20%);
   font-weight: 600;
   color: var(--secondary) !important;
   background: var(--silver-gradient) !important;
@@ -163,5 +166,9 @@
 
   .secondaryActions > * {
     width: 100%;
+  }
+
+  .ctaText {
+    font-size: 0.8125rem;
   }
 }

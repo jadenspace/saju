@@ -33,7 +33,6 @@
   font-size: 1.6rem;
   font-weight: 700;
   background: var(--primary-gradient);
-  background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
@@ -216,7 +215,8 @@
 }
 
 .daeunKor {
-  font-size: 0.85rem;
+  font-size: 0.75rem;
+  font-weight: 500;
   color: var(--primary);
   opacity: 0.8;
 }
@@ -388,7 +388,8 @@
 }
 
 .seunKor {
-  font-size: 0.85rem;
+  font-size: 0.75rem;
+  font-weight: 500;
   color: var(--primary);
 }
 
@@ -547,7 +548,8 @@
 }
 
 .wolunKor {
-  font-size: 0.85rem;
+  font-size: 0.75rem;
+  font-weight: 500;
   color: var(--primary);
 }
 
@@ -677,36 +679,36 @@
 .daeunCharacter.wood,
 .seunCharacter.wood,
 .wolunCharacter.wood {
-  background-color: #4ade80;
   border: 1px solid #22c55e;
+  background-color: #4ade80;
 }
 
 .daeunCharacter.fire,
 .seunCharacter.fire,
 .wolunCharacter.fire {
-  background-color: #f87171;
   border: 1px solid #ef4444;
+  background-color: #f87171;
 }
 
 .daeunCharacter.earth,
 .seunCharacter.earth,
 .wolunCharacter.earth {
-  background-color: #fbbf24;
   border: 1px solid #f59e0b;
+  background-color: #fbbf24;
 }
 
 .daeunCharacter.metal,
 .seunCharacter.metal,
 .wolunCharacter.metal {
-  background-color: #cbd5e1;
   border: 1px solid #94a3b8;
+  background-color: #cbd5e1;
 }
 
 .daeunCharacter.water,
 .seunCharacter.water,
 .wolunCharacter.water {
-  background-color: #374151;
   border: 1px solid #1f2937;
+  background-color: #374151;
 }
 
 @media (width <= 600px) {
@@ -758,5 +760,17 @@
     gap: 0.5rem;
     margin-top: 0;
     padding-top: 1rem;
+  }
+
+  .analysisButton {
+    font-size: 0.75rem;
+  }
+
+  .daeunDirectionBadge {
+    font-size: 0.8rem;
+  }
+
+  .daeunSuBadge {
+    font-size: 0.8rem;
   }
 }
