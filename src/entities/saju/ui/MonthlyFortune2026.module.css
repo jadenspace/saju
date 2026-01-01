@@ -15,30 +15,29 @@
 }
 
 .graph {
-  background: var(--card-bg);
+  padding: 1.5rem 0;
   border: 1px solid var(--card-border);
   border-radius: var(--radius-xl);
-  padding: 1.5rem 0;
+  background: var(--card-bg);
   overflow-x: auto;
 }
 
 .lineChart {
+  display: block;
   width: 100%;
   min-width: 600px;
   height: auto;
-  display: block;
 }
 
 .details {
   display: flex;
   flex-direction: row;
   gap: 1rem;
-  overflow-x: auto;
-  overflow-y: hidden;
   padding-bottom: 0.5rem;
+  cursor: grab;
+  overflow: auto hidden;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
-  cursor: grab;
   user-select: none;
 }
 
@@ -61,13 +60,13 @@
 }
 
 .details::-webkit-scrollbar-track {
-  background: var(--card-bg);
   border-radius: 4px;
+  background: var(--card-bg);
 }
 
 .details::-webkit-scrollbar-thumb {
-  background: var(--card-border);
   border-radius: 4px;
+  background: var(--card-border);
 }
 
 .details::-webkit-scrollbar-thumb:hover {
@@ -75,21 +74,21 @@
 }
 
 .monthCard {
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: var(--radius-lg);
-  padding: 1.25rem;
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
   width: calc((100% - (1rem * 2.5)) / 3.5);
   min-width: 180px;
   max-width: 240px;
+  padding: 1.25rem;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  background: var(--card-bg);
+  transition: all 0.2s ease;
+  cursor: pointer;
   flex-shrink: 0;
   user-select: none;
-  position: relative;
-  cursor: pointer;
-  transition: all 0.2s ease;
 }
 
 .monthCard:hover {
@@ -101,8 +100,8 @@
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  border-bottom: 1px solid var(--border);
   padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
 }
 
 .solarMonth {
@@ -113,8 +112,8 @@
 
 .monthName {
   font-size: 0.75rem;
-  color: var(--foreground-muted);
   font-weight: 600;
+  color: var(--foreground-muted);
 }
 
 .ganZhi {
@@ -160,10 +159,10 @@
 }
 
 .oneLiner {
+  margin: 0;
   font-size: 0.8125rem;
   line-height: 1.4;
   color: var(--foreground-muted);
-  margin: 0;
 }
 
 .monthKeywords {
@@ -174,11 +173,11 @@
 
 .monthKeyword {
   padding: 0.25rem 0.5rem;
-  background: rgba(var(--primary-rgb), 0.1);
   border-radius: var(--radius-md);
   font-size: 0.8125rem;
-  color: var(--primary);
   font-weight: 600;
+  color: var(--primary);
+  background: rgb(var(--primary-rgb), 0.1);
 }
 
 .monthContent {
@@ -221,74 +220,74 @@
 .monthSectionText {
   margin-top: 0;
   font-size: 0.9375rem;
-  color: var(--foreground);
   line-height: 1.7;
+  color: var(--foreground);
 }
 
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .desktopView {
     display: none;
   }
 
   .mobileView {
+    position: relative;
     display: block;
     height: 400px;
-    background: var(--card-bg);
     border: 1px solid var(--card-border);
     border-radius: var(--radius-xl);
+    background: var(--card-bg);
     overflow: hidden;
-    position: relative;
   }
 
   .wheelContainer {
     display: flex;
     align-items: center;
+    gap: 3rem;
     height: 100%;
     padding: 2rem;
-    gap: 3rem;
   }
 
   .wheelArc {
     position: absolute;
-    left: -20px;
     top: 50%;
-    transform: translateY(-50%);
+    left: -20px;
     width: 120px;
     height: 100%;
+    transform: translateY(-50%);
     pointer-events: none;
   }
 
   .monthWheel {
     position: relative;
-    width: 80px;
-    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
+    width: 80px;
+    height: 100%;
     margin-top: -110px;
     touch-action: none; /* 커스텀 터치 동작을 위해 기본 동작 방지 */
   }
 
   .wheelItem {
     position: absolute;
+    font-family: Inter, sans-serif;
     font-size: 3rem;
     font-weight: 900;
+    letter-spacing: -0.05em;
     color: var(--foreground-muted);
     transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
     cursor: pointer;
-    font-family: "Inter", sans-serif;
-    letter-spacing: -0.05em;
     user-select: none;
   }
 
   .wheelItem.active {
     color: var(--foreground);
-    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-shadow: 0 4px 12px rgb(0 0 0 / 10%);
   }
 
   .activeContent {
-    flex: 1;
     display: flex;
+    flex: 1;
     flex-direction: column;
     gap: 1.25rem;
     animation: fadeIn 0.5s ease;
@@ -307,8 +306,8 @@
     gap: 0.5rem;
     font-size: 0.875rem;
     font-weight: 600;
-    color: var(--primary);
     text-transform: uppercase;
+    color: var(--primary);
   }
 
   .mobileStars {
@@ -326,33 +325,33 @@
   }
 
   .mobileSummaryTitle {
+    margin: 0;
     font-size: 1.5rem;
     font-weight: 800;
-    margin: 0;
-    color: var(--foreground);
     line-height: 1.2;
+    color: var(--foreground);
   }
 
   .mobileDesc {
-    font-size: 1rem;
-    color: var(--foreground-muted);
-    height: 75px;
-    line-height: 1.6;
-    margin: 0;
     display: -webkit-box;
+    height: 75px;
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--foreground-muted);
+    overflow: hidden;
     -webkit-line-clamp: 3;
     line-clamp: 3;
     -webkit-box-orient: vertical;
-    overflow: hidden;
   }
 
   .mobileMore {
-    font-size: 0.875rem;
-    font-weight: 700;
-    color: var(--primary);
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--primary);
   }
 
   .mobileMore span {
@@ -369,13 +368,14 @@
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-@media (max-width: 600px) {
+@media (width <= 600px) {
   .wheelContainer {
     gap: 2rem;
     padding: 1.5rem;

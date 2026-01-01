@@ -1,21 +1,21 @@
 .totalSection {
-  background: var(--card-bg);
+  position: relative;
+  padding: 2.5rem;
   border: 1px solid var(--card-border);
   border-radius: var(--radius-2xl);
-  padding: 2.5rem;
   box-shadow: var(--shadow-xl);
-  position: relative;
+  background: var(--card-bg);
   overflow: hidden;
 }
 
 .totalSection::before {
-  content: '';
   position: absolute;
   top: 0;
-  left: 0;
   right: 0;
+  left: 0;
   height: 4px;
   background: var(--primary-gradient);
+  content: '';
 }
 
 .totalCard {
@@ -49,8 +49,8 @@
 
 .gradeLabel {
   font-size: 0.875rem;
-  color: var(--foreground-muted);
   font-weight: 600;
+  color: var(--foreground-muted);
 }
 
 .gradeValue {
@@ -78,8 +78,8 @@
 
 .keywordsLabel {
   font-size: 0.875rem;
-  color: var(--foreground-muted);
   font-weight: 600;
+  color: var(--foreground-muted);
 }
 
 .keywords {
@@ -90,11 +90,11 @@
 
 .keyword {
   padding: 0.375rem 0.75rem;
-  background: rgba(var(--primary-rgb), 0.1);
   border-radius: var(--radius-md);
   font-size: 0.875rem;
-  color: var(--primary);
   font-weight: 600;
+  color: var(--primary);
+  background: rgb(var(--primary-rgb), 0.1);
 }
 
 .analysisSection {
@@ -105,15 +105,15 @@
 
 .analysisLabel {
   font-size: 0.875rem;
-  color: var(--foreground-muted);
   font-weight: 600;
+  color: var(--foreground-muted);
 }
 
 .analysisText {
   margin-top: 0;
   font-size: 0.875rem;
-  color: var(--foreground);
   line-height: 1.8;
+  color: var(--foreground);
 }
 
 
@@ -125,8 +125,8 @@
 
 .adviceLabel {
   font-size: 0.875rem;
-  color: var(--foreground-muted);
   font-weight: 600;
+  color: var(--foreground-muted);
 }
 
 .adviceList {
@@ -140,8 +140,8 @@
   align-items: flex-start;
   gap: 0.75rem;
   padding: 0.75rem;
-  background: rgba(var(--primary-rgb), 0.05);
   border-radius: var(--radius-lg);
+  background: rgb(var(--primary-rgb), 0.05);
 }
 
 .adviceIcon {
@@ -151,11 +151,11 @@
 
 .adviceText {
   font-size: 0.9375rem;
-  color: var(--foreground);
   line-height: 1.6;
+  color: var(--foreground);
 }
 
-@media (max-width: 600px) {
+@media (width <= 600px) {
   .totalSection {
     padding: 1.5rem;
   }

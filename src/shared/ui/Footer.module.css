@@ -1,58 +1,58 @@
 .footer {
-  width: 100%;
-  padding: 28px 24px;
-  background: var(--secondary);
-  border-top: 1px solid var(--border);
-  margin-top: auto;
   position: relative;
+  width: 100%;
+  margin-top: auto;
+  padding: 28px 24px;
+  border-top: 1px solid var(--border);
+  background: var(--secondary);
 }
 
 .footer::before {
-  content: '';
   position: absolute;
   top: 0;
-  left: 0;
   right: 0;
+  left: 0;
   height: 1px;
   background: linear-gradient(90deg, transparent, var(--primary), transparent);
   opacity: 0.5;
+  content: '';
 }
 
 .content {
-  max-width: 800px;
-  margin: 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 16px;
-  color: var(--foreground-muted);
+  max-width: 800px;
+  margin: 0 auto;
   font-size: 0.8rem;
+  color: var(--foreground-muted);
 }
 
 .links {
   display: flex;
-  gap: 12px;
   align-items: center;
+  gap: 12px;
 }
 
 .link {
-  color: var(--foreground-muted);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   padding: 4px 8px;
   border-radius: var(--radius-sm);
+  color: var(--foreground-muted);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .link:hover {
   color: var(--primary);
-  background: rgba(212, 165, 116, 0.1);
+  background: rgb(212 165 116 / 10%);
 }
 
 .divider {
-  color: var(--border);
   font-size: 0.8rem;
+  color: var(--border);
 }
 
-@media (min-width: 600px) {
+@media (width >= 600px) {
   .content {
     flex-direction: row;
     justify-content: space-between;

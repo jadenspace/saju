@@ -1,19 +1,19 @@
 .page {
   display: flex;
-  min-height: 100vh;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  min-height: 100vh;
   padding: 2rem;
   background: var(--background);
 }
 
 .main {
   display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   width: 100%;
   max-width: 800px;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   padding: 3rem 2rem;
 }
 
@@ -21,9 +21,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  text-align: center;
   gap: 1.5rem;
   margin-bottom: 2.5rem;
+  text-align: center;
 }
 
 .intro h1 {
@@ -32,7 +32,7 @@
   line-height: 1.2;
   letter-spacing: -0.03em;
   background: var(--primary-gradient);
-  -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   text-wrap: balance;
@@ -59,58 +59,58 @@
 .ctas {
   display: flex;
   flex-direction: row;
+  justify-content: center;
+  gap: 1rem;
   width: 100%;
   max-width: 440px;
-  gap: 1rem;
   font-size: 0.9375rem;
-  justify-content: center;
 }
 
 .ctas a {
   display: flex;
   justify-content: center;
   align-items: center;
+  width: fit-content;
   height: 3rem;
   padding: 0 1.5rem;
-  border-radius: var(--radius-lg);
   border: 1px solid transparent;
+  border-radius: var(--radius-lg);
+  font-weight: 600;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
-  width: fit-content;
-  font-weight: 600;
 }
 
 a.primary {
-  background: var(--primary-gradient);
-  color: var(--secondary);
   gap: 0.5rem;
+  border: 1px solid rgb(212 165 116 / 30%);
   box-shadow: var(--shadow-glow);
-  border: 1px solid rgba(212, 165, 116, 0.3);
+  color: var(--secondary);
+  background: var(--primary-gradient);
 }
 
 a.secondary {
-  background: var(--card-bg);
   border-color: var(--border);
-  color: var(--foreground);
   box-shadow: var(--shadow-sm);
+  color: var(--foreground);
+  background: var(--card-bg);
 }
 
 /* Enable hover only on non-touch devices */
 @media (hover: hover) and (pointer: fine) {
   a.primary:hover {
-    transform: translateY(-2px);
     box-shadow: var(--shadow-md), var(--shadow-glow);
+    transform: translateY(-2px);
   }
 
   a.secondary:hover {
-    background: var(--secondary-hover);
     border-color: var(--accent);
-    transform: translateY(-2px);
     box-shadow: var(--shadow-md);
+    background: var(--secondary-hover);
+    transform: translateY(-2px);
   }
 }
 
-@media (max-width: 600px) {
+@media (width <= 600px) {
   .page {
     padding: 1rem;
   }
