@@ -1,8 +1,8 @@
 .main {
-  min-height: 100vh;
-  padding: 40px 20px;
   display: flex;
   justify-content: center;
+  min-height: 100vh;
+  padding: 40px 20px;
   background: var(--background);
 }
 
@@ -17,27 +17,27 @@
 
 .backButton {
   display: inline-block;
-  color: var(--foreground-muted);
   font-size: 0.9rem;
+  color: var(--foreground-muted);
   transition: color 0.2s ease;
 }
 
 .backButton:hover {
-  color: var(--primary);
   text-decoration: underline;
+  color: var(--primary);
 }
 
 .title {
+  margin-bottom: 16px;
   font-size: 2rem;
   font-weight: 700;
-  margin-bottom: 16px;
   text-align: center;
   color: var(--primary);
 }
 
 .description {
-  text-align: center;
   margin-bottom: 40px;
-  color: var(--foreground-muted);
   line-height: 1.6;
+  text-align: center;
+  color: var(--foreground-muted);
 }

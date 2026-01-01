@@ -14,6 +14,7 @@ import {
 } from "../../../shared/lib/saju/data/SajuExplanations";
 import { SajuData } from "../model/types";
 import { SajuCalculator } from "../../../shared/lib/saju/calculators/SajuCalculator";
+import { getPolarity } from "../../../shared/lib/saju/calculators/TenGod";
 import { ManseuryeokSection } from "./ManseuryeokSection";
 import { IljuAnalysis } from "./IljuAnalysis";
 import { OhaengAnalysis } from "./OhaengAnalysis";
@@ -351,10 +352,26 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
                     </div>
                     <div className={styles.daeunGanZhi}>
                       <span className={styles.daeunHan}>
-                        <span className={clsx(styles[period.ganElement || ""])}>
+                        <span
+                          className={clsx(
+                            styles.daeunCharacter,
+                            styles[period.ganElement || ""],
+                            getPolarity(period.ganHan) === "yang"
+                              ? styles.yang
+                              : styles.yin,
+                          )}
+                        >
                           {period.ganHan}
                         </span>
-                        <span className={clsx(styles[period.jiElement || ""])}>
+                        <span
+                          className={clsx(
+                            styles.daeunCharacter,
+                            styles[period.jiElement || ""],
+                            getPolarity(period.jiHan) === "yang"
+                              ? styles.yang
+                              : styles.yin,
+                          )}
+                        >
                           {period.jiHan}
                         </span>
                       </span>
@@ -495,14 +512,22 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
                               <span className={styles.seunHan}>
                                 <span
                                   className={clsx(
+                                    styles.seunCharacter,
                                     styles[yearFortune.ganElement || ""],
+                                    getPolarity(yearFortune.ganHan) === "yang"
+                                      ? styles.yang
+                                      : styles.yin,
                                   )}
                                 >
                                   {yearFortune.ganHan}
                                 </span>
                                 <span
                                   className={clsx(
+                                    styles.seunCharacter,
                                     styles[yearFortune.jiElement || ""],
+                                    getPolarity(yearFortune.jiHan) === "yang"
+                                      ? styles.yang
+                                      : styles.yin,
                                   )}
                                 >
                                   {yearFortune.jiHan}
@@ -581,25 +606,17 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
                   slidesPerView={SWIPER_SLIDES_PER_VIEW.mobile}
                   centeredSlides={false}
                   initialSlide={(() => {
-                    const currentJieqiJiHan = (() => {
+                    // 2026년일 때만 현재 월로 설정, 나머지는 모두 index 0 (1월)
+                    if (selectedSeunYear === 2026) {
                       const now = new Date();
-                      const solar = Solar.fromYmdHms(
-                        now.getFullYear(),
-                        now.getMonth() + 1,
-                        now.getDate(),
-                        12,
-                        0,
-                        0,
+                      const currentMonth = now.getMonth() + 1; // 1-12
+                      const currentMonthIndex = monthlyFortune.findIndex(
+                        (mf) => mf.month === currentMonth,
                       );
-                      const lunar = solar.getLunar();
-                      return lunar.getMonthInGanZhiExact().charAt(1);
-                    })();
-                    const currentMonthIndex = monthlyFortune.findIndex(
-                      (mf) =>
-                        selectedSeunYear === currentYear &&
-                        mf.jiHan === currentJieqiJiHan,
-                    );
-                    return currentMonthIndex !== -1 ? currentMonthIndex : 0;
+                      return currentMonthIndex !== -1 ? currentMonthIndex : 0;
+                    }
+                    // 나머지는 모두 index 0 (1월)
+                    return 0;
                   })()}
                   breakpoints={{
                     640: {
@@ -612,23 +629,15 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
                   {monthlyFortune.map((monthFortune) => {
                     // 양력 월을 그대로 표시
                     const displayMonth = monthFortune.month;
-                    // 현재 절기 월과 비교하여 활성화 여부 결정
-                    const currentJieqiJiHan = (() => {
-                      const now = new Date();
-                      const solar = Solar.fromYmdHms(
-                        now.getFullYear(),
-                        now.getMonth() + 1,
-                        now.getDate(),
-                        12,
-                        0,
-                        0,
-                      );
-                      const lunar = solar.getLunar();
-                      return lunar.getMonthInGanZhiExact().charAt(1);
+                    // 2026년일 때만 현재 월(양력 기준)로 활성화 여부 결정
+                    const isCurrentMonth = (() => {
+                      if (selectedSeunYear === 2026) {
+                        const now = new Date();
+                        const currentMonth = now.getMonth() + 1; // 1-12
+                        return monthFortune.month === currentMonth;
+                      }
+                      return false;
                     })();
-                    const isCurrentMonth =
-                      selectedSeunYear === currentYear &&
-                      monthFortune.jiHan === currentJieqiJiHan;
 
                     return (
                       <SwiperSlide
@@ -651,14 +660,22 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
                             <span className={styles.wolunHan}>
                               <span
                                 className={clsx(
+                                  styles.wolunCharacter,
                                   styles[monthFortune.ganElement || ""],
+                                  getPolarity(monthFortune.ganHan) === "yang"
+                                    ? styles.yang
+                                    : styles.yin,
                                 )}
                               >
                                 {monthFortune.ganHan}
                               </span>
                               <span
                                 className={clsx(
+                                  styles.wolunCharacter,
                                   styles[monthFortune.jiElement || ""],
+                                  getPolarity(monthFortune.jiHan) === "yang"
+                                    ? styles.yang
+                                    : styles.yin,
                                 )}
                               >
                                 {monthFortune.jiHan}

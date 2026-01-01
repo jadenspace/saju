@@ -1,20 +1,20 @@
 .container {
+  margin-top: 1.5rem;
   padding: 1.5rem;
-  background: var(--card-bg);
   border: 1px solid var(--card-border);
   border-radius: 1.5rem;
-  margin-top: 1.5rem;
-  color: var(--foreground);
   box-shadow: var(--shadow-sm);
+  color: var(--foreground);
+  background: var(--card-bg);
 }
 
 .mainTitle {
+  margin-bottom: 2rem;
+  padding-left: 0.75rem;
+  border-left: 4px solid var(--primary);
   font-size: 1.1rem;
   font-weight: 700;
-  margin-bottom: 2rem;
   color: var(--primary);
-  border-left: 4px solid var(--primary);
-  padding-left: 0.75rem;
 }
 
 .horizontalGrid {
@@ -31,17 +31,17 @@
 }
 
 .elementIcon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 2.5rem;
   height: 2.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   border-radius: 50%;
   font-size: 1rem;
   font-weight: bold;
   color: white;
   flex-shrink: 0;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 1px 3px rgb(0 0 0 / 30%);
 }
 
 .elementInfo {
@@ -65,12 +65,12 @@
 }
 
 .barContainer {
-  height: 0.6rem;
-  background: #222;
-  border: 1px solid rgba(0, 0, 0, 0.15);
-  border-radius: 1rem;
-  overflow: hidden;
   position: relative;
+  height: 0.6rem;
+  border: 1px solid rgb(0 0 0 / 15%);
+  border-radius: 1rem;
+  background: #222;
+  overflow: hidden;
 }
 
 .bar {
@@ -80,11 +80,11 @@
 }
 
 .percentageText {
+  width: 3rem;
   font-size: 0.9rem;
   font-weight: 700;
-  color: var(--foreground);
-  width: 3rem;
   text-align: right;
+  color: var(--foreground);
 }
 
 .interpretation {
@@ -94,11 +94,11 @@
 }
 
 .summaryText {
+  margin-bottom: 1rem;
   font-size: 0.95rem;
   line-height: 1.7;
-  color: var(--foreground);
-  margin-bottom: 1rem;
   text-align: center;
+  color: var(--foreground);
 }
 
 .tags {
@@ -116,15 +116,15 @@
 }
 
 .tag.excess {
-  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgb(239 68 68 / 25%);
   color: #dc2626;
-  border: 1px solid rgba(239, 68, 68, 0.25);
+  background: rgb(239 68 68 / 10%);
 }
 
 .tag.missing {
-  background: rgba(0, 0, 0, 0.04);
-  color: var(--foreground-muted);
   border: 1px solid var(--border);
+  color: var(--foreground-muted);
+  background: rgb(0 0 0 / 4%);
 }
 
 .detailedAnalysis {
@@ -132,18 +132,18 @@
 }
 
 .detailedTitle {
+  margin-bottom: 1.5rem;
   font-size: 1rem;
   font-weight: 700;
-  margin-bottom: 1.5rem;
   color: var(--foreground);
 }
 
 .elementDetail {
   margin-bottom: 1.25rem;
   padding: 1.25rem;
-  background: var(--bg-light);
   border: 1px solid var(--border);
   border-radius: 1rem;
+  background: var(--bg-light);
 }
 
 .elementHeader {
@@ -159,7 +159,7 @@
   font-size: 0.9rem;
   font-weight: 700;
   color: white;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  text-shadow: 0 1px 2px rgb(0 0 0 / 20%);
 }
 
 .elementStats {
@@ -178,10 +178,10 @@
 }
 
 .elementDescription {
+  margin: 0 0 1rem;
   font-size: 0.9rem;
   line-height: 1.6;
   color: var(--foreground);
-  margin: 0 0 1rem 0;
 }
 
 .colorInfo {
@@ -200,16 +200,16 @@
 
 .colorLabel {
   display: block;
+  margin-bottom: 0.5rem;
   font-size: 0.85rem;
   font-weight: 600;
   color: var(--foreground);
-  margin-bottom: 0.5rem;
 }
 
 .obangColor {
   font-size: 0.9rem;
-  color: var(--primary);
   font-weight: 600;
+  color: var(--primary);
 }
 
 .colorTags {
@@ -220,23 +220,23 @@
 
 .colorTag {
   padding: 0.3rem 0.8rem;
+  border: 1px solid var(--border);
   border-radius: 2rem;
   font-size: 0.8rem;
   font-weight: 600;
-  background: rgba(0, 0, 0, 0.04);
   color: var(--foreground);
-  border: 1px solid var(--border);
+  background: rgb(0 0 0 / 4%);
 }
 
 .disclaimer {
   margin-top: 2rem;
   padding: 1rem;
-  background: var(--bg-light);
   border-radius: 0.75rem;
   font-size: 0.8rem;
-  color: var(--foreground-muted);
   line-height: 1.6;
   text-align: center;
+  color: var(--foreground-muted);
+  background: var(--bg-light);
 }
 
 /* Element Colors */
@@ -249,21 +249,21 @@
 }
 
 .earth {
-  background-color: #fbbf24;
   color: var(--text-on-light);
+  background-color: #fbbf24;
 }
 
 .metal {
-  background-color: #cbd5e1;
   color: #000;
+  background-color: #cbd5e1;
 }
 
 .water {
-  background-color: #374151;
   color: white;
+  background-color: #374151;
 }
 
-@media (max-width: 480px) {
+@media (width <= 480px) {
   .container {
     padding: 1rem;
   }

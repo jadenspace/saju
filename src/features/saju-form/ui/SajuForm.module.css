@@ -7,22 +7,22 @@
   max-width: 460px;
   margin: 0 auto;
   padding: 2.5rem;
-  background: var(--card-bg);
   border: 1px solid var(--card-border);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-md);
+  background: var(--card-bg);
 }
 
 .form::before {
-  content: "";
   position: absolute;
   top: 0;
-  left: 0;
   right: 0;
+  left: 0;
   height: 3px;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
   background: linear-gradient(90deg, transparent, var(--primary), transparent);
   opacity: 0.8;
-  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  content: "";
 }
 
 .inputGroup {
@@ -44,9 +44,9 @@
 }
 
 .mainInput {
+  padding: 0.875rem 1rem !important;
   font-size: 1.1rem !important;
   letter-spacing: 0.05em;
-  padding: 0.875rem 1rem !important;
   text-align: center;
 }
 
@@ -60,10 +60,10 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  cursor: pointer;
   font-size: 0.85rem;
   color: var(--foreground);
   transition: opacity 0.2s;
+  cursor: pointer;
 }
 
 .checkboxLabel:hover {
@@ -90,14 +90,14 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem;
-  background: transparent;
   border: 1px solid transparent;
   border-radius: 100%;
-  color: var(--foreground);
   font-size: 0.8rem;
-  cursor: pointer;
-  transition: all 0.2s;
+  color: var(--foreground);
+  background: transparent;
   opacity: 0.6;
+  transition: all 0.2s;
+  cursor: pointer;
 }
 
 .settingsButton svg {
@@ -105,26 +105,23 @@
 }
 
 .settingsButton:hover {
-  opacity: 1;
-  background: rgba(0, 0, 0, 0.05);
   border-color: var(--border);
+  background: rgb(0 0 0 / 5%);
+  opacity: 1;
 }
 
 .settingsButton.active {
-  background: var(--primary);
-  color: white;
   border-color: var(--primary);
+  color: white;
+  background: var(--primary);
   opacity: 1;
 }
 
 .settingsOverlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  inset: 0;
   z-index: 1000;
+  background: rgb(0 0 0 / 50%);
   animation: fadeIn 0.2s ease-out;
 }
 
@@ -132,55 +129,55 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
 }
 
 .settingsPanel {
-  overflow: visible;
   position: fixed;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
   z-index: 1001;
+  width: calc(100% - 2rem);
+  max-width: 90vw;
+  max-width: 500px;
+  max-height: 90vh;
   padding: 1.5rem;
-  background: var(--card-bg);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
+  background: var(--card-bg);
+  transform: translate(-50%, -50%);
   animation: slideUp 0.3s ease-out;
-  max-width: 90vw;
-  max-height: 90vh;
-  overflow-y: auto;
-  width: calc(100% - 2rem);
-  max-width: 500px;
+  overflow: visible;
 }
 
 .closeButton {
   position: absolute;
   top: 1rem;
   right: 1rem;
-  width: 2rem;
-  height: 2rem;
   z-index: 101;
   display: flex;
-  align-items: center;
   justify-content: center;
-  background: transparent;
+  align-items: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
   border: 1px solid var(--border);
   border-radius: 0.375rem;
-  color: var(--foreground);
   font-size: 1.25rem;
-  cursor: pointer;
+  color: var(--foreground);
+  background: transparent;
   transition: all 0.2s;
-  padding: 0;
+  cursor: pointer;
 }
 
 .closeButton:hover {
-  background: rgba(0, 0, 0, 0.05);
   border-color: var(--primary);
   color: var(--primary);
+  background: rgb(0 0 0 / 5%);
 }
 
 @keyframes slideUp {
@@ -212,34 +209,34 @@
   display: flex;
   gap: 0.5rem;
   padding: 0.375rem;
-  background: var(--bg-light);
-  border-radius: var(--radius-md);
   border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-light);
 }
 
 .radioLabel {
-  flex: 1;
   display: flex;
-  align-items: center;
+  flex: 1;
   justify-content: center;
+  align-items: center;
   gap: 0.5rem;
-  cursor: pointer;
-  font-size: 0.9rem;
-  line-height: 1.33;
   padding: 0.75rem 0;
   border-radius: var(--radius-sm);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.9rem;
+  line-height: 1.33;
   color: var(--foreground-muted);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
 }
 
 .radioLabel:hover {
-  background: rgba(0, 0, 0, 0.05);
   color: var(--foreground);
+  background: rgb(0 0 0 / 5%);
 }
 
 .radioLabel:has(input:checked) {
-  background: rgba(212, 165, 116, 0.15);
   color: var(--foreground);
+  background: rgb(212 165 116 / 15%);
 }
 
 .radioLabel input {
@@ -253,10 +250,10 @@
 }
 
 .labelWithTooltip {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  position: relative;
 }
 
 .tooltip {
@@ -266,47 +263,47 @@
 
 .infoIcon {
   display: inline-flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   width: 1.25rem;
   height: 1.25rem;
   border-radius: 50%;
-  background: rgba(212, 165, 116, 0.15);
-  color: var(--primary);
   font-size: 0.875rem;
   font-weight: bold;
-  cursor: help;
+  color: var(--primary);
+  background: rgb(212 165 116 / 15%);
   transition: all 0.2s;
+  cursor: help;
 }
 
 .infoIcon:hover {
-  background: var(--primary);
   color: white;
+  background: var(--primary);
   transform: scale(1.1);
 }
 
 .tooltipContent {
-  visibility: hidden;
-  opacity: 0;
   position: absolute;
-  left: 2rem;
   top: 50%;
-  transform: translateY(-50%);
-  background: var(--card-bg);
-  color: var(--foreground);
-  padding: 0.75rem 1rem;
-  border-radius: 0.5rem;
-  font-size: 0.8rem;
-  line-height: 1.6;
-  white-space: normal;
+  left: 2rem;
+  z-index: 1000;
   width: max-content;
   max-width: 320px;
-  box-shadow: var(--shadow-lg);
+  padding: 0.75rem 1rem;
   border: 1px solid var(--border);
-  z-index: 1000;
+  border-radius: 0.5rem;
+  box-shadow: var(--shadow-lg);
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: var(--foreground);
+  white-space: normal;
+  background: var(--card-bg);
+  opacity: 0;
+  transform: translateY(-50%);
   transition:
     opacity 0.2s,
     visibility 0.2s;
+  visibility: hidden;
   pointer-events: none;
 }
 
@@ -315,8 +312,8 @@
 }
 
 .tooltip:hover .tooltipContent {
-  visibility: visible;
   opacity: 1;
+  visibility: visible;
 }
 
 .tooltipContent strong {
@@ -324,20 +321,20 @@
 }
 
 .helperText {
-  font-size: 0.8rem;
-  color: var(--foreground-muted);
   margin: 0;
+  font-size: 0.8rem;
   line-height: 1.4;
+  color: var(--foreground-muted);
 }
 
 .errorMessage {
   padding: 0.875rem;
-  background: rgba(239, 68, 68, 0.08);
-  border: 1px solid rgba(239, 68, 68, 0.25);
+  border: 1px solid rgb(239 68 68 / 25%);
   border-radius: 0.75rem;
-  color: #dc2626;
   font-size: 0.9rem;
   text-align: center;
+  color: #dc2626;
+  background: rgb(239 68 68 / 8%);
 }
 
 .mobileOnlyBr {
@@ -345,9 +342,9 @@
 }
 
 .submitButton {
-  margin-top: 1rem;
   width: 100%;
   height: 3.5rem;
+  margin-top: 1rem;
   font-size: 1.1rem;
   font-weight: 600;
 }
@@ -362,52 +359,52 @@
 .primaryButton {
   flex: 1;
   height: 3.5rem;
+  box-shadow: var(--shadow-glow);
   font-size: 1.05rem;
   font-weight: 600;
-  box-shadow: var(--shadow-glow);
 }
 
 .secondaryButton {
   flex: 1;
   height: 3.5rem;
-  font-size: 1.05rem;
-  font-weight: 600;
-  background: var(--silver-gradient) !important;
-  color: var(--secondary) !important;
-  border: 1px solid rgba(156, 163, 175, 0.3) !important;
+  border: 1px solid rgb(156 163 175 / 30%) !important;
   box-shadow:
     var(--shadow-sm),
-    0 0 20px rgba(156, 163, 175, 0.2);
+    0 0 20px rgb(156 163 175 / 20%);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--secondary) !important;
+  background: var(--silver-gradient) !important;
 }
 
 .secondaryButton:hover {
-  transform: translateY(-2px);
   box-shadow: var(--shadow-md), var(--shadow-silver-glow);
+  transform: translateY(-2px);
 }
 
 .tertiaryButton {
   flex: 1;
   height: 3.5rem;
-  font-size: 1.05rem;
-  font-weight: 600;
-  background: var(--silver-gradient) !important;
-  color: var(--secondary) !important;
-  border: 1px solid rgba(156, 163, 175, 0.3) !important;
+  border: 1px solid rgb(156 163 175 / 30%) !important;
   box-shadow:
     var(--shadow-sm),
-    0 0 20px rgba(156, 163, 175, 0.2);
+    0 0 20px rgb(156 163 175 / 20%);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--secondary) !important;
+  background: var(--silver-gradient) !important;
 }
 
 .tertiaryButton:hover {
-  transform: translateY(-2px);
   box-shadow: var(--shadow-md), var(--shadow-silver-glow);
+  transform: translateY(-2px);
 }
 
 /* Tablet and mobile optimization */
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .form {
-    padding: 2rem;
     gap: 1.75rem;
+    padding: 2rem;
   }
 
   .settingsButton {
@@ -418,16 +415,16 @@
 }
 
 /* Mobile optimization */
-@media (max-width: 480px) {
+@media (width <= 480px) {
   .form {
-    padding: 1.5rem;
     gap: 1.5rem;
+    padding: 1.5rem;
     border-radius: 1.25rem;
   }
 
   .mainInput {
-    font-size: 1rem !important;
     padding: 0.75rem !important;
+    font-size: 1rem !important;
   }
 
   .submitButton {

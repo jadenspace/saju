@@ -1,8 +1,8 @@
 .main {
   min-height: 100vh;
   padding: 4rem 1rem;
-  background: var(--background);
   color: var(--foreground);
+  background: var(--background);
 }
 
 .container {
@@ -16,11 +16,11 @@
 }
 
 .backLink {
-  opacity: 0.7;
+  display: inline-block;
+  margin-bottom: 1rem;
   text-decoration: none;
   color: var(--foreground);
-  margin-bottom: 1rem;
-  display: inline-block;
+  opacity: 0.7;
   transition: color 0.2s ease;
 }
 
@@ -30,14 +30,14 @@
 }
 
 .title {
+  margin: 1rem 0 0.5rem;
   font-size: 2rem;
   font-weight: bold;
-  margin: 1rem 0 0.5rem;
   color: var(--foreground);
 }
 
 .subtitle {
-  opacity: 0.8;
   color: var(--foreground-muted);
+  opacity: 0.8;
 }
 

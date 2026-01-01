@@ -1,8 +1,8 @@
 .main {
     min-height: 100vh;
     padding: 4rem 1rem;
-    background: var(--background);
     color: var(--foreground);
+    background: var(--background);
 }
 
 .container {
@@ -14,19 +14,19 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    color: var(--primary);
-    text-decoration: none;
     margin-bottom: 2rem;
     padding: 0.5rem 0.75rem;
+    border: 1px solid transparent;
     border-radius: 0.5rem;
+    text-decoration: none;
+    color: var(--primary);
     transition: all 0.2s;
     cursor: pointer;
-    border: 1px solid transparent;
 }
 
 .backLink:hover {
-    background: var(--bg-light);
     border-color: var(--primary);
+    background: var(--bg-light);
     opacity: 1;
 }
 
@@ -35,28 +35,28 @@
 }
 
 .title {
+    margin-bottom: 0.5rem;
     font-size: 2rem;
     font-weight: bold;
-    margin-bottom: 0.5rem;
     color: var(--primary);
 }
 
 .subtitle {
+    margin-bottom: 2rem;
     font-size: 1.1rem;
     color: var(--foreground-muted);
-    margin-bottom: 2rem;
 }
 
 .description {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    border-left: 4px solid var(--primary);
+    border-radius: 1rem;
+    box-shadow: var(--shadow-sm);
     font-size: 1rem;
     line-height: 1.8;
     color: var(--foreground);
-    margin-bottom: 2rem;
-    padding: 1.5rem;
     background: var(--card-bg);
-    border-radius: 1rem;
-    border-left: 4px solid var(--primary);
-    box-shadow: var(--shadow-sm);
 }
 
 .section {
@@ -64,21 +64,21 @@
 }
 
 .sectionTitle {
-    font-size: 1.25rem;
-    font-weight: bold;
-    margin-bottom: 1rem;
-    color: var(--primary);
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: var(--primary);
 }
 
 .sectionTitle::before {
-    content: "";
     width: 4px;
     height: 1.5rem;
-    background: var(--primary);
     border-radius: 2px;
+    background: var(--primary);
+    content: "";
 }
 
 .grid {
@@ -87,31 +87,31 @@
     gap: 1rem;
 }
 
-@media (min-width: 900px) {
+@media (width >= 900px) {
     .grid {
         grid-template-columns: repeat(3, 1fr);
     }
 }
 
 .card {
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: 1rem;
-    padding: 1.5rem;
-    transition: all 0.2s ease;
-    box-shadow: var(--shadow-sm);
     position: relative;
     display: flex;
     flex-direction: column;
     height: 100%;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    box-shadow: var(--shadow-sm);
+    background: var(--card-bg);
+    transition: all 0.2s ease;
 }
 
 .cardLink {
+    display: block;
     text-decoration: none;
     color: inherit;
-    display: block;
     cursor: pointer;
-    -webkit-tap-highlight-color: rgba(212, 165, 116, 0.2);
+    -webkit-tap-highlight-color: rgb(212 165 116 / 20%);
 }
 
 .cardLink .card {
@@ -119,32 +119,32 @@
 }
 
 .cardLink:hover .card {
-    background: var(--bg-light);
     border-color: var(--primary);
-    transform: translateY(-2px);
     box-shadow: var(--shadow-md);
+    background: var(--bg-light);
+    transform: translateY(-2px);
 }
 
 .cardLink:active .card {
-    transform: translateY(0);
     box-shadow: var(--shadow-sm);
+    transform: translateY(0);
 }
 
 .cardHeader {
     display: flex;
-    align-items: center;
     justify-content: space-between;
+    align-items: center;
     margin-bottom: 0.5rem;
 }
 
 .cardArrow {
+    display: block;
     width: 16px;
     height: 16px;
     color: var(--primary);
     opacity: 0.6;
     transition: all 0.2s ease;
     flex-shrink: 0;
-    display: block;
 }
 
 .card:hover .cardArrow {
@@ -153,11 +153,11 @@
 }
 
 .actionArrow {
+    display: block;
     width: 16px;
     height: 16px;
     transition: transform 0.2s ease;
     flex-shrink: 0;
-    display: block;
 }
 
 .actionButton:hover .actionArrow {
@@ -165,26 +165,26 @@
 }
 
 .cardTitle {
+    flex: 1;
+    margin: 0;
     font-size: 1.1rem;
     font-weight: bold;
-    margin: 0;
     color: var(--primary);
-    flex: 1;
 }
 
 .cardHanja {
+    margin-top: 0;
+    margin-bottom: 0.75rem;
     font-size: 0.85rem;
     color: var(--foreground-muted);
-    margin-bottom: 0.75rem;
-    margin-top: 0;
 }
 
 .cardDescription {
-    font-size: 0.85rem;
-    color: var(--foreground);
-    line-height: 1.6;
-    margin: 0;
     flex: 1;
+    margin: 0;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--foreground);
 }
 
 .itemList {
@@ -194,11 +194,11 @@
 }
 
 .item {
-    background: var(--card-bg);
+    padding: 1.25rem;
     border: 1px solid var(--border);
     border-radius: 0.75rem;
-    padding: 1.25rem;
     box-shadow: var(--shadow-sm);
+    background: var(--card-bg);
 }
 
 .itemHeader {
@@ -209,15 +209,15 @@
 }
 
 .itemIcon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 48px;
     height: 48px;
     border-radius: 0.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    font-family: "Noto Serif KR", serif;
     font-size: 1.25rem;
     font-weight: bold;
-    font-family: "Noto Serif KR", serif;
     color: white;
 }
 
@@ -248,13 +248,13 @@
 .table th,
 .table td {
     padding: 0.75rem;
-    text-align: left;
     border-bottom: 1px solid var(--border);
+    text-align: left;
 }
 
 .table th {
-    color: var(--primary);
     font-weight: 600;
+    color: var(--primary);
     background: var(--bg-light);
 }
 
@@ -265,9 +265,9 @@
 /* Element Colors */
 .wood { background: #4ade80; }
 .fire { background: #f87171; }
-.earth { background: #fbbf24; color: var(--text-on-light); }
-.metal { background: #cbd5e1; color: #000; }
-.water { background: #374151; color: white; }
+.earth { color: var(--text-on-light); background: #fbbf24; }
+.metal { color: #000; background: #cbd5e1; }
+.water { color: white; background: #374151; }
 
 .strong { color: #16a34a; }
 .medium { color: #d97706; }
@@ -275,25 +275,25 @@
 
 .tag {
     display: inline-block;
+    margin-right: 0.5rem;
     padding: 0.2rem 0.6rem;
     border-radius: 1rem;
     font-size: 0.75rem;
-    margin-right: 0.5rem;
 }
 
 .tag.positive {
-    background: rgba(22, 163, 74, 0.1);
     color: #16a34a;
+    background: rgb(22 163 74 / 10%);
 }
 
 .tag.negative {
-    background: rgba(220, 38, 38, 0.1);
     color: #dc2626;
+    background: rgb(220 38 38 / 10%);
 }
 
 .tag.neutral {
-    background: rgba(217, 119, 6, 0.1);
     color: #d97706;
+    background: rgb(217 119 6 / 10%);
 }
 
 .navLinks {
@@ -307,19 +307,19 @@
 
 .navLink {
     padding: 0.6rem 1rem;
-    background: var(--card-bg);
     border: 1px solid var(--border);
     border-radius: 0.5rem;
-    color: var(--foreground);
-    text-decoration: none;
-    font-size: 0.85rem;
-    transition: all 0.2s;
     box-shadow: var(--shadow-sm);
+    font-size: 0.85rem;
+    text-decoration: none;
+    color: var(--foreground);
+    background: var(--card-bg);
+    transition: all 0.2s;
 }
 
 .navLink:hover {
-    background: var(--bg-light);
     border-color: var(--primary);
+    background: var(--bg-light);
 }
 
 .actionButton {
@@ -327,30 +327,30 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.75rem 1.5rem;
-    background: var(--primary);
-    color: #000;
+    border: 1px solid transparent;
     border-radius: 0.5rem;
-    text-decoration: none;
+    box-shadow: var(--shadow-sm);
     font-weight: bold;
+    text-decoration: none;
+    color: #000;
+    background: var(--primary);
     transition: all 0.2s ease;
     cursor: pointer;
-    box-shadow: var(--shadow-sm);
-    border: 1px solid transparent;
-    -webkit-tap-highlight-color: rgba(212, 165, 116, 0.3);
+    -webkit-tap-highlight-color: rgb(212 165 116 / 30%);
 }
 
 .actionButton:hover {
+    box-shadow: var(--shadow-md);
     background: var(--primary-hover);
     transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
 }
 
 .actionButton:active {
-    transform: translateY(0);
     box-shadow: var(--shadow-sm);
+    transform: translateY(0);
 }
 
-@media (max-width: 600px) {
+@media (width <= 600px) {
     .main {
         padding: 2rem 1rem;
     }
@@ -377,8 +377,8 @@
     }
 
     .actionButton {
-        width: 100%;
         justify-content: center;
+        width: 100%;
         padding: 0.875rem 1.25rem;
     }
 }

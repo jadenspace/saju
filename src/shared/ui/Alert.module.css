@@ -1,40 +1,37 @@
 .overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  inset: 0;
   z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgb(0 0 0 / 50%);
   animation: fadeIn 0.2s ease-out;
+  backdrop-filter: blur(4px);
 }
 
 .alert {
-  background: var(--card-bg);
+  position: relative;
+  width: 90%;
+  max-width: 400px;
+  padding: 32px;
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
-  padding: 32px;
-  max-width: 400px;
-  width: 90%;
   box-shadow: var(--shadow-lg);
+  background: var(--card-bg);
   animation: slideUp 0.3s ease-out;
-  position: relative;
   overflow: hidden;
 }
 
 .alert::before {
-  content: '';
   position: absolute;
   top: 0;
-  left: 0;
   right: 0;
+  left: 0;
   height: 3px;
   background: linear-gradient(90deg, transparent, var(--primary), transparent);
   opacity: 0.8;
+  content: '';
 }
 
 .content {
@@ -48,15 +45,15 @@
 .icon {
   color: var(--success);
   animation: scaleIn 0.4s ease-out;
-  filter: drop-shadow(0 0 10px rgba(16, 185, 129, 0.3));
+  filter: drop-shadow(0 0 10px rgb(16 185 129 / 30%));
 }
 
 .message {
-  color: var(--foreground);
+  margin: 0;
   font-size: 16px;
   line-height: 1.6;
   text-align: center;
-  margin: 0;
+  color: var(--foreground);
   white-space: pre-wrap;
   word-break: break-word;
 }
@@ -64,20 +61,20 @@
 .closeButton {
   width: 100%;
   padding: 14px 24px;
-  background: var(--primary-gradient);
-  color: var(--secondary);
-  border: 1px solid rgba(212, 165, 116, 0.3);
+  border: 1px solid rgb(212 165 116 / 30%);
   border-radius: var(--radius-md);
+  box-shadow: var(--shadow-glow);
   font-size: 16px;
   font-weight: 600;
-  cursor: pointer;
+  color: var(--secondary);
+  background: var(--primary-gradient);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: var(--shadow-glow);
+  cursor: pointer;
 }
 
 .closeButton:hover {
-  transform: translateY(-2px);
   box-shadow: var(--shadow-md), var(--shadow-glow);
+  transform: translateY(-2px);
 }
 
 .closeButton:active {
@@ -88,6 +85,7 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -95,22 +93,24 @@
 
 @keyframes slideUp {
   from {
-    transform: translateY(20px);
     opacity: 0;
+    transform: translateY(20px);
   }
+
   to {
-    transform: translateY(0);
     opacity: 1;
+    transform: translateY(0);
   }
 }
 
 @keyframes scaleIn {
   from {
-    transform: scale(0.5);
     opacity: 0;
+    transform: scale(0.5);
   }
+
   to {
-    transform: scale(1);
     opacity: 1;
+    transform: scale(1);
   }
 }

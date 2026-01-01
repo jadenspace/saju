@@ -40,8 +40,12 @@
   // Prettier 설정 파일 사용
   "prettier.requireConfig": true,
   
-  // 저장 시 자동으로 import 정리 (선택사항)
+  // 저장 시 자동으로 import 정리 및 CSS 속성 정렬
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit"
-  }
+    "source.fixAll.eslint": "explicit",
+    "source.fixAll.stylelint": "explicit"
+  },
+  
+  // CSS 파일에 대해 stylelint 사용 (Prettier와 함께 사용 가능)
+  "stylelint.validate": ["css", "scss"]
 }

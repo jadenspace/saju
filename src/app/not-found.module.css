@@ -1,51 +1,51 @@
 .main {
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  min-height: 100vh;
   padding: 2rem;
-  background: var(--background);
-  color: var(--foreground);
   text-align: center;
+  color: var(--foreground);
+  background: var(--background);
 }
 
 .errorCode {
-  font-size: 4rem;
   margin-bottom: 1rem;
-  opacity: 0.9;
+  font-size: 4rem;
   color: var(--primary);
+  opacity: 0.9;
 }
 
 .errorTitle {
-  font-size: 1.5rem;
   margin-bottom: 1rem;
+  font-size: 1.5rem;
   font-weight: normal;
   color: var(--foreground);
 }
 
 .errorMessage {
-  opacity: 0.7;
-  margin-bottom: 2rem;
   max-width: 400px;
+  margin-bottom: 2rem;
   line-height: 1.6;
   color: var(--foreground-muted);
+  opacity: 0.7;
 }
 
 .buttonGroup {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
   align-items: center;
+  gap: 1rem;
 }
 
 .primaryButton {
   padding: 0.75rem 2rem;
-  background: var(--primary);
-  color: var(--text-on-light);
   border-radius: 0.5rem;
-  text-decoration: none;
   font-weight: bold;
+  text-decoration: none;
+  color: var(--text-on-light);
+  background: var(--primary);
   transition: all 0.2s ease;
 }
 
@@ -56,23 +56,23 @@
 
 .secondaryButton {
   padding: 0.75rem 2rem;
-  background: var(--bg-light);
   border: 1px solid var(--border);
-  color: var(--foreground);
   border-radius: 0.5rem;
   text-decoration: none;
+  color: var(--foreground);
+  background: var(--bg-light);
   transition: all 0.2s ease;
 }
 
 .secondaryButton:hover {
-  background: var(--secondary-hover);
   border-color: var(--primary);
+  background: var(--secondary-hover);
 }
 
 .footer {
   margin-top: 3rem;
-  opacity: 0.5;
   font-size: 0.85rem;
   color: var(--foreground-muted);
+  opacity: 0.5;
 }
 
