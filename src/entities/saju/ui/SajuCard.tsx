@@ -581,25 +581,17 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
                   slidesPerView={SWIPER_SLIDES_PER_VIEW.mobile}
                   centeredSlides={false}
                   initialSlide={(() => {
-                    const currentJieqiJiHan = (() => {
+                    // 2026년일 때만 현재 월로 설정, 나머지는 모두 index 0 (1월)
+                    if (selectedSeunYear === 2026) {
                       const now = new Date();
-                      const solar = Solar.fromYmdHms(
-                        now.getFullYear(),
-                        now.getMonth() + 1,
-                        now.getDate(),
-                        12,
-                        0,
-                        0,
+                      const currentMonth = now.getMonth() + 1; // 1-12
+                      const currentMonthIndex = monthlyFortune.findIndex(
+                        (mf) => mf.month === currentMonth,
                       );
-                      const lunar = solar.getLunar();
-                      return lunar.getMonthInGanZhiExact().charAt(1);
-                    })();
-                    const currentMonthIndex = monthlyFortune.findIndex(
-                      (mf) =>
-                        selectedSeunYear === currentYear &&
-                        mf.jiHan === currentJieqiJiHan,
-                    );
-                    return currentMonthIndex !== -1 ? currentMonthIndex : 0;
+                      return currentMonthIndex !== -1 ? currentMonthIndex : 0;
+                    }
+                    // 나머지는 모두 index 0 (1월)
+                    return 0;
                   })()}
                   breakpoints={{
                     640: {
@@ -612,23 +604,15 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
                   {monthlyFortune.map((monthFortune) => {
                     // 양력 월을 그대로 표시
                     const displayMonth = monthFortune.month;
-                    // 현재 절기 월과 비교하여 활성화 여부 결정
-                    const currentJieqiJiHan = (() => {
-                      const now = new Date();
-                      const solar = Solar.fromYmdHms(
-                        now.getFullYear(),
-                        now.getMonth() + 1,
-                        now.getDate(),
-                        12,
-                        0,
-                        0,
-                      );
-                      const lunar = solar.getLunar();
-                      return lunar.getMonthInGanZhiExact().charAt(1);
+                    // 2026년일 때만 현재 월(양력 기준)로 활성화 여부 결정
+                    const isCurrentMonth = (() => {
+                      if (selectedSeunYear === 2026) {
+                        const now = new Date();
+                        const currentMonth = now.getMonth() + 1; // 1-12
+                        return monthFortune.month === currentMonth;
+                      }
+                      return false;
                     })();
-                    const isCurrentMonth =
-                      selectedSeunYear === currentYear &&
-                      monthFortune.jiHan === currentJieqiJiHan;
 
                     return (
                       <SwiperSlide
