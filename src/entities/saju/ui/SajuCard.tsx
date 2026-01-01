@@ -14,6 +14,7 @@ import {
 } from "../../../shared/lib/saju/data/SajuExplanations";
 import { SajuData } from "../model/types";
 import { SajuCalculator } from "../../../shared/lib/saju/calculators/SajuCalculator";
+import { getPolarity } from "../../../shared/lib/saju/calculators/TenGod";
 import { ManseuryeokSection } from "./ManseuryeokSection";
 import { IljuAnalysis } from "./IljuAnalysis";
 import { OhaengAnalysis } from "./OhaengAnalysis";
@@ -351,10 +352,18 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
                     </div>
                     <div className={styles.daeunGanZhi}>
                       <span className={styles.daeunHan}>
-                        <span className={clsx(styles[period.ganElement || ""])}>
+                        <span className={clsx(
+                          styles.daeunCharacter,
+                          styles[period.ganElement || ""],
+                          getPolarity(period.ganHan) === 'yang' ? styles.yang : styles.yin
+                        )}>
                           {period.ganHan}
                         </span>
-                        <span className={clsx(styles[period.jiElement || ""])}>
+                        <span className={clsx(
+                          styles.daeunCharacter,
+                          styles[period.jiElement || ""],
+                          getPolarity(period.jiHan) === 'yang' ? styles.yang : styles.yin
+                        )}>
                           {period.jiHan}
                         </span>
                       </span>
@@ -495,14 +504,18 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
                               <span className={styles.seunHan}>
                                 <span
                                   className={clsx(
+                                    styles.seunCharacter,
                                     styles[yearFortune.ganElement || ""],
+                                    getPolarity(yearFortune.ganHan) === 'yang' ? styles.yang : styles.yin
                                   )}
                                 >
                                   {yearFortune.ganHan}
                                 </span>
                                 <span
                                   className={clsx(
+                                    styles.seunCharacter,
                                     styles[yearFortune.jiElement || ""],
+                                    getPolarity(yearFortune.jiHan) === 'yang' ? styles.yang : styles.yin
                                   )}
                                 >
                                   {yearFortune.jiHan}
@@ -635,14 +648,18 @@ export const SajuCard = ({ data, className }: SajuCardProps) => {
                             <span className={styles.wolunHan}>
                               <span
                                 className={clsx(
+                                  styles.wolunCharacter,
                                   styles[monthFortune.ganElement || ""],
+                                  getPolarity(monthFortune.ganHan) === 'yang' ? styles.yang : styles.yin
                                 )}
                               >
                                 {monthFortune.ganHan}
                               </span>
                               <span
                                 className={clsx(
+                                  styles.wolunCharacter,
                                   styles[monthFortune.jiElement || ""],
+                                  getPolarity(monthFortune.jiHan) === 'yang' ? styles.yang : styles.yin
                                 )}
                               >
                                 {monthFortune.jiHan}

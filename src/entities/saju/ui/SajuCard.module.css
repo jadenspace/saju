@@ -188,7 +188,31 @@
   font-family: "Noto Serif KR", serif;
   font-size: 1.6rem;
   font-weight: bold;
-  color: var(--foreground);
+}
+
+.daeunCharacter {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 2rem;
+  padding: 0.25rem 0.4rem;
+  border-radius: 0.5rem;
+  font-weight: bold;
+  text-shadow: 0 1px 3px rgb(0 0 0 / 30%);
+  transition: transform 0.2s ease;
+}
+
+.daeunCharacter:hover {
+  transform: scale(1.05);
+}
+
+/* 음양에 따른 텍스트 색상 */
+.yang {
+  color: #fff;
+}
+
+.yin {
+  color: #000;
 }
 
 .daeunKor {
@@ -347,6 +371,22 @@
   font-weight: bold;
 }
 
+.seunCharacter {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 2rem;
+  padding: 0.25rem 0.4rem;
+  border-radius: 0.5rem;
+  font-weight: bold;
+  text-shadow: 0 1px 3px rgb(0 0 0 / 30%);
+  transition: transform 0.2s ease;
+}
+
+.seunCharacter:hover {
+  transform: scale(1.05);
+}
+
 .seunKor {
   font-size: 0.85rem;
   color: var(--primary);
@@ -490,6 +530,22 @@
   font-weight: bold;
 }
 
+.wolunCharacter {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 2rem;
+  padding: 0.25rem 0.4rem;
+  border-radius: 0.5rem;
+  font-weight: bold;
+  text-shadow: 0 1px 3px rgb(0 0 0 / 30%);
+  transition: transform 0.2s ease;
+}
+
+.wolunCharacter:hover {
+  transform: scale(1.05);
+}
+
 .wolunKor {
   font-size: 0.85rem;
   color: var(--primary);
@@ -617,30 +673,40 @@
   white-space: pre-line;
 }
 
-/* Element Colors (for Daeun/Seun Hanja) - Enhanced */
-.wood {
-  color: #4ade80;
-  text-shadow: 0 0 8px rgb(74 222 128 / 30%);
+/* Element Colors (for Daeun/Seun/Wolun Hanja) - 배경색과 테두리 추가 */
+.daeunCharacter.wood,
+.seunCharacter.wood,
+.wolunCharacter.wood {
+  background-color: #4ade80;
+  border: 1px solid #22c55e;
 }
 
-.fire {
-  color: #f87171;
-  text-shadow: 0 0 8px rgb(248 113 113 / 30%);
+.daeunCharacter.fire,
+.seunCharacter.fire,
+.wolunCharacter.fire {
+  background-color: #f87171;
+  border: 1px solid #ef4444;
 }
 
-.earth {
-  color: #fbbf24;
-  text-shadow: 0 0 8px rgb(251 191 36 / 30%);
+.daeunCharacter.earth,
+.seunCharacter.earth,
+.wolunCharacter.earth {
+  background-color: #fbbf24;
+  border: 1px solid #f59e0b;
 }
 
-.metal {
-  color: #cbd5e1;
-  text-shadow: 0 0 8px rgb(203 213 225 / 30%);
+.daeunCharacter.metal,
+.seunCharacter.metal,
+.wolunCharacter.metal {
+  background-color: #cbd5e1;
+  border: 1px solid #94a3b8;
 }
 
-.water {
-  color: #6b7280;
-  text-shadow: 0 0 8px rgb(107 114 128 / 30%);
+.daeunCharacter.water,
+.seunCharacter.water,
+.wolunCharacter.water {
+  background-color: #374151;
+  border: 1px solid #1f2937;
 }
 
 @media (width <= 600px) {
