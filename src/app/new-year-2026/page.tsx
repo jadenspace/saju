@@ -7,6 +7,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: "2026년 병오년 신년운세 - 오늘의 운세는",
   description: "2026년 병오년, 당신의 운세는 어떨까요? 전통 명리학 기반의 심층 분석으로 한 해의 흐름을 미리 확인하세요.",
+  robots: 'noindex, nofollow',
 };
 
 interface PageProps {

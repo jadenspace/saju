@@ -1,9 +1,11 @@
-'use client';
-
 import { IljuSearchForm } from '@/features/ilju-search/ui/IljuSearchForm';
 import Link from 'next/link';
 import styles from './page.module.css';
+import type { Metadata } from 'next';
 
+export const metadata: Metadata = {
+    robots: 'noindex, nofollow',
+}
 export default function SearchPage() {
     return (
         <div className={styles.main}>

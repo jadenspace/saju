@@ -70,13 +70,14 @@ export const NewYearFortune2026View = ({ sajuData, fortuneData, searchParams }: 
             <p className={styles.ctaText}>
               당신의 사주에서 가장 필요한 기운(용신)을 알면, 운을 극대화하는 방법을 찾을 수 있습니다.
             </p>
-            <Button
-              onClick={() => alert('준비중입니다')}
-              variant="primary"
-              fullWidth
-            >
-              🔮 용신 분석하기 (<span style={{ textDecoration: 'line-through' }}>4,900원</span> → <span style={{ fontWeight: 'bold' }}>무료</span>)
-            </Button>
+            <p className={styles.ctaText}>🔮 용신 서비스는 추후 공개됩니다.</p>
+            {/*<Button*/}
+            {/*  onClick={() => alert('준비중입니다')}*/}
+            {/*  variant="primary"*/}
+            {/*  fullWidth*/}
+            {/*>*/}
+            {/*  🔮 용신 분석하기 (<span style={{ textDecoration: 'line-through' }}>4,900원</span> → <span style={{ fontWeight: 'bold' }}>무료</span>)*/}
+            {/*</Button>*/}
           </div>
         </section>
 

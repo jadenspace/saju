@@ -1,3 +1,5 @@
+'use client';
+
 import { useState } from 'react';
 import { SearchType, useIljuSearch } from '../model/useIljuSearch';
 import styles from './IljuSearchForm.module.css';
