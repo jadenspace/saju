@@ -176,7 +176,7 @@ export default function SajuGuidePage() {
 
                 <div className={styles.navLinks}>
                     <Link href="/guide" className={styles.navLink}>← 가이드 목록</Link>
-                    <Link href="/guide/sipsin" className={styles.navLink}>십신 알아보기 →</Link>
+                    <Link href="/guide/chungan" className={styles.navLink}>천간 알아보기 →</Link>
                 </div>
             </div>
         </main>

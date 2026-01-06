@@ -8,24 +8,68 @@ export const metadata: Metadata = {
 };
 
 const guides = [
+    // 1. 사주란?
     {
         href: "/guide/saju",
         title: "사주팔자란?",
         hanja: "四柱八字",
         description: "태어난 년, 월, 일, 시의 네 기둥과 여덟 글자로 운명을 읽는 동양 철학의 핵심"
     },
+    // 2. 천간/지지 (글자)
     {
-        href: "/guide/sipsin",
-        title: "십신 (十神)",
-        hanja: "比肩·劫財·食神·傷官·偏財·正財·偏官·正官·偏印·正印",
-        description: "일간을 기준으로 다른 글자들과의 관계를 나타내는 10가지 신(神)"
+        href: "/guide/chungan",
+        title: "천간 (天干)",
+        hanja: "甲·乙·丙·丁·戊·己·庚·辛·壬·癸",
+        description: "하늘의 기운을 상징하는 열 가지 기본 요소, 겉으로 드러나는 성향과 표현 방식"
     },
+    {
+        href: "/guide/jiji",
+        title: "지지 (地支)",
+        hanja: "子·丑·寅·卯·辰·巳·午·未·申·酉·戌·亥",
+        description: "땅의 기운을 나타내는 열두 가지 글자, 내면의 기운과 감정의 뿌리"
+    },
+    // 3. 오행 (속성)
     {
         href: "/guide/ohaeng",
         title: "오행 (五行)",
         hanja: "木·火·土·金·水",
         description: "우주 만물을 구성하는 다섯 가지 기본 요소와 그 상생상극 관계"
     },
+    // 4. 일간 (나)
+    {
+        href: "/guide/ilgan",
+        title: "일간 (日干)",
+        hanja: "나를 나타내는 글자",
+        description: "사주팔자에서 나 자신을 나타내는 중심 글자, 모든 해석의 기준점"
+    },
+    // 5. 십신 (관계)
+    {
+        href: "/guide/sipsin",
+        title: "십신 (十神)",
+        hanja: "比肩·劫財·食神·傷官·偏財·正財·偏官·正官·偏印·正印",
+        description: "일간을 기준으로 다른 글자들과의 관계를 나타내는 10가지 신(神)"
+    },
+    // 6. 대운/세운 (시간)
+    {
+        href: "/guide/daeun",
+        title: "대운 (大運)",
+        hanja: "10년 주기의 운의 흐름",
+        description: "인생에서 약 10년 단위로 바뀌는 운의 흐름, 인생의 큰 흐름표"
+    },
+    {
+        href: "/guide/seun",
+        title: "세운 (歲運)",
+        hanja: "매년 찾아오는 운의 변화",
+        description: "해마다 바뀌는 운의 흐름, 신년운세의 근본이 되는 개념"
+    },
+    // 7. 용신 (핵심)
+    {
+        href: "/guide/yongsin",
+        title: "용신 (用神)",
+        hanja: "사주의 균형을 맞추는 핵심",
+        description: "사주의 다섯 기운 중 가장 필요한 에너지, 균형을 맞추는 핵심 요소"
+    },
+    // 8. 12운성/12신살/공망 (심화)
     {
         href: "/guide/12unsung",
         title: "12운성 (十二運星)",

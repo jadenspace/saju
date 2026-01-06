@@ -216,8 +216,8 @@ export default function OhaengGuidePage() {
                 </div>
 
                 <div className={styles.navLinks}>
-                    <Link href="/guide/sipsin" className={styles.navLink}>← 십신이란?</Link>
-                    <Link href="/guide/12unsung" className={styles.navLink}>12운성 알아보기 →</Link>
+                    <Link href="/guide/jiji" className={styles.navLink}>← 지지 알아보기</Link>
+                    <Link href="/guide/ilgan" className={styles.navLink}>일간 알아보기 →</Link>
                 </div>
             </div>
         </main>

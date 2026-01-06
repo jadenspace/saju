@@ -203,7 +203,7 @@ export default function TwelveStagesGuidePage() {
                 </div>
 
                 <div className={styles.navLinks}>
-                    <Link href="/guide/ohaeng" className={styles.navLink}>← 오행이란?</Link>
+                    <Link href="/guide/yongsin" className={styles.navLink}>← 용신 알아보기</Link>
                     <Link href="/guide/12sinsal" className={styles.navLink}>12신살 알아보기 →</Link>
                 </div>
             </div>
