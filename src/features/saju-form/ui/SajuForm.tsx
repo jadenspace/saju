@@ -542,22 +542,6 @@ export const SajuForm = () => {
         >
           {loading === "result" ? "분석 중..." : "정통 사주"}
         </Button>
-        <Button
-          type="button"
-          disabled={true}
-          className={styles.tertiaryButton}
-          id="btn-yongshin"
-        >
-          용신 분석
-        </Button>
-        <Button
-          type="button"
-          disabled={true}
-          className={styles.tertiaryButton}
-          id="btn-compatibility"
-        >
-          사주 궁합
-        </Button>
       </div>
     </form>
   );

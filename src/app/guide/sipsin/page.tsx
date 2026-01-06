@@ -156,8 +156,8 @@ export default function SipsinGuidePage() {
                 </div>
 
                 <div className={styles.navLinks}>
-                    <Link href="/guide/saju" className={styles.navLink}>← 사주팔자란?</Link>
-                    <Link href="/guide/ohaeng" className={styles.navLink}>오행 알아보기 →</Link>
+                    <Link href="/guide/ilgan" className={styles.navLink}>← 일간 알아보기</Link>
+                    <Link href="/guide/daeun" className={styles.navLink}>대운 알아보기 →</Link>
                 </div>
             </div>
         </main>

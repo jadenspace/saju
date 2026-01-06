@@ -178,7 +178,7 @@ export const PrivacyPolicy = () => {
         <p>회사는 개인정보 처리에 관한 업무를 총괄해서 책임지고, 개인정보 관련 문의 및 불만처리 등을 위하여 아래와 같이 개인정보 보호책임자를 지정하고 있습니다.</p>
         <ul className={styles.list}>
           <li><strong>개인정보 보호책임자</strong>: 김연호/대표</li>
-          <li><strong>연락처</strong>: yeonhokr@gmail.com</li>
+          <li><strong>연락처</strong>: <a href="mailto:yeonhokr@gmail.com">yeonhokr@gmail.com</a></li>
         </ul>
       </section>
 
