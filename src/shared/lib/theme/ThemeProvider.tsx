@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import React, { createContext, useContext } from "react";
 
-export type Theme = 'dark';
+export type Theme = "dark";
 
 interface ThemeContextType {
   theme: Theme;
@@ -12,29 +12,19 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-const THEME_STORAGE_KEY = 'saju-theme';
-const DEFAULT_THEME: Theme = 'dark';
+const DEFAULT_THEME: Theme = "dark";
+
+const noop = () => {};
+
+const contextValue: ThemeContextType = {
+  theme: DEFAULT_THEME,
+  setTheme: noop,
+  cycleTheme: noop,
+};
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [mounted, setMounted] = useState(false);
-
-  // 테마를 다크 모드로 고정
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', DEFAULT_THEME);
-    localStorage.setItem(THEME_STORAGE_KEY, DEFAULT_THEME);
-    setMounted(true);
-  }, []);
-
-  const setTheme = useCallback(() => {
-    // 테마 변경 비활성화
-  }, []);
-
-  const cycleTheme = useCallback(() => {
-    // 테마 변경 비활성화
-  }, []);
-
   return (
-    <ThemeContext.Provider value={{ theme: DEFAULT_THEME, setTheme, cycleTheme }}>
+    <ThemeContext.Provider value={contextValue}>
       {children}
     </ThemeContext.Provider>
   );
@@ -43,10 +33,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 export function useTheme() {
   const context = useContext(ThemeContext);
   if (context === undefined) {
-    throw new Error('useTheme must be used within a ThemeProvider');
+    throw new Error("useTheme must be used within a ThemeProvider");
   }
   return context;
 }
 
 export { ThemeContext };
-
