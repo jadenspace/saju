@@ -1,6 +1,7 @@
 import { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
+  const now = new Date();
   const baseUrl = "https://sajupalja.vercel.app";
 
   const staticPages = [
@@ -28,7 +29,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { route: "/contact", priority: 0.5 },
   ].map(({ route, priority }) => ({
     url: `${baseUrl}${route}`,
-    lastModified: new Date(),
+    lastModified: now,
     changeFrequency: "monthly" as const,
     priority,
   }));
