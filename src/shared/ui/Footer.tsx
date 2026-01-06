@@ -1,12 +1,14 @@
-import Link from 'next/link';
-import styles from './Footer.module.css';
+import Link from "next/link";
+import styles from "./Footer.module.css";
+
+const CURRENT_YEAR = 2026;
 
 export const Footer = () => {
   return (
     <footer className={styles.footer}>
       <div className={styles.content}>
         <div className={styles.copyright}>
-          © {new Date().getFullYear()} 오늘의 운세는. All rights reserved.
+          © {CURRENT_YEAR} 오늘의 운세는. All rights reserved.
         </div>
         <div className={styles.links}>
           <Link href="/privacy" className={styles.link}>
